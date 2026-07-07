@@ -88,7 +88,7 @@ def ensure_split_tables(db: Session):
     # Backfill: copy parent transaction tags to existing recovery transactions that missed them
     db.execute(text("""
         INSERT INTO public.transaction_tags (transaction_id, tag_id, applied_by, applied_at)
-        SELECT r.recovery_transaction_id, tt.tag_id, 'USER', NOW()
+        SELECT r.recovery_transaction_id, tt.tag_id, 'USER', to_char(NOW(), 'YYYY-MM-DD')
         FROM public.transaction_split_recoveries r
         JOIN public.transaction_splits s ON s.id = r.split_id
         JOIN public.transaction_tags tt ON tt.transaction_id = s.transaction_id
