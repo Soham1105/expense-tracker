@@ -28,6 +28,8 @@ STATEMENT_SOURCE_CONFIGS = {
     "CRED":       {"payment_source_name": "CRED",       "parser": "generic"},
     "KOTAK":      {"payment_source_name": "KOTAK",      "parser": "kotak"},
     "SUPERMONEY": {"payment_source_name": "SUPERMONEY", "parser": "supermoney"},
+    "UNION":      {"payment_source_name": "UNION",      "parser": "generic"},
+    "DCB":        {"payment_source_name": "DCB",        "parser": "generic"},
 }
 BANK_SOURCE_NAMES = {
     "BOB",
@@ -40,6 +42,8 @@ BANK_SOURCE_NAMES = {
     "IDFC",
     "YES",
     "INDUSIND",
+    "UNION",
+    "DCB",
 }
 
 GENERIC_COLUMN_ALIASES = {
@@ -47,7 +51,10 @@ GENERIC_COLUMN_ALIASES = {
         "transaction date",
         "date",
         "txn date",
+        "tran date",
+        "post date",
         "posted date",
+        "value date",
         "created date",
     ],
     "transaction_time": [
@@ -64,7 +71,10 @@ GENERIC_COLUMN_ALIASES = {
         "paid to",
         "beneficiary",
         "description",
+        "transaction description",
+        "transaction remarks",
         "narration",
+        "particulars",
         "remarks",
     ],
     "counterparty_identifier": [
@@ -88,13 +98,25 @@ GENERIC_COLUMN_ALIASES = {
     "withdrawal": [
         "withdrawal(dr)",
         "withdrawal",
+        "withdrawals",
+        "withdrawal amt",
+        "withdrawal amt.",
+        "withdrawal amount",
         "debit",
         "debit amount",
+        "debit amt",
+        "debit amt.",
         "dr amount",
     ],
     "credit": [
         "deposit(cr)",
         "deposit",
+        "deposits",
+        "deposit amt",
+        "deposit amt.",
+        "deposit amount",
+        "credit amt",
+        "credit amt.",
         "credit",
         "credit amount",
         "cr amount",
@@ -256,6 +278,10 @@ def infer_bank_source_name(value, fallback=None):
         return "IDFC"
     if "yes bank" in normalized or normalized == "yes":
         return "YES"
+    if "union bank" in normalized or normalized == "union" or "ubin" in normalized:
+        return "UNION"
+    if "dcb bank" in normalized or normalized == "dcb":
+        return "DCB"
     return fallback
 
 
@@ -1352,6 +1378,17 @@ def parse_csv(file_path: str, statement_source: str = "BOB") -> list[dict]:
     return transactions
 
 
+@safe_execute
+def parse_excel(file_path, statement_source: str = "BOB") -> list[dict]:
+    source_key = (statement_source or "BOB").strip().upper()
+    if hasattr(file_path, "seek"):
+        file_path.seek(0)
+    # Bank Excel exports usually carry a proper header row; read every column as
+    # text so amounts/dates keep their original formatting for the parsers.
+    df = pd.read_excel(file_path, dtype=str).fillna("")
+    return parse_statement_dataframe(df, source_key)
+
+
 # Right-to-left single-line parsers for Super Money rows
 _SM_STATUS_RE  = re.compile(r"\s+(SUCCESS|FAILED|PENDING)\s*$", re.IGNORECASE)
 _SM_DATE_RE    = re.compile(
@@ -1560,5 +1597,8 @@ def parse_statement(
         raise ParsingError(
             "PDF parsing is currently supported only for GPay, RBL, Kotak, and Super Money statements."
         )
+
+    if statement_filename.endswith((".xlsx", ".xls")):
+        return parse_excel(file_path, source_key)
 
     return parse_csv(file_path, source_key)

@@ -356,6 +356,8 @@
           <option value="BOB">BOB Bank Statement</option>
           <option value="RBL">RBL Bank Statement</option>
           <option value="KOTAK">Kotak Bank Statement</option>
+          <option value="UNION">Union Bank Statement</option>
+          <option value="DCB">DCB Bank Statement</option>
           <option value="GPAY">GPay Statement</option>
           <option value="SUPERMONEY">Super Money Statement</option>
           <option value="CRED">CRED Statement</option>
@@ -382,10 +384,10 @@
           <span class="material-symbols-outlined text-[36px] text-slate-300 dark:text-slate-600 group-hover:text-primary transition-colors">attach_file</span>
           <div>
             <p id="fileName" class="text-sm font-semibold text-slate-600 dark:text-slate-300">Click to select file</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">CSV or PDF · BOB, RBL, Kotak, GPay…</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">CSV, Excel or PDF · BOB, RBL, Kotak, Union, DCB, GPay…</p>
           </div>
         </div>
-        <input type="file" id="fileInput" name="file" accept=".csv,.pdf" style="position:absolute;left:-9999px;width:1px;height:1px" />
+        <input type="file" id="fileInput" name="file" accept=".csv,.pdf,.xlsx,.xls" style="position:absolute;left:-9999px;width:1px;height:1px" />
       </div>
 
       <!-- Upload button -->
@@ -518,7 +520,7 @@
   })();
   </script>
 
-  <script src="/js/upload.js?v=20260524-1"></script>
+  <script src="/js/upload.js?v=20260707-1"></script>
 
   </body>
 </html>

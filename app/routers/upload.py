@@ -357,7 +357,7 @@ def _upload_statement_inner(file, statement_source, pdf_password, db):
     transactions = []
 
     filename = (file.filename or "").lower()
-    if filename.endswith(".csv") or filename.endswith(".pdf"):
+    if filename.endswith((".csv", ".pdf", ".xlsx", ".xls")):
         file.file.seek(0)
         statement_bytes = file.file.read()
         transactions = parse_statement(

@@ -868,8 +868,11 @@ function syncStatementUploadControls() {
       fileInput.accept = ".pdf";
     } else if (selectedSource === "BOB") {
       fileInput.accept = ".csv";
+    } else if (selectedSource === "UNION" || selectedSource === "DCB") {
+      // Union Bank / DCB export CSV or Excel statements.
+      fileInput.accept = ".csv,.xlsx,.xls";
     } else {
-      fileInput.accept = ".csv,.pdf";
+      fileInput.accept = ".csv,.pdf,.xlsx,.xls";
     }
   }
 
