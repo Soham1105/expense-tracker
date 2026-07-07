@@ -85,10 +85,34 @@ def ensure_split_tables(db: Session):
             "ADD COLUMN IF NOT EXISTS primary_flow_type TEXT"
         )
     )
+    # The canonical type for transaction_tags.applied_at is TIMESTAMP (that's
+    # what every other insert writes via NOW(), and what category_repo migrates
+    # to). Older dumps stored it as varchar(10); normalize it here *before* the
+    # backfill so this runs correctly regardless of the legacy column type.
+    db.execute(text(r"""
+        DO $$
+        BEGIN
+            IF EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public'
+                  AND table_name   = 'transaction_tags'
+                  AND column_name  = 'applied_at'
+                  AND data_type    = 'character varying'
+            ) THEN
+                ALTER TABLE public.transaction_tags
+                    ALTER COLUMN applied_at TYPE TIMESTAMP USING
+                        CASE WHEN applied_at ~ '^\d{4}-\d{2}-\d{2}'
+                             THEN applied_at::timestamp
+                             ELSE NOW()
+                        END;
+            END IF;
+        END
+        $$;
+    """))
     # Backfill: copy parent transaction tags to existing recovery transactions that missed them
     db.execute(text("""
         INSERT INTO public.transaction_tags (transaction_id, tag_id, applied_by, applied_at)
-        SELECT r.recovery_transaction_id, tt.tag_id, 'USER', to_char(NOW(), 'YYYY-MM-DD')
+        SELECT r.recovery_transaction_id, tt.tag_id, 'USER', NOW()
         FROM public.transaction_split_recoveries r
         JOIN public.transaction_splits s ON s.id = r.split_id
         JOIN public.transaction_tags tt ON tt.transaction_id = s.transaction_id
