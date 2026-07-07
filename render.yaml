@@ -7,6 +7,10 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     plan: free
+    # Same region as the Supabase database (ap-southeast-1). Keeping the app
+    # next to the DB is critical: pages run dozens of queries, and cross-region
+    # round trips (~180ms each) made every page load take seconds.
+    region: singapore
     envVars:
       - key: DATABASE_URL
         sync: false          # paste your Supabase connection string

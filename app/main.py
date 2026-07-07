@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.gzip import GZipMiddleware
 from routers import upload, reports, classification, planning, transactions
 from routers.trends import trends_router
 from routers.transaction_groups import groups_router
@@ -47,6 +48,10 @@ app = FastAPI(lifespan=lifespan)
 # Password-protect the entire app (API + static frontend). Enforced only when
 # APP_PASSWORD is set in the environment, so local dev stays frictionless.
 app.add_middleware(BasicAuthMiddleware)
+
+# Compress JSON/HTML responses — some pages ship 90KB+ payloads, which matters
+# when the user is far from the server.
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 app.include_router(upload.router)
 app.include_router(reports.report_router)
