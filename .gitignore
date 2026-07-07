@@ -1,0 +1,26 @@
+# Secrets & environment
+.env
+*.env
+!.env.example
+
+# Real financial data — NEVER commit these
+*.sql
+
+# Virtualenv
+.venv/
+venv/
+
+# Python
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Logs / scratch
+*.log
+server_out*.txt
+server_err*.txt
+app/_scratch_*.log
+
+# OS / editor
+.DS_Store
+.claude/

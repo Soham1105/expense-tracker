@@ -1,0 +1,447 @@
+﻿<div
+  id="modify-tags-modal"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+>
+  <div
+    class="w-full max-w-lg rounded-2xl bg-white shadow-2xl dark:bg-slate-900"
+  >
+    <div id="modal-loading" class="text-center py-10 text-slate-500">
+      Loading transaction details...
+    </div>
+
+    <div id="modal-content" class="hidden">
+      <!-- <div
+        class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800"
+      >
+        <div
+          class="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-800"
+        >
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">sell</span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+              Tag Similar Transactions
+            </h3>
+          </div>
+          <button
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            onclick="
+              document
+                .getElementById('modify-tags-modal')
+                .classList.add('hidden')
+            "
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="p-6 space-y-6">
+          <div
+            class="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800"
+          >
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p
+                  class="text-[10px] font-bold uppercase tracking-wider text-slate-500"
+                >
+                  Selected Transaction
+                </p>
+                <h4
+                  class="text-base font-bold text-slate-900 dark:text-white mt-1"
+                >
+                  Starbucks / starbucks@upi
+                </h4>
+                <div
+                  class="flex gap-3 mt-1 text-sm text-slate-500 dark:text-slate-400"
+                >
+                  <span class="flex items-center gap-1"
+                    ><span class="material-symbols-outlined text-sm"
+                      >calendar_today</span
+                    >
+                    Oct 22, 2023</span
+                  >
+                  <span class="flex items-center gap-1"
+                    ><span class="material-symbols-outlined text-sm"
+                      >schedule</span
+                    >
+                    08:45 AM</span
+                  >
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-xl font-black text-primary">$6.45</p>
+                <span
+                  class="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-300"
+                  >Dining Out</span
+                >
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-3 border-t border-slate-200 dark:border-slate-700 pt-3 mt-2"
+            >
+              <input
+                checked=""
+                class="h-5 w-5 rounded border-primary text-primary focus:ring-primary cursor-pointer"
+                id="select-all-similar"
+                type="checkbox"
+              />
+              <label
+                class="text-sm font-semibold text-slate-700 dark:text-slate-200 cursor-pointer"
+                for="select-all-similar"
+              >
+                Select all similar transactions
+                <span class="text-primary font-bold"
+                  >(12 found this quarter)</span
+                >
+              </label>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <label class="text-sm font-bold text-slate-700 dark:text-slate-300"
+              >Assign Tags</label
+            >
+            <div class="relative">
+              <div
+                class="min-h-[52px] flex flex-wrap gap-2 rounded-lg border border-slate-200 bg-white p-2.5 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary dark:bg-slate-950 dark:border-slate-700"
+              >
+                <span
+                  class="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary dark:bg-primary/20"
+                >
+                  #coffee
+                  <button
+                    class="material-symbols-outlined text-[14px] leading-none hover:text-red-500"
+                  >
+                    close
+                  </button>
+                </span>
+                <span
+                  class="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary dark:bg-primary/20"
+                >
+                  #morning
+                  <button
+                    class="material-symbols-outlined text-[14px] leading-none hover:text-red-500"
+                  >
+                    close
+                  </button>
+                </span>
+                <input
+                  class="flex-1 border-none bg-transparent p-1 text-sm focus:ring-0 dark:text-white placeholder-slate-400"
+                  placeholder="Type to create new tag..."
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <span
+                class="text-[10px] text-slate-500 font-bold uppercase tracking-tight self-center"
+                >Quick Add:</span
+              >
+              <button
+                class="rounded-full border border-slate-200 px-3 py-1 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:border-primary hover:text-primary transition-all dark:border-slate-700 dark:text-slate-400"
+              >
+                #outside-food
+              </button>
+              <button
+                class="rounded-full border border-slate-200 px-3 py-1 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:border-primary hover:text-primary transition-all dark:border-slate-700 dark:text-slate-400"
+              >
+                #breakfast
+              </button>
+              <button
+                class="rounded-full border border-slate-200 px-3 py-1 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:border-primary hover:text-primary transition-all dark:border-slate-700 dark:text-slate-400"
+              >
+                + New Tag
+              </button>
+            </div>
+          </div>
+          <div class="border-t border-slate-100 pt-5 dark:border-slate-800">
+            <div class="flex items-center justify-between">
+              <div class="space-y-0.5">
+                <h4 class="text-sm font-bold text-slate-900 dark:text-white">
+                  Shared Expense
+                </h4>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Apply split to all 12 selected transactions.
+                </p>
+              </div>
+              <label class="relative inline-flex cursor-pointer items-center">
+                <input class="peer sr-only" type="checkbox" value="" />
+                <div
+                  class="h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-white dark:bg-slate-700"
+                ></div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-end gap-3 bg-slate-50 px-6 py-4 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800"
+        >
+          <button
+            class="rounded-lg px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+            onclick="
+              document
+                .getElementById('modify-tags-modal')
+                .classList.add('hidden')
+            "
+          >
+            Cancel
+          </button>
+          <button
+            class="rounded-lg bg-primary px-6 py-2 text-sm font-bold text-white shadow-lg hover:bg-primary/90 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            onclick="
+              document
+                .getElementById('modify-tags-modal')
+                .classList.add('hidden')
+            "
+          >
+            Apply to 12 Transactions
+          </button>
+        </div>
+      </div> -->
+      <div
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+        id="modify-transaction-modal"
+      >
+        <div
+          class="w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-900 ring-1 ring-slate-200 dark:ring-slate-800 flex flex-col md:flex-row"
+        >
+          <div
+            class="w-full md:w-[40%] border-r border-slate-100 dark:border-slate-800 flex flex-col"
+          >
+            <div
+              class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between"
+            >
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary"
+                  >receipt_long</span
+                >
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+                  Transaction
+                </h3>
+              </div>
+            </div>
+            <div class="p-6 flex-1 space-y-6 overflow-y-auto no-scrollbar">
+              <div class="space-y-1">
+                <p
+                  class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                >
+                  Amount
+                </p>
+                <p class="text-4xl font-black text-slate-900" id="amount"></p>
+              </div>
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label
+                    class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                    >vendor Name</label
+                  >
+                  <div class="group relative flex items-center gap-2">
+                    <input
+                      class="w-full rounded-lg border-slate-200 bg-slate-50 px-3 py-2 text-base font-bold text-slate-900 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-800/50 dark:text-white"
+                      id="vendor_name"
+                      type="text"
+                    />
+                    <span
+                      class="material-symbols-outlined absolute right-3 text-[18px] text-slate-400 group-focus-within:text-primary"
+                      >edit</span
+                    >
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <label
+                    class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                    >Transaction ID
+                  </label>
+                  <div
+                    class="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 dark:bg-slate-800"
+                  >
+                    <span
+                      class="material-symbols-outlined text-[18px] text-slate-400"
+                      >link</span
+                    >
+                    <span
+                      class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                      id="transaction_id"
+                    ></span>
+                  </div>
+                </div>
+                <div class="space-y-1 hidden" id="transaction_source_wrap">
+                  <label
+                    class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                    >Source
+                  </label>
+                  <div
+                    class="rounded-lg bg-slate-100 px-3 py-3 text-sm ring-1 ring-slate-200"
+                  >
+                    <div class="flex flex-wrap gap-2">
+                      <span id="transaction_source_bank" class="hidden rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-700 ring-1 ring-blue-100"></span>
+                      <span id="transaction_source_channel" class="hidden rounded-full bg-slate-800 px-2.5 py-1 text-[11px] font-bold text-slate-100 ring-1 ring-slate-900/20"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-1 hidden" id="transaction_narration_wrap">
+                  <label
+                    class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                    >Narration
+                  </label>
+                  <div
+                    class="rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                    id="transaction_narration"
+                  ></div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <p
+                    class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                  >
+                    Date
+                  </p>
+                  <div
+                    class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >calendar_today</span
+                    >
+                    <span id="transaction_date"></span>
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <p
+                    class="text-[11px] font-bold uppercase tracking-wider text-slate-400"
+                  >
+                    Time
+                  </p>
+                  <div
+                    class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300"
+                  >
+                    <span class="material-symbols-outlined text-[18px]"
+                      >schedule</span
+                    >
+                    <span id="transaction_time"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-6 border-t border-slate-100 dark:border-slate-800">
+              <button
+                class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                onclick="closeModifyTagsModal()"
+              >
+                Close Details
+              </button>
+            </div>
+          </div>
+          <div
+            class="w-full md:w-[60%] flex flex-col bg-slate-50/30 dark:bg-slate-900/50"
+          >
+            <div
+              class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between"
+            >
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">sell</span>
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white">
+                  Tagging &amp; Classification
+                </h3>
+              </div>
+              <button
+                class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 lg:hidden"
+                onclick="closeModifyTagsModal()"
+              >
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div class="p-6 flex-1 space-y-8 overflow-y-auto no-scrollbar">
+              <div
+                class="flex items-center justify-between rounded-xl bg-primary/10 px-4 py-3 dark:bg-primary/20"
+                id="modify-apply-similar-panel"
+              >
+                <div class="flex items-center gap-3">
+                  <input
+                    checked=""
+                    class="h-5 w-5 rounded border-primary text-primary focus:ring-primary cursor-pointer"
+                    id="select-all-toggle"
+                    type="checkbox"
+                  />
+                  <label
+                    class="text-sm font-semibold text-primary cursor-pointer"
+                    id="apply_to_similar_transactions"
+                    for="select-all-toggle"
+                  >
+                    Apply to <span id="counterparty_count"></span> similar transactions
+                  </label>
+                </div>
+                <span class="text-[10px] font-bold uppercase text-primary/60"
+                  >Oct - Dec Quarter</span
+                >
+              </div>
+              <div class="space-y-3" id="modify-tag-editor-section">
+                <label
+                  class="text-sm font-bold text-slate-700 dark:text-slate-300"
+                  >Active Tags</label
+                >
+                <label class="flex items-center gap-2 text-sm font-medium text-slate-600">
+                  <input
+                    id="no-tag-required-toggle"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                  />
+                  No tag required for this transaction
+                </label>
+                <div
+                  class="flex flex-wrap items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 transition-all duration-200 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100"
+                  id="transaction_tags"
+                >
+                  <div id="tags_wrapper" class="flex flex-wrap gap-2"></div>
+                  <input
+                    id="new-tag-input"
+                    type="text"
+                    list="managed-tag-options"
+                    placeholder="Type and press Enter..."
+                    class="flex-grow min-w-[120px] bg-transparent border-0 outline-none focus:outline-none focus:ring-0 text-sm placeholder:text-slate-400"
+                  />
+                  <datalist id="managed-tag-options"></datalist>
+                </div>
+                <div id="tag-error" class="text-sm text-red-500 mt-1 hidden"></div>
+              </div>
+              <div
+                id="modify-no-tag-panel"
+                class="hidden rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900"
+              >
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined mt-0.5 text-slate-400">label_off</span>
+                  <div>
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-white">
+                      Tagging skipped
+                    </h4>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                      This transaction will stay untagged on purpose. Untick the option to edit tags again.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="relative z-20 flex shrink-0 items-center justify-end gap-3 border-t border-slate-100 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-900"
+            >
+              <button
+                type="button"
+                class="relative z-20 rounded-lg px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
+                id="discard_changes"
+                onclick="discardModifyTagChanges(event)"
+              >
+                Discard Changes
+              </button>
+              <button
+                type="button"
+                class="relative z-20 rounded-lg bg-primary px-8 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98]"
+                id="save_transaction"
+                onclick="saveModifyTagChanges(event)"
+              >
+                Save &amp; Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

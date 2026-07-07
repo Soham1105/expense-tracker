@@ -1,0 +1,1194 @@
+﻿<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Transactions - FinanceTracker</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link href="/css/app.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#607AFB",
+              "background-light": "#f5f6f8",
+              "background-dark": "#0f1323",
+            },
+            fontFamily: { display: "Manrope" },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @keyframes txnRowIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .txn-tbody tr {
+        animation: txnRowIn 0.22s ease-out both;
+      }
+      .txn-tbody tr:nth-child(1) { animation-delay: 0ms; }
+      .txn-tbody tr:nth-child(2) { animation-delay: 50ms; }
+      .txn-tbody tr:nth-child(3) { animation-delay: 100ms; }
+      .txn-tbody tr:nth-child(4) { animation-delay: 150ms; }
+      .txn-tbody tr:nth-child(5) { animation-delay: 200ms; }
+      .txn-tbody tr:nth-child(n+6) { animation-delay: 250ms; }
+    </style>
+  </head>
+  <body
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden"
+  >
+    <div class="flex h-screen w-full">
+      <!-- Side Navigation -->
+      <aside
+        class="hidden w-64 flex-col border-r border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 lg:flex"
+      >
+        <div
+          class="flex h-16 items-center gap-3 px-6 border-b border-slate-100 dark:border-slate-800"
+        >
+          <div
+            class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary"
+          >
+            <span class="material-symbols-outlined"
+              >account_balance_wallet</span
+            >
+          </div>
+          <h2
+            class="text-lg font-bold tracking-tight text-slate-900 dark:text-white"
+          >
+            FinanceTracker
+          </h2>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a
+              class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              href="/dashboard.html"
+            >
+              <span class="material-symbols-outlined text-[20px]">dashboard</span>
+              <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+              <span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span>
+              <span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="text-sm font-medium">Goals</span>
+            </a>
+            <a
+              class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav"
+              href="/"
+            >
+              <span class="material-symbols-outlined text-[20px] fill-1">receipt_long</span>
+              <span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span>
+              <span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span>
+              <span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              <span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span>
+              <span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>
+          <div
+            class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950/40"
+          >
+            <div class="mb-3 flex items-center justify-between gap-2">
+              <div>
+                <p
+                  class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400"
+                >
+                  Categories
+                </p>
+                <p
+                  id="sidebarCategoryMeta"
+                  class="mt-1 text-xs text-slate-500 dark:text-slate-400"
+                >
+                  Loading category summary...
+                </p>
+              </div>
+              <a
+                class="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-primary shadow-sm ring-1 ring-slate-200 hover:bg-primary hover:text-white dark:bg-slate-900 dark:ring-slate-800"
+                href="/classification/manage"
+              >
+                Manage
+              </a>
+            </div>
+            <div id="sidebarCategorySummary" class="space-y-2">
+              <div class="rounded-xl bg-white p-3 text-xs text-slate-400 shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
+                Categories will appear here after transactions load.
+              </div>
+            </div>
+          </div>
+          <div class="mt-2 border-t border-slate-100 dark:border-slate-800 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+      <!-- Main Content -->
+      <div class="flex flex-1 flex-col h-full overflow-hidden">
+        <!-- Top Header -->
+        <header
+          class="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 dark:bg-slate-900 dark:border-slate-800"
+        >
+          <div class="flex items-center gap-4 lg:hidden">
+            <button
+              class="text-slate-500 hover:text-slate-700 dark:text-slate-400"
+            >
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <span class="text-lg font-bold text-slate-900 dark:text-white"
+              >Transactions</span
+            >
+          </div>
+          <div
+            class="hidden lg:flex items-center text-sm text-slate-500 dark:text-slate-400"
+          >
+            <a class="hover:text-primary" href="/dashboard.html">Dashboard</a>
+            <span class="mx-2">/</span>
+            <span class="text-slate-900 font-medium dark:text-white"
+              >Transactions</span
+            >
+          </div>
+          <div class="flex items-center gap-4 ml-auto">
+            <div class="relative hidden sm:block">
+              <span
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]"
+                >search</span
+              >
+              <input
+                id="txn-search"
+                class="h-9 w-64 rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 focus:ring-2 focus:ring-primary dark:bg-slate-800 dark:text-white"
+                placeholder="Search transactions..."
+                type="text"
+              />
+            </div>
+            <button
+              class="rounded-full p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+            </button>
+          </div>
+        </header>
+        <!-- Scrollable Page Content -->
+        <main
+          class="flex-1 overflow-y-auto bg-background-light p-6 dark:bg-background-dark"
+        >
+          <div class="mx-auto max-w-6xl space-y-6">
+            <!-- Page Heading & Date Controls -->
+            <div
+              class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+            >
+              <div class="space-y-0.5">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Overview</p>
+                <h1 class="text-2xl font-black text-slate-950 dark:text-white sm:text-3xl">
+                  Transactions
+                </h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                  Review, filter and manage your transactions.
+                </p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div
+                  class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-800"
+                >
+                  <button
+                    id="txn-date-prev"
+                    class="rounded-md p-2 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
+                    title="Previous month"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                  </button>
+                  <div class="flex items-center gap-2 px-2">
+                    <span class="material-symbols-outlined text-slate-400 text-[18px]">calendar_month</span>
+                    <span id="txn-date-label" class="text-sm font-semibold text-slate-900 dark:text-white whitespace-nowrap">Loading…</span>
+                  </div>
+                  <button
+                    id="txn-date-next"
+                    class="rounded-md p-2 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors"
+                    title="Next month"
+                  >
+                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                  </button>
+                </div>
+                <button
+                  class="flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700"
+                >
+                  <span class="material-symbols-outlined text-[20px]"
+                    >download</span
+                  >
+                  <span>Export</span>
+                </button>
+              </div>
+            </div>
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div
+                class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 dark:border-slate-800 dark:bg-slate-900"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <p
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    Cash Spend
+                  </p>
+                  <span
+                    class="rounded-full bg-red-100 p-1.5 text-red-600 dark:bg-red-900/30 dark:text-red-400"
+                  >
+                    <span class="material-symbols-outlined text-[16px]"
+                      >trending_down</span
+                    >
+                  </span>
+                </div>
+                <p id="summaryTotalSpent" class="text-2xl font-bold text-slate-900 dark:text-white">
+                  ₹0.00
+                </p>
+                <p id="summaryTotalSpentMeta" class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  Refunds, paybacks, and self transfers excluded.
+                </p>
+              </div>
+              <div
+                class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 dark:border-slate-800 dark:bg-slate-900"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <p
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    Counted Credits
+                  </p>
+                  <span
+                    class="rounded-full bg-emerald-100 p-1.5 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
+                  >
+                    <span class="material-symbols-outlined text-[16px]"
+                      >trending_up</span
+                    >
+                  </span>
+                </div>
+                <p id="summaryTotalIncome" class="text-2xl font-bold text-slate-900 dark:text-white">
+                  ₹0.00
+                </p>
+                <p id="summaryTotalIncomeMeta" class="text-xs text-emerald-600 mt-1 dark:text-emerald-400">
+                  Only classified income is counted.
+                </p>
+              </div>
+              <div
+                class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 dark:border-slate-800 dark:bg-slate-900"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <p
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    Needs Review
+                  </p>
+                  <span
+                    class="rounded-full bg-amber-100 p-1.5 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
+                  >
+                    <span class="material-symbols-outlined text-[16px]"
+                      >priority_high</span
+                    >
+                  </span>
+                </div>
+                <p id="summaryNeedsReview" class="text-2xl font-bold text-slate-900 dark:text-white">
+                  0
+                </p>
+                <p id="summaryNeedsReviewMeta" class="text-xs text-slate-500 dark:text-slate-400">
+                  Transactions waiting for a decision.
+                </p>
+              </div>
+              <div
+                class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 dark:border-slate-800 dark:bg-slate-900"
+              >
+                <div class="mb-2 flex items-center justify-between">
+                  <p
+                    class="text-sm font-medium text-slate-500 dark:text-slate-400"
+                  >
+                    Top Category
+                  </p>
+                  <span
+                    class="rounded-full bg-blue-100 p-1.5 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                  >
+                    <span class="material-symbols-outlined text-[16px]"
+                      >category</span
+                    >
+                  </span>
+                </div>
+                <p id="summaryTopCategory" class="truncate text-2xl font-bold text-slate-900 dark:text-white">
+                  No category yet
+                </p>
+                <p id="summaryTopCategoryMeta" class="text-xs text-slate-500 dark:text-slate-400">
+                  Based on cash spend.
+                </p>
+              </div>
+            </div>
+            <!-- Filters & Controls Toolbar -->
+            <div
+              class="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div class="flex items-center gap-2">
+                <button
+                  id="openManualTransactionModal"
+                  type="button"
+                  class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary/90"
+                >
+                  <span class="material-symbols-outlined text-[18px]">add</span>
+                  Add Manual
+                </button>
+                <a href="/dashboard.html#upload-section"
+                  class="flex items-center gap-2 rounded-lg bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+                  <span class="material-symbols-outlined text-[18px]">cloud_upload</span>
+                  Upload
+                </a>
+
+                <div class="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                <div class="relative">
+                  <span
+                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[18px]"
+                    >category</span
+                  >
+                  <select
+                    id="dashboardCategoryFilter"
+                    class="h-9 rounded-lg border-none bg-slate-50 py-0 pl-10 pr-8 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-primary dark:bg-slate-800 dark:text-slate-200"
+                  >
+                    <option value="">All categories</option>
+                  </select>
+                </div>
+                <a
+                  class="flex items-center gap-2 rounded-lg bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700"
+                  href="/classification/manage"
+                >
+                  <span class="material-symbols-outlined text-[18px]">category</span>
+                  Categories
+                </a>
+                <a
+                  class="flex items-center gap-2 rounded-lg bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700"
+                  href="/reports/"
+                >
+                  <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                  Full Report
+                </a>
+              </div>
+              <div
+                class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+              >
+                <span id="dashboardSummaryMeta">Loading summary...</span>
+              </div>
+            </div>
+            <!-- Transactions Table -->
+            <div
+              class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+            >
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                  <thead
+                    class="bg-slate-50 text-slate-500 dark:bg-slate-800/50 dark:text-slate-400"
+                  >
+                    <tr>
+                      <th class="px-6 py-4 font-semibold w-12" title="Select rows to Group &amp; Classify in bulk">
+                        <input
+                          id="selectAllTxns"
+                          class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-800"
+                          type="checkbox"
+                        />
+                      </th>
+                      <th class="px-6 py-4 font-semibold">Date</th>
+                      <th class="px-6 py-4 font-semibold">
+                        Vendor / Description
+                      </th>
+                      <th class="px-6 py-4 font-semibold text-right">Amount</th>
+                      <th class="px-6 py-4 font-semibold w-64">Tags</th>
+                      <th class="px-6 py-4 font-semibold w-32 text-center">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="txn-tbody divide-y divide-slate-100 dark:divide-slate-800"
+                  >
+                    <!-- Rows injected by txn-loader.js -->
+                    <tr id="txn-loading-row">
+                      <td colspan="6" class="px-6 py-10 text-center">
+                        <div class="inline-flex items-center gap-2 text-sm text-slate-400">
+                          <span class="material-symbols-outlined text-[18px]" style="animation:spin 1s linear infinite">progress_activity</span>
+                          Loading transactions…
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-3 dark:border-slate-800 dark:bg-slate-900/50"
+              >
+                <p id="dashboardPaginationText" class="text-sm text-slate-500 dark:text-slate-400">
+                  Loading…
+                </p>
+                <div class="flex gap-2">
+                  <button
+                    id="dashboardPrevPage"
+                    class="rounded-lg border border-slate-300 bg-white px-3 py-1 text-sm font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    type="button"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    id="dashboardNextPage"
+                    class="rounded-lg border border-slate-300 bg-white px-3 py-1 text-sm font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                    type="button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+  <!-- Transaction quick-view panel -->
+  <div id="txn-quick-panel">
+    <div class="flex items-center justify-between px-5 py-4 border-b" style="border-color:var(--border,#e5e9f2);flex-shrink:0">
+      <h3 style="font-weight:800;font-size:14px;color:#1e293b" class="dark:text-white">Transaction Details</h3>
+      <button onclick="closeTxnPanel()" style="background:none;border:none;cursor:pointer;opacity:0.45;font-size:20px;line-height:1;color:inherit" title="Close (Esc)">&times;</button>
+    </div>
+    <div id="txn-panel-body" class="flex-1 overflow-y-auto"></div>
+  </div>
+  <!-- Manual Transaction Modal -->
+  <div id="manualTransactionModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4">
+    <div class="w-full max-w-2xl rounded-xl bg-white dark:bg-slate-900 p-5 shadow-2xl border border-slate-200 dark:border-slate-700">
+      <div class="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">Add Manual Transaction</h3>
+          <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Running balance is required for bank alignment.</p>
+        </div>
+        <button id="closeManualTransactionModal" class="rounded-lg p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+      <form id="manualTransactionForm" class="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Source
+          <input id="manual_source" list="manual-source-options" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" placeholder="RBL, BOB, HDFC, Cash..." />
+          <datalist id="manual-source-options"><option value="RBL"></option><option value="BOB"></option><option value="HDFC"></option><option value="ICICI"></option><option value="Cash"></option></datalist>
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Date
+          <input id="manual_date" type="date" required class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" />
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Time (optional)
+          <input id="manual_time" type="time" step="1" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" />
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Type
+          <select id="manual_direction" required class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white">
+            <option value="withdrawal">Debit / Withdrawal</option>
+            <option value="credit">Credit / Deposit</option>
+          </select>
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Amount
+          <input id="manual_amount" type="number" min="0.01" step="0.01" required class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" placeholder="1000.00" />
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Running balance after
+          <input id="manual_running_balance" type="number" step="0.01" required class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" placeholder="33393.21" />
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 md:col-span-2">Counterparty / reference
+          <input id="manual_counterparty" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" placeholder="UPI ref, IMPS ref..." />
+        </label>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300 md:col-span-2">Narration
+          <textarea id="manual_narration" rows="2" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white" placeholder="Paste statement narration here"></textarea>
+        </label>
+        <p id="manualTransactionMessage" class="hidden rounded-lg px-3 py-2 text-sm font-semibold md:col-span-2"></p>
+        <div class="flex justify-end gap-2 md:col-span-2">
+          <button type="button" id="cancelManualTransaction" class="rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">Cancel</button>
+          <button type="submit" class="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90">Add Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Merchant Group: Floating selection bar -->
+  <div id="merchant-selection-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3 shadow-2xl ring-1 ring-white/10">
+    <span id="merchant-selection-count" class="text-sm font-semibold text-white">0 transactions selected</span>
+    <button id="merchant-group-btn" onclick="window.openMerchantGroupPanel()" class="rounded-xl bg-primary px-4 py-1.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+      Group selected
+    </button>
+    <button onclick="clearTxnSelection()" class="rounded-xl px-3 py-1.5 text-sm font-medium text-slate-400 hover:text-white transition-colors">&times; Clear</button>
+  </div>
+
+  <!-- Merchant Group: Side panel -->
+  <div id="merchant-group-panel" class="fixed inset-y-0 right-0 z-50 hidden w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800">
+    <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-5 py-4">
+      <div>
+        <h3 id="mg-panel-title" class="text-base font-bold text-slate-900 dark:text-white">Group selected</h3>
+        <p id="mg-txn-count-label" class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">0 transactions selected</p>
+      </div>
+      <button onclick="window.closeMerchantGroupPanel()" class="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white">&times;</button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5 space-y-5">
+      <!-- Selected transactions preview -->
+      <div>
+        <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Selected Transactions</p>
+        <div id="mg-txn-list" class="space-y-1.5 max-h-36 overflow-y-auto rounded-xl bg-slate-50 dark:bg-slate-800 p-3"></div>
+      </div>
+
+      <!-- Kind selector: EVENT / PATTERN / PORTFOLIO -->
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">What kind of group?</p>
+        <div class="grid grid-cols-1 gap-2">
+          <button type="button" data-mg-kind="EVENT"
+                  onclick="window.selectMGKind('EVENT')"
+                  class="mg-kind-card flex items-start gap-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-3 text-left transition-all hover:border-violet-400/60 hover:bg-violet-50 dark:hover:bg-violet-950/30">
+            <span class="material-symbols-outlined text-[22px] text-violet-500 mt-0.5">restaurant</span>
+            <span class="flex-1 min-w-0">
+              <span class="block text-xs font-black text-slate-700 dark:text-slate-200">Event</span>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">Bundle into one logical event with shared-joy & payback.</span>
+            </span>
+          </button>
+          <button type="button" data-mg-kind="PATTERN"
+                  onclick="window.selectMGKind('PATTERN')"
+                  class="mg-kind-card flex items-start gap-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-3 text-left transition-all hover:border-sky-400/60 hover:bg-sky-50 dark:hover:bg-sky-950/30">
+            <span class="material-symbols-outlined text-[22px] text-sky-500 mt-0.5">auto_awesome</span>
+            <span class="flex-1 min-w-0">
+              <span class="block text-xs font-black text-slate-700 dark:text-slate-200">Bulk Classify</span>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">Apply tags/vendor/flow type to all selected at once.</span>
+            </span>
+          </button>
+          <button type="button" data-mg-kind="PORTFOLIO"
+                  onclick="window.selectMGKind('PORTFOLIO')"
+                  class="mg-kind-card flex items-start gap-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 p-3 text-left transition-all hover:border-emerald-400/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/30">
+            <span class="material-symbols-outlined text-[22px] text-emerald-500 mt-0.5">trending_up</span>
+            <span class="flex-1 min-w-0">
+              <span class="block text-xs font-black text-slate-700 dark:text-slate-200">Tracking</span>
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">Track investments & other long-term items as one holding (cost basis, current value, returns).</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Group name (all kinds) -->
+      <div>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Group Name</label>
+        <input id="mg-group-name" type="text" placeholder="e.g. Goa Trip, Swiggy, NIFTY 50" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" />
+      </div>
+
+      <!-- EVENT-only fields -->
+      <div id="mg-event-fields" class="hidden space-y-3">
+        <!-- Total of selected -->
+        <div class="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-slate-800 px-3 py-2">
+          <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Total of selected</span>
+          <span id="mg-event-total" class="text-base font-black text-slate-800 dark:text-white">₹0</span>
+        </div>
+        <!-- Split / Divide -->
+        <div class="rounded-lg border border-slate-200 dark:border-slate-700 p-3 space-y-2">
+          <div class="flex items-center gap-2">
+            <label for="mg-event-people" class="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Split among</label>
+            <input id="mg-event-people" type="number" min="1" step="1" value="2" class="w-16 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1 text-sm text-slate-900 dark:text-white focus:border-primary outline-none" />
+            <span class="text-[10px] text-slate-400">people (incl. you)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] text-slate-500 dark:text-slate-400">Each pays</span>
+            <span id="mg-event-per-head" class="text-sm font-black text-primary">₹0</span>
+          </div>
+          <label class="flex items-start gap-2 cursor-pointer">
+            <input id="mg-event-set-owed" type="checkbox" class="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-primary focus:ring-primary" />
+            <span class="text-[11px] text-slate-600 dark:text-slate-300">Record others' share as owed to me
+              <span id="mg-event-owed-preview" class="font-semibold text-rose-600"></span></span>
+          </label>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Shared Joy <span class="font-normal text-slate-400">(amount spent on others)</span></label>
+          <input id="mg-event-shared-joy" type="number" step="0.01" min="0" placeholder="0" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" />
+        </div>
+      </div>
+
+      <!-- PORTFOLIO-only fields -->
+      <div id="mg-portfolio-fields" class="hidden space-y-3">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Asset Class</label>
+          <select id="mg-portfolio-asset-class" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
+            <option value="">—</option>
+            <option value="EQUITY">Equity / Stocks</option>
+            <option value="MUTUAL_FUND">Mutual Fund</option>
+            <option value="ETF">ETF</option>
+            <option value="BOND">Bond / Debt</option>
+            <option value="GOLD">Gold</option>
+            <option value="CRYPTO">Crypto</option>
+            <option value="FD">Fixed Deposit</option>
+            <option value="REAL_ESTATE">Real Estate</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PATTERN-only fields wrapper -->
+      <div id="mg-pattern-fields" class="hidden space-y-5">
+      <!-- Vendor name -->
+      <div>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Vendor Name <span class="font-normal text-slate-400">(applied to all)</span></label>
+        <input id="mg-vendor-name" type="text" placeholder="Clean display name, e.g. Swiggy" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" />
+      </div>
+      <!-- Tags -->
+      <div>
+        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Tags <span class="font-normal text-slate-400">(applied to all)</span></label>
+        <div class="relative mt-1">
+          <input id="mg-tag-search" type="text" placeholder="Search tags..." autocomplete="off" class="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" />
+          <div id="mg-tag-dropdown" class="absolute left-0 right-0 top-full z-10 mt-1 hidden max-h-40 overflow-y-auto rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-lg"></div>
+        </div>
+        <div id="mg-selected-tags" class="mt-2 flex flex-wrap gap-1.5"></div>
+      </div>
+      <!-- Classification fields -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Flow Type</label>
+          <select id="mg-flow-type" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
+            <option value="">— skip —</option>
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+            <option value="transfer">Transfer (self)</option>
+            <option value="refund">Refund / Cashback</option>
+            <option value="investment_buy">Investment Buy</option>
+            <option value="investment_sell">Investment Sell</option>
+            <option value="fee">Fee / Charge</option>
+            <option value="loan_given">Loan Given</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Counterparty</label>
+          <select id="mg-counterparty-type" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
+            <option value="">— skip —</option>
+            <option value="merchant">Merchant</option>
+            <option value="friend">Friend</option>
+            <option value="family">Family</option>
+            <option value="employer">Employer</option>
+            <option value="bank">Bank</option>
+            <option value="government">Government</option>
+            <option value="self">Self</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Paid for</label>
+          <select id="mg-consumption-ownership" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
+            <option value="">— skip —</option>
+            <option value="self">Self</option>
+            <option value="family">Family</option>
+            <option value="shared">Shared</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Settlement</label>
+          <select id="mg-settlement-state" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none">
+            <option value="">— skip —</option>
+            <option value="none">None needed</option>
+            <option value="owed_to_me">Owed to me</option>
+            <option value="i_owe">I owe</option>
+            <option value="settled">Settled</option>
+          </select>
+        </div>
+      </div>
+      <!-- Auto-tag rule -->
+      <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-4">
+        <label class="flex items-start gap-2 cursor-pointer">
+          <input id="mg-create-rule" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
+          <div>
+            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">Create auto-tag rule</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Future transactions from the same counterparty will be automatically tagged.</p>
+          </div>
+        </label>
+        <div id="mg-rule-details" class="mt-3 hidden space-y-2">
+          <div>
+            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Match Field</label>
+            <select id="mg-rule-field" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1.5 text-xs text-slate-900 dark:text-white focus:border-primary outline-none">
+              <option value="counterparty_identifier">UPI / Account ID</option>
+              <option value="narration">Narration</option>
+              <option value="vendor_name">Vendor Name</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Match Value</label>
+            <input id="mg-rule-value" type="text" placeholder="Auto-filled from transaction" class="mt-1 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary outline-none" />
+          </div>
+        </div>
+      </div>
+      </div><!-- /#mg-pattern-fields -->
+    </div>
+    <!-- Footer actions -->
+    <div class="border-t border-slate-200 dark:border-slate-800 px-5 py-4 flex gap-3">
+      <button onclick="window.closeMerchantGroupPanel()" class="flex-1 rounded-xl border border-slate-200 dark:border-slate-700 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+        Cancel
+      </button>
+      <button id="mg-submit-btn" onclick="window.submitMerchantGroup()" class="flex-1 rounded-xl bg-primary py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors shadow-sm">
+        Apply to All
+      </button>
+    </div>
+  </div>
+
+  <script src="/js/toast.js"></script>
+  <script src="/js/app-init.js"></script>
+  <script src="/js/merchant_group.js?v=20260525-leaftag"></script>
+
+  <script>
+  /* ── Global state expected by merchant_group.js ──── */
+  var dashboardState = { rows: [] };
+  var selectedTxnIds = new Set();
+  function clearTxnSelection() {
+    selectedTxnIds.clear();
+    document.querySelectorAll(".txn-checkbox").forEach(cb => { cb.checked = false; });
+    const ab = document.getElementById("selectAllTxns");
+    if (ab) { ab.checked = false; ab.indeterminate = false; }
+    updateSelectionBar();
+  }
+  function updateSelectionBar() {
+    const bar = document.getElementById("merchant-selection-bar");
+    const cEl = document.getElementById("merchant-selection-count");
+    const gBtn = document.getElementById("merchant-group-btn");
+    if (!bar) return;
+    if (selectedTxnIds.size >= 1) {
+      bar.classList.remove("hidden");
+      const n = selectedTxnIds.size;
+      if (cEl) cEl.textContent = `${n} transaction${n===1?"":"s"} selected`;
+      if (gBtn) { gBtn.disabled = n < 2; gBtn.title = n < 2 ? "Select at least 2 transactions" : ""; }
+    } else { bar.classList.add("hidden"); }
+    const ab = document.getElementById("selectAllTxns");
+    if (ab) {
+      const boxes = document.querySelectorAll(".txn-checkbox");
+      ab.checked = boxes.length > 0 && [...boxes].every(cb => selectedTxnIds.has(cb.dataset.txnId));
+      ab.indeterminate = !ab.checked && selectedTxnIds.size > 0;
+    }
+  }
+
+  /* ── Transactions page loader ─────────────────────────────────────────────── */
+  (function () {
+    const PAGE_SIZE = 25;
+    let allTxns = [], filteredTxns = [], currentPage = 1;
+    let activeCategory = "", searchQuery = "";
+    let viewDate = new Date();
+    let viewAll  = false;
+
+    function esc(s) {
+      return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function setText(id, v) { const el=document.getElementById(id); if (el) el.textContent=v; }
+    function fmtInr(v) {
+      return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+    }
+    function fmtDateShort(s) {
+      if (!s) return "—";
+      return new Date(s+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short"});
+    }
+    function displayName(tx) {
+      return tx.vendor_name||tx.counterparty_entity_name||tx.counterparty_identifier||tx.narration||"Unknown";
+    }
+    function txTags(tx)     { return Array.isArray(tx.tags)?tx.tags.filter(Boolean):[]; }
+    function expenseAmt(tx) { return Number(tx.effective_expense_amount||0); }
+    function incomeAmt(tx)  { return Number(tx.effective_income_amount||0); }
+    function isOpenReview(tx) {
+      return ["needs_review","unknown","unreviewed"].includes(String(tx.review_status||"").toLowerCase());
+    }
+
+    /* ── Date range ─────────────────────────────────────────── */
+    function getDateRange() {
+      if (viewAll) return {from:"2000-01-01", to:new Date().toISOString().split("T")[0]};
+      const y=viewDate.getFullYear(), m=viewDate.getMonth();
+      const from=`${y}-${String(m+1).padStart(2,"0")}-01`;
+      const lastDay=new Date(y,m+1,0).getDate();
+      const to=`${y}-${String(m+1).padStart(2,"0")}-${String(lastDay).padStart(2,"0")}`;
+      return {from,to};
+    }
+    function getDateLabel() {
+      if (viewAll) return "All Transactions";
+      return viewDate.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
+    }
+    function updateDateLabel() { setText("txn-date-label", getDateLabel()); }
+
+    /* ── Filter ─────────────────────────────────────────────── */
+    function applyFilter() {
+      filteredTxns = allTxns.filter(tx => {
+        if (activeCategory && !txTags(tx).some(t=>t.toLowerCase()===activeCategory.toLowerCase())) return false;
+        if (searchQuery) {
+          const q=searchQuery.toLowerCase();
+          if (!displayName(tx).toLowerCase().includes(q) && !txTags(tx).join(" ").toLowerCase().includes(q)) return false;
+        }
+        return true;
+      });
+      currentPage=1; renderTable(); updatePagination();
+    }
+
+    /* ── Render table ────────────────────────────────────────── */
+    function renderTable() {
+      const tbody=document.querySelector(".txn-tbody");
+      if (!tbody) return;
+      const start=(currentPage-1)*PAGE_SIZE;
+      const page=filteredTxns.slice(start,start+PAGE_SIZE);
+
+      if (!page.length) {
+        tbody.innerHTML=`<tr><td colspan="6" class="px-6 py-12 text-center">
+          <div class="flex flex-col items-center gap-2">
+            <span class="material-symbols-outlined text-[40px] text-slate-200">receipt_long</span>
+            <p class="text-sm text-slate-400">${allTxns.length?"No transactions match this filter.":"No transactions yet — upload a statement above to get started."}</p>
+            ${!allTxns.length?'<a href="#upload-zone" class="mt-1 text-xs font-semibold text-primary hover:underline">Jump to upload ↑</a>':""}
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML=page.map(tx=>{
+        const name=displayName(tx);
+        const src=tx.payment_source_name||tx.statement_sources||"";
+        const tagList=txTags(tx);
+        const needsRev=isOpenReview(tx);
+        const dir=String(tx.direction||"").toLowerCase();
+        const isCredit=(dir==="deposit"||dir==="credit");
+        const amtColor=isCredit?"#059669":"#dc2626";
+        const amtSign=isCredit?"+":"−";
+        const amtFmt=`<span style="color:${amtColor};font-weight:700">${amtSign}₹${Math.abs(Number(tx.amount||0)).toLocaleString("en-IN",{maximumFractionDigits:2})}</span>`;
+
+        let tagHtml;
+        if (tagList.length) {
+          tagHtml=tagList.slice(0,3).map(t=>`<span class="inline-flex rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary dark:bg-primary/20">${esc(t)}</span>`).join("")
+            +(tagList.length>3?`<span class="text-[11px] text-slate-400">+${tagList.length-3}</span>`:"");
+        } else if (needsRev) {
+          tagHtml=`<span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+            <span class="material-symbols-outlined text-[11px]">pending</span>Needs review</span>`;
+        } else {
+          tagHtml=`<span class="text-xs text-slate-300 dark:text-slate-600 italic">No tag</span>`;
+        }
+
+        const rowClass=needsRev?"border-l-[3px] border-amber-300":"";
+        return `<tr class="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${rowClass}">
+          <td class="px-6 py-3.5">
+            <input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-800 txn-checkbox"
+              type="checkbox" data-txn-id="${esc(String(tx.id))}"
+              onchange="(function(cb){if(cb.checked)selectedTxnIds.add(cb.dataset.txnId);else selectedTxnIds.delete(cb.dataset.txnId);updateSelectionBar();})(this)" />
+          </td>
+          <td class="px-6 py-3.5 text-sm text-slate-500 dark:text-slate-400 whitespace-nowrap">${esc(fmtDateShort(tx.transaction_date))}</td>
+          <td class="px-6 py-3.5">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-slate-900 dark:text-white truncate max-w-[220px]">${esc(name)}</span>
+              ${src?`<span class="text-[11px] text-slate-400 dark:text-slate-500 truncate">${esc(src)}</span>`:""}
+            </div>
+          </td>
+          <td class="px-6 py-3.5 text-right text-sm whitespace-nowrap">${amtFmt}</td>
+          <td class="px-6 py-3.5"><div class="flex flex-wrap gap-1.5">${tagHtml}</div></td>
+          <td class="px-6 py-3.5">
+            <div class="flex items-center justify-center gap-1 opacity-0 translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">
+              <a href="/classification/transaction/${esc(String(tx.id))}?mode=simple"
+                class="rounded p-1.5 text-slate-400 hover:bg-primary/10 hover:text-primary dark:hover:bg-slate-700 transition-colors" title="Classify">
+                <span class="material-symbols-outlined text-[18px]">label</span>
+              </a>
+              <button onclick="openTxnQuickView('${esc(String(tx.id))}')"
+                class="rounded p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-700 transition-colors" title="Details">
+                <span class="material-symbols-outlined text-[18px]">info</span>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join("");
+    }
+
+    function updatePagination() {
+      const total=filteredTxns.length;
+      const start=total?(currentPage-1)*PAGE_SIZE+1:0;
+      const end=Math.min(currentPage*PAGE_SIZE,total);
+      setText("dashboardPaginationText",total?`Showing ${start}–${end} of ${total}`:"No transactions");
+      const prev=document.getElementById("dashboardPrevPage");
+      const next=document.getElementById("dashboardNextPage");
+      if (prev) prev.disabled=currentPage<=1;
+      if (next) next.disabled=end>=total;
+    }
+
+    /* ── Summary cards ───────────────────────────────────────── */
+    function populateSummary(txns) {
+      const spend=txns.reduce((s,tx)=>s+expenseAmt(tx),0);
+      const income=txns.reduce((s,tx)=>s+incomeAmt(tx),0);
+      const review=txns.filter(isOpenReview).length;
+      const catMap=new Map();
+      txns.forEach(tx=>{ const t=txTags(tx)[0]; if (t&&expenseAmt(tx)>0) catMap.set(t,(catMap.get(t)||0)+expenseAmt(tx)); });
+      const topCat=[...catMap.entries()].sort((a,b)=>b[1]-a[1])[0];
+
+      setText("summaryTotalSpent", fmtInr(spend));
+      setText("summaryTotalSpentMeta", `${txns.filter(tx=>expenseAmt(tx)>0).length} expense rows`);
+      setText("summaryTotalIncome", fmtInr(income));
+      setText("summaryTotalIncomeMeta", `${txns.filter(tx=>incomeAmt(tx)>0).length} counted credits`);
+      setText("summaryNeedsReview", String(review));
+      setText("summaryNeedsReviewMeta", review?`${review} transaction${review>1?"s":""} awaiting review.`:"Queue is clear.");
+      setText("summaryTopCategory", topCat?topCat[0]:"None yet");
+      setText("summaryTopCategoryMeta", topCat?`${fmtInr(topCat[1])} in this period`:"No categorized spend yet.");
+      setText("dashboardSummaryMeta", `${txns.length} transactions · ${getDateLabel()}`);
+    }
+
+    /* ── Category filter dropdown ───────────────────────────── */
+    function populateCategories(txns) {
+      const sel=document.getElementById("dashboardCategoryFilter");
+      if (!sel) return;
+      while (sel.options.length>1) sel.remove(1);
+      const cats=new Set();
+      txns.forEach(tx=>txTags(tx).forEach(t=>cats.add(t)));
+      [...cats].sort().forEach(cat=>{
+        const opt=document.createElement("option");
+        opt.value=cat; opt.textContent=cat; sel.appendChild(opt);
+      });
+      sel.value=activeCategory;
+    }
+
+    /* ── Sidebar category breakdown ─────────────────────────── */
+    function populateSidebar(txns) {
+      const catMap=new Map();
+      txns.forEach(tx=>{ const e=expenseAmt(tx); if (e<=0) return; txTags(tx).forEach(t=>catMap.set(t,(catMap.get(t)||0)+e)); });
+      const meta=document.getElementById("sidebarCategoryMeta");
+      const container=document.getElementById("sidebarCategorySummary");
+      if (!meta||!container) return;
+      const sorted=[...catMap.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+      meta.textContent=`${catMap.size} categor${catMap.size===1?"y":"ies"}`;
+      if (!sorted.length) {
+        container.innerHTML=`<div class="rounded-xl bg-white p-3 text-xs text-slate-400 shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">No categories yet.</div>`;
+        return;
+      }
+      const maxAmt=sorted[0][1];
+      container.innerHTML=sorted.map(([name,total])=>{
+        const pct=Math.round((total/maxAmt)*100);
+        return `<div class="rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-100 dark:bg-slate-900 dark:ring-slate-800">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="font-semibold text-slate-700 dark:text-slate-300 truncate">${esc(name)}</span>
+            <span class="text-slate-500 dark:text-slate-400 ml-2 shrink-0">₹${Math.round(total).toLocaleString("en-IN")}</span>
+          </div>
+          <div class="h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-700">
+            <div class="h-full rounded-full" style="width:${pct}%;background:var(--primary)"></div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+
+    /* ── Data loading ────────────────────────────────────────── */
+    async function loadTxns() {
+      const tbody=document.querySelector(".txn-tbody");
+      if (tbody) tbody.innerHTML=`<tr id="txn-loading-row"><td colspan="6" class="px-6 py-10 text-center">
+        <div class="inline-flex items-center gap-2 text-sm text-slate-400">
+          <span class="material-symbols-outlined text-[18px]" style="animation:spin 1s linear infinite">progress_activity</span>
+          Loading transactions…
+        </div>
+      </td></tr>`;
+      setText("dashboardSummaryMeta","Loading…");
+      try {
+        const {from,to}=getDateRange();
+        const res=await fetch("/reports/transactions_filter",{
+          method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({from_date:from,to_date:to}),
+        });
+        const data=await res.json();
+        allTxns=Array.isArray(data.data)?data.data:[];
+        dashboardState.rows=allTxns;
+        clearTxnSelection();
+        filteredTxns=allTxns;
+        populateSummary(allTxns);
+        populateCategories(allTxns);
+        populateSidebar(allTxns);
+        renderTable();
+        updatePagination();
+      } catch(e) {
+        if (tbody) tbody.innerHTML=`<tr><td colspan="6" class="px-6 py-10 text-center text-sm text-rose-500">
+          Could not load transactions. Check your connection or try again.</td></tr>`;
+        setText("dashboardSummaryMeta","Load failed");
+      }
+    }
+
+    /* ── Quick view panel ────────────────────────────────────── */
+    window.openTxnQuickView = function(id) {
+      const tx=allTxns.find(t=>String(t.id)===String(id));
+      if (!tx) return;
+      const panel=document.getElementById("txn-quick-panel");
+      const body=document.getElementById("txn-panel-body");
+      if (!panel||!body) return;
+      const name=displayName(tx);
+      const dir=String(tx.direction||"").toLowerCase();
+      const isCredit=(dir==="deposit"||dir==="credit");
+      const amtColor=isCredit?"#059669":"#dc2626";
+      const amtSign=isCredit?"+":"−";
+      const tagList=txTags(tx);
+      body.innerHTML=`
+        <div class="p-5 space-y-4">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">${esc(fmtDateShort(tx.transaction_date))}</p>
+            <p class="mt-1 text-lg font-extrabold text-slate-900 dark:text-white leading-tight">${esc(name)}</p>
+            ${tx.narration&&tx.narration!==name?`<p class="mt-1 text-xs text-slate-400 break-all">${esc(tx.narration)}</p>`:""}
+          </div>
+          <div class="flex items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-800 px-4 py-3">
+            <span class="text-sm text-slate-500">Amount</span>
+            <span class="text-xl font-black" style="color:${amtColor}">${amtSign}₹${Math.abs(Number(tx.amount||0)).toLocaleString("en-IN",{maximumFractionDigits:2})}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="rounded-lg bg-slate-50 dark:bg-slate-800 px-3 py-2">
+              <p class="text-slate-400 mb-0.5">Source</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-200">${esc(tx.payment_source_name||tx.statement_sources||"—")}</p>
+            </div>
+            <div class="rounded-lg bg-slate-50 dark:bg-slate-800 px-3 py-2">
+              <p class="text-slate-400 mb-0.5">Review</p>
+              <p class="font-semibold ${isOpenReview(tx)?"text-amber-600":"text-emerald-600"}">${esc(tx.review_status||"unknown")}</p>
+            </div>
+          </div>
+          ${tagList.length?`<div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Tags</p>
+            <div class="flex flex-wrap gap-1.5">${tagList.map(t=>`<span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">${esc(t)}</span>`).join("")}</div>
+          </div>`:""}
+          <a href="/classification/transaction/${esc(String(tx.id))}?mode=simple"
+            class="flex items-center justify-center gap-2 w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition-colors">
+            <span class="material-symbols-outlined text-[18px]">label</span>
+            Classify this transaction
+          </a>
+        </div>`;
+      panel.classList.add("open");
+    };
+    window.closeTxnPanel = function() {
+      document.getElementById("txn-quick-panel")?.classList.remove("open");
+    };
+
+    /* ── Init ────────────────────────────────────────────────── */
+    document.addEventListener("DOMContentLoaded",()=>{
+      updateDateLabel();
+
+      document.getElementById("dashboardCategoryFilter")?.addEventListener("change",e=>{
+        activeCategory=e.target.value; applyFilter();
+      });
+      document.getElementById("dashboardPrevPage")?.addEventListener("click",()=>{
+        if (currentPage>1) { currentPage--; renderTable(); updatePagination(); }
+      });
+      document.getElementById("dashboardNextPage")?.addEventListener("click",()=>{
+        if (currentPage*PAGE_SIZE<filteredTxns.length) { currentPage++; renderTable(); updatePagination(); }
+      });
+      document.getElementById("selectAllTxns")?.addEventListener("change",e=>{
+        document.querySelectorAll(".txn-checkbox").forEach(cb=>{
+          cb.checked=e.target.checked;
+          if(e.target.checked) selectedTxnIds.add(cb.dataset.txnId);
+          else selectedTxnIds.delete(cb.dataset.txnId);
+        });
+        updateSelectionBar();
+      });
+      document.getElementById("txn-search")?.addEventListener("input",e=>{
+        searchQuery=e.target.value.trim(); applyFilter();
+      });
+
+      /* Date navigation */
+      document.getElementById("txn-date-prev")?.addEventListener("click",()=>{
+        viewAll=false;
+        viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);
+        updateDateLabel(); activeCategory=""; searchQuery=""; currentPage=1;
+        const sel=document.getElementById("dashboardCategoryFilter"); if(sel) sel.value="";
+        const srch=document.getElementById("txn-search"); if(srch) srch.value="";
+        loadTxns();
+      });
+      document.getElementById("txn-date-next")?.addEventListener("click",()=>{
+        const now=new Date();
+        const isCurrentMonth=viewDate.getFullYear()===now.getFullYear()&&viewDate.getMonth()===now.getMonth();
+        if (!viewAll&&isCurrentMonth) return;
+        if (viewAll) { viewAll=false; viewDate=new Date(now.getFullYear(),now.getMonth()-1,1); }
+        else viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);
+        updateDateLabel(); activeCategory=""; searchQuery=""; currentPage=1;
+        const sel=document.getElementById("dashboardCategoryFilter"); if(sel) sel.value="";
+        const srch=document.getElementById("txn-search"); if(srch) srch.value="";
+        loadTxns();
+      });
+
+      /* Reload table after upload completes */
+      window.addEventListener("txn-upload-complete",()=>{ activeCategory=""; searchQuery=""; loadTxns(); });
+
+      /* ── Manual transaction modal ── */
+      const _manualModal = document.getElementById("manualTransactionModal");
+      function _openManualModal() {
+        if (!_manualModal) return;
+        _manualModal.classList.remove("hidden"); _manualModal.classList.add("flex");
+      }
+      function _closeManualModal() {
+        if (!_manualModal) return;
+        _manualModal.classList.add("hidden"); _manualModal.classList.remove("flex");
+      }
+      document.getElementById("openManualTransactionModal")?.addEventListener("click", _openManualModal);
+      document.getElementById("closeManualTransactionModal")?.addEventListener("click", _closeManualModal);
+      document.getElementById("cancelManualTransaction")?.addEventListener("click", _closeManualModal);
+      _manualModal?.addEventListener("click", e => { if (e.target === _manualModal) _closeManualModal(); });
+      document.getElementById("manualTransactionForm")?.addEventListener("submit", async e => {
+        e.preventDefault();
+        const msg = document.getElementById("manualTransactionMessage");
+        const payload = {
+          payment_source_name: document.getElementById("manual_source")?.value || "RBL",
+          transaction_date: document.getElementById("manual_date")?.value,
+          transaction_time: document.getElementById("manual_time")?.value || null,
+          direction: document.getElementById("manual_direction")?.value || "withdrawal",
+          amount: Number(document.getElementById("manual_amount")?.value || 0),
+          running_balance: Number(document.getElementById("manual_running_balance")?.value || 0),
+          counterparty_identifier: document.getElementById("manual_counterparty")?.value || null,
+          narration: document.getElementById("manual_narration")?.value || null,
+        };
+        if (msg) { msg.textContent = "Adding..."; msg.className = "rounded-lg px-3 py-2 text-sm font-semibold md:col-span-2 bg-slate-50 text-slate-600"; msg.classList.remove("hidden"); }
+        try {
+          const res = await fetch("/upload/manual_transaction", {
+            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+          });
+          const result = await res.json();
+          if (!res.ok) throw new Error(result.message || result.detail || "Failed");
+          if (msg) { msg.textContent = "Transaction added."; msg.className = "rounded-lg px-3 py-2 text-sm font-semibold md:col-span-2 bg-emerald-50 text-emerald-700"; }
+          document.getElementById("manualTransactionForm")?.reset();
+          window.dispatchEvent(new Event("txn-upload-complete"));
+        } catch(err) {
+          if (msg) { msg.textContent = err.message || "Failed."; msg.className = "rounded-lg px-3 py-2 text-sm font-semibold md:col-span-2 bg-rose-50 text-rose-700"; }
+        }
+      });
+
+      loadTxns();
+    });
+  })();
+  </script>
+  </body>
+</html>
+
+
+
+
+

@@ -1,0 +1,587 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Budget - FinanceTracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: { extend: { colors: { primary: "#607AFB", "background-light": "#f5f6f8", "background-dark": "#101922" }, fontFamily: { display: "Manrope" } } },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white">
+    <div class="flex h-screen w-full">
+
+      <!-- NAV -->
+      <aside class="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 border-b border-slate-100 px-6">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px]">dashboard</span><span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span><span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px] fill-1">savings</span><span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span><span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span><span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span><span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              <span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span><span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>
+          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;border:none;background:none;transition:background 0.14s,color 0.14s;text-align:left">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <div class="flex flex-1 flex-col h-full overflow-hidden">
+        <header class="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 px-6 flex-shrink-0">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Planning</p>
+            <h1 class="text-xl font-extrabold text-slate-950 dark:text-white">
+              Budget <span id="pageMonthLabel" class="text-base font-semibold text-slate-400"></span>
+            </h1>
+          </div>
+          <div id="header-right" class="flex items-center gap-3 flex-shrink-0">
+            <div class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2 py-1 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+              <span class="material-symbols-outlined text-[16px] text-slate-400">event</span>
+              <input id="budgetViewMonth" type="month"
+                class="w-[122px] bg-transparent text-xs font-bold text-slate-700 outline-none dark:text-slate-100">
+              <button id="budgetCurrentMonthBtn" title="Show active month"
+                class="hidden rounded-md px-2 py-1 text-[11px] font-bold text-primary hover:bg-primary/10">
+                Current
+              </button>
+            </div>
+            <button id="closePreviousMonthBtn" title="Verify statements and close previous month"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 shadow-sm hover:border-emerald-300 hover:bg-emerald-100 transition">
+              <span class="material-symbols-outlined text-[16px]">fact_check</span>
+              Close previous month
+            </button>
+            <button id="startNewMonthBtn" title="Start next budget month"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-600 shadow-sm hover:border-primary/40 hover:text-primary transition">
+              <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+              Start new month
+            </button>
+            <span id="paceBadge" class="inline-flex rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300">Loading…</span>
+          </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 space-y-5">
+
+          <!-- ── MAIN TWO-COLUMN ────────────────────────────────────────── -->
+          <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+
+            <!-- LEFT: plan table + actual chart -->
+            <div class="space-y-4">
+
+              <!-- Projection + overspend insight (populated by JS) -->
+              <div id="budgetInsightStrip" class="hidden"></div>
+
+              <!-- Plan vs Actual table -->
+              <div class="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 shadow-sm">
+                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 px-5 py-4">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Monthly plan</p>
+                    <h3 class="mt-0.5 text-base font-extrabold text-slate-950 dark:text-white">Planned vs actual</h3>
+                  </div>
+                  <button id="addCatBtn"
+                    class="flex items-center gap-1 rounded-lg border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
+                    <span class="material-symbols-outlined text-[15px]">add</span> Add category
+                  </button>
+                </div>
+
+                <!-- Add row form -->
+                <div id="addCatForm" class="hidden border-b border-slate-100 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/60 px-5 py-4 space-y-3">
+                  <p id="addCatParentCtx" class="hidden text-xs font-semibold text-primary"></p>
+                  <div class="flex flex-wrap gap-3 items-end">
+                    <div class="flex-1 min-w-[160px]">
+                      <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
+                      <select id="catTagSelect" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800">
+                        <option value="">Select or create…</option>
+                      </select>
+                    </div>
+                    <div class="w-32">
+                      <label class="block text-xs font-semibold text-slate-600 mb-1">Amount (&#8377;)</label>
+                      <input id="catAmountInput" type="number" min="0" step="1"
+                        class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800" placeholder="e.g. 3000" />
+                    </div>
+                    <div class="flex gap-2 pb-0.5">
+                      <button id="saveCatBtn" title="Save" class="rounded-lg bg-primary px-3 py-2 text-white flex items-center gap-1 text-xs font-bold"><span class="material-symbols-outlined text-[14px]">check</span> Save</button>
+                      <button id="cancelCatBtn" title="Cancel" class="rounded-lg border border-slate-200 bg-white px-2 py-2 text-slate-600 hover:bg-slate-50 transition-colors"><span class="material-symbols-outlined text-[14px]">close</span></button>
+                    </div>
+                  </div>
+                  <p id="catFormError" class="hidden text-xs font-semibold text-rose-600"></p>
+                  <!-- Quick create + manage link -->
+                  <div class="flex items-center gap-3 pt-1 border-t border-slate-200">
+                    <button id="createTagToggleBtn" class="text-xs font-semibold text-primary hover:underline flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px]">add_circle</span> Create new tag
+                    </button>
+                    <span class="text-slate-300 text-xs">·</span>
+                    <a href="/classification/manage" target="_blank" class="text-xs text-slate-400 hover:text-primary hover:underline flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[13px]">open_in_new</span> Manage all tags
+                    </a>
+                  </div>
+                  <!-- Inline create panel -->
+                  <div id="createTagPanel" class="hidden rounded-xl border border-slate-200 bg-white p-4 space-y-2">
+                    <p class="text-xs font-bold text-slate-600">New tag name</p>
+                    <div class="flex gap-2">
+                      <input id="newTagName" type="text" class="flex-1 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800" placeholder="e.g. Food, Travel, Rent" />
+                      <button id="saveNewTagBtn" class="rounded-lg bg-slate-800 px-4 py-2 text-xs font-bold text-white">Create</button>
+                    </div>
+                    <p id="createTagStatus" class="hidden text-xs font-semibold"></p>
+                  </div>
+                </div>
+
+                <!-- Column headers -->
+                <div class="hidden sm:grid grid-cols-[1fr_88px_88px_88px_48px] gap-2 border-b border-slate-100 dark:border-slate-700/60 px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                  <span>Category</span>
+                  <span class="text-right">Planned</span>
+                  <span class="text-right">Tracked</span>
+                  <span class="text-right">Left</span>
+                  <span></span>
+                </div>
+
+                <!-- Rows -->
+                <div id="catBudgetList" class="divide-y divide-slate-50 dark:divide-slate-700/40">
+                  <p class="py-6 text-sm text-slate-400 text-center">No categories planned yet. Click "Add category" to start.</p>
+                </div>
+
+                <!-- Footer totals -->
+                <div id="catTotalsRow" class="hidden border-t border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40 px-5 py-3 grid grid-cols-[1fr_88px_88px_88px_48px] gap-2 text-sm font-bold text-slate-700 dark:text-slate-300">
+                  <span>Total</span>
+                  <span id="footerPlanned" class="text-right"></span>
+                  <span id="footerActual" class="text-right text-rose-700 dark:text-rose-400"></span>
+                  <span id="footerRemaining" class="text-right"></span>
+                  <span></span>
+                </div>
+                <!-- Shared Joy deduction row -->
+                <div id="sharedJoyDeductRow" class="hidden border-t border-purple-100 dark:border-purple-900/30 bg-purple-50/50 dark:bg-purple-900/10 px-5 py-2 grid grid-cols-[1fr_88px_88px_88px_48px] gap-2 text-xs text-purple-600 dark:text-purple-400">
+                  <span class="flex items-center gap-1 font-semibold">✨ Shared Joy</span>
+                  <span></span>
+                  <span id="footerSharedJoy" class="text-right font-bold"></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <!-- Your spend net row -->
+                <div id="yourSpendRow" class="hidden border-t border-slate-200 dark:border-slate-700/60 bg-slate-100/60 dark:bg-slate-800/60 px-5 py-2.5 grid grid-cols-[1fr_88px_88px_88px_48px] gap-2 text-sm font-extrabold text-slate-800 dark:text-slate-100">
+                  <span class="flex items-center gap-1">Your spend</span>
+                  <span></span>
+                  <span id="footerYourSpend" class="text-right"></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <!-- Untracked spend (no budget set) -->
+                <div id="untrackedSection" class="hidden"></div>
+              </div>
+
+              <!-- 3-Month history -->
+              <div class="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 shadow-sm p-5">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">History</p>
+                <h3 class="mt-0.5 text-base font-extrabold text-slate-950 dark:text-white mb-3">Budget vs Actual — Last 3 Months</h3>
+                <div id="budget-history-section">
+                  <p class="text-xs text-slate-400 py-4 text-center">Loading…</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- RIGHT: gauge + chart + plan setup -->
+            <aside class="space-y-4">
+
+              <!-- Budget at a glance ring gauge -->
+              <div id="budgetGaugeCard" class="hidden rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 shadow-sm p-5">
+                <p id="budgetGaugeEyebrow" class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">This month</p>
+                <h3 class="mt-0.5 text-base font-extrabold text-slate-950 dark:text-white mb-4">Budget at a glance</h3>
+                <div class="flex items-center justify-center">
+                  <div class="relative mx-auto" style="width:128px;height:128px;flex-shrink:0">
+                    <svg viewBox="0 0 100 100" style="width:128px;height:128px;display:block">
+                      <!-- Ring palette — picked to be maximally distinguishable from each other:
+                           Spent       = orange #f97316  (warm)
+                           Planned     = red    #ef4444  (warm)
+                           Wishlist    = blue   #607AFB  (cool)
+                           Shared Joy  = purple #a855f7  (giving/generosity hue, distinct from all 3)
+
+                           DOM order matters for SVG z-stacking — later siblings render on top.
+                           Shared Joy is intentionally LAST so its slice paints over the Spent
+                           arc beneath it (it represents the giving portion of the same spend). -->
+                      <circle id="gaugeBg"           cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+                      <circle id="gaugeWishlistArc"   cx="50" cy="50" r="40" fill="none" stroke="#607AFB" stroke-width="10"
+                        stroke-dasharray="0 251.33" stroke-linecap="round"
+                        transform="rotate(-90 50 50)" style="transition:stroke-dasharray 0.7s ease,transform 0.7s ease"/>
+                      <circle id="gaugePlannedArc"   cx="50" cy="50" r="40" fill="none" stroke="#ef4444" stroke-width="10"
+                        stroke-dasharray="0 251.33" stroke-linecap="round"
+                        transform="rotate(-90 50 50)" style="transition:stroke-dasharray 0.7s ease,transform 0.7s ease"/>
+                      <circle id="gaugeArc"          cx="50" cy="50" r="40" fill="none" stroke="#f97316" stroke-width="10"
+                        stroke-dasharray="0 251.33" stroke-linecap="round"
+                        transform="rotate(-90 50 50)" style="transition:stroke-dasharray 0.7s ease,stroke 0.3s ease"/>
+                      <circle id="gaugeSharedJoyArc" cx="50" cy="50" r="40" fill="none" stroke="#a855f7" stroke-width="10"
+                        stroke-dasharray="0 251.33" stroke-linecap="round"
+                        transform="rotate(-90 50 50)" style="transition:stroke-dasharray 0.7s ease,transform 0.7s ease"/>
+                    </svg>
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+                      <p id="gaugePct"   style="font-size:1.2rem;font-weight:900;line-height:1;margin:0" class="text-slate-900 dark:text-white">—</p>
+                      <p id="gaugeLabel" style="font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-top:3px" class="text-slate-400">—</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4 grid grid-cols-3 divide-x divide-slate-100 dark:divide-slate-700 text-center">
+                  <div class="px-2">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">Total Spent</p>
+                    <p id="gaugeSpent"     class="mt-1 text-sm font-black text-slate-900 dark:text-white">—</p>
+                    <p id="gaugeSpentHint" class="hidden mt-0.5 text-[9px] text-slate-400 leading-tight"></p>
+                  </div>
+                  <div class="px-2">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">Budget</p>
+                    <p id="gaugePlanned"   class="mt-1 text-sm font-black text-slate-900 dark:text-white">—</p>
+                    <p id="gaugePlanLabel" class="text-[9px] text-slate-400 italic"></p>
+                  </div>
+                  <div class="px-2">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider">Left</p>
+                    <p id="gaugeRemaining" class="mt-1 text-sm font-black text-slate-900 dark:text-white">—</p>
+                  </div>
+                </div>
+                <!-- Ring legend — swatches mirror the four ring strokes 1:1 -->
+                <div class="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] text-slate-400">
+                  <span class="flex items-center gap-1"><span id="gaugeLegendSpent" class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#f97316"></span>Spent</span>
+                  <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#ef4444"></span>Planned</span>
+                  <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#607AFB"></span>Wishlist</span>
+                  <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#a855f7"></span>✨ Shared Joy</span>
+                </div>
+                <!-- Planned expenses + wishlist items this month -->
+                <div id="gaugeUpcoming" class="hidden mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[12px] text-sky-500">schedule</span>
+                      Upcoming this month
+                    </span>
+                    <span id="gaugeUpcomingAmt" class="text-xs font-bold text-sky-600 dark:text-sky-400"></span>
+                  </div>
+                  <div id="gaugeUpcomingList" class="space-y-1.5"></div>
+                </div>
+              </div>
+
+              <!-- Planned vs Actual chart (moved to sidebar) -->
+              <div id="chartCard" class="hidden rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 shadow-sm p-5">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Visual</p>
+                <h3 class="mt-0.5 text-base font-extrabold text-slate-950 dark:text-white mb-4">Planned vs actual</h3>
+                <div id="chartList" class="space-y-3"></div>
+                <div class="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                  <span class="flex items-center gap-1"><span class="inline-block w-3 h-2 rounded-sm bg-primary"></span> Actual</span>
+                  <span class="flex items-center gap-1"><span class="inline-block w-3 h-2 rounded-sm bg-rose-500"></span> Over budget</span>
+                  <span class="flex items-center gap-1"><span class="inline-block w-3 h-2 rounded-sm" style="background:#a855f7;opacity:0.7"></span> ✨ Shared Joy</span>
+                </div>
+              </div>
+
+              <!-- Set salary + month -->
+              <div class="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900 shadow-sm p-5">
+                <div class="flex items-start justify-between mb-4">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Plan setup</p>
+                    <h3 class="mt-0.5 text-base font-extrabold text-slate-950 dark:text-white">Salary &amp; month</h3>
+                  </div>
+                  <span id="planSetupBadge" class="hidden rounded-full bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Saved</span>
+                </div>
+                <!-- Current saved values -->
+                <div id="planCurrentInfo" class="hidden mb-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 px-3 py-2.5 space-y-1 text-xs">
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500 dark:text-slate-400">Salary</span>
+                    <span id="planCurrentIncome" class="font-semibold text-slate-800 dark:text-slate-200">—</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-slate-500 dark:text-slate-400">Spend limit</span>
+                    <span id="planCurrentLimit" class="font-semibold text-slate-800 dark:text-slate-200">—</span>
+                  </div>
+                  <div class="carry-row hidden flex items-center justify-between pt-1 border-t border-slate-200 dark:border-slate-700">
+                    <span class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[12px] text-emerald-500">savings</span>
+                      Saved adjustment
+                    </span>
+                    <span id="planCarryForward" class="font-semibold text-emerald-600 dark:text-emerald-400">—</span>
+                  </div>
+                  <div class="eff-row hidden flex items-center justify-between">
+                    <span class="text-slate-500 dark:text-slate-400 font-semibold">Effective budget</span>
+                    <span id="planEffectiveBudget" class="font-black text-primary">—</span>
+                  </div>
+                  <p id="carryHint" class="hidden text-[10px] text-emerald-600 dark:text-emerald-400 pt-1 border-t border-slate-200 dark:border-slate-700"></p>
+                  <p class="text-[10px] text-slate-400 pt-0.5">Edit fields below to update</p>
+                </div>
+                <form id="budgetForm" class="space-y-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Salary / income (&#8377;)</label>
+                    <input name="expected_income" type="number" min="0" step="1"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800" placeholder="e.g. 50000" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">
+                      Month <span class="font-normal text-slate-400">(blank = current)</span>
+                    </label>
+                    <input name="month_start" type="date" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">
+                      Spend limit <span class="font-normal text-slate-400">(optional total cap)</span>
+                    </label>
+                    <input name="budget_amount" type="number" min="0" step="1"
+                      class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800" placeholder="e.g. 40000" />
+                  </div>
+                  <button id="planSubmitBtn" type="submit"
+                    class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary/90 transition">
+                    Save plan
+                  </button>
+                  <p id="formStatus" class="text-center text-xs text-slate-400"></p>
+                </form>
+              </div>
+
+              <!-- Shared Joy card -->
+              <div id="sharedJoyCard" class="rounded-2xl border border-purple-200 dark:border-purple-700/40 bg-purple-50/60 dark:bg-purple-900/10 shadow-sm p-5">
+                <div class="flex items-center justify-between mb-1">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-purple-500">Giving goal</p>
+                    <h3 class="mt-0.5 text-base font-extrabold text-slate-950 dark:text-white flex items-center gap-1.5">
+                      ✨ Shared Joy
+                    </h3>
+                  </div>
+                  <button id="sharedJoyEditBtn" title="Set goal"
+                    class="flex items-center gap-1 rounded-lg border border-purple-300 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-bold text-purple-600 hover:bg-purple-50 transition-colors">
+                    <span class="material-symbols-outlined text-[14px]">edit</span> Goal
+                  </button>
+                </div>
+
+                <!-- Goal edit form (hidden by default) -->
+                <div id="sharedJoyForm" class="hidden mt-3 rounded-xl border border-purple-200 bg-white dark:bg-slate-800 p-3 space-y-2">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Monthly giving goal (₹)</label>
+                    <input id="sjGoalInput" type="number" min="0" step="100"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-800 dark:text-white"
+                      placeholder="e.g. 2000" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Reward note (optional)</label>
+                    <input id="sjRewardInput" type="text"
+                      class="w-full rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-slate-800 dark:text-white"
+                      placeholder="e.g. Treat yourself to a movie 🎬" />
+                  </div>
+                  <div class="flex gap-2 pt-1">
+                    <button id="sjSaveBtn"
+                      class="flex-1 rounded-lg bg-purple-500 px-3 py-2 text-xs font-bold text-white hover:bg-purple-600 transition-colors">Save</button>
+                    <button id="sjCancelBtn"
+                      class="rounded-lg border border-slate-200 dark:border-slate-600 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">Cancel</button>
+                  </div>
+                  <p id="sjFormStatus" class="hidden text-xs font-semibold text-rose-600"></p>
+                </div>
+
+                <!-- Stats -->
+                <div id="sharedJoyStats" class="mt-3 space-y-2">
+                  <p class="text-xs text-slate-400 text-center py-2">Loading…</p>
+                </div>
+
+                <!-- Yearly (Jan–Dec) view -->
+                <div id="sharedJoyYear" class="hidden"></div>
+              </div>
+
+            </aside>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <script src="js/budget.js?v=20260602-month-history-view"></script>
+    <script src="/js/toast.js"></script>
+    <script src="/js/app-init.js"></script>
+    <script>
+    /* ── Budget 3-month history ──────────────────────────────────────── */
+    (function () {
+      const fmt      = v => "₹" + Number(v||0).toLocaleString("en-IN",{maximumFractionDigits:0});
+      const fmtMonth = s => new Date(s+"T00:00:00").toLocaleDateString("en-IN",{month:"short",year:"numeric"});
+
+      function buildTable(months, cats) {
+        return `
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="border-b border-slate-100 dark:border-slate-700">
+                  <th class="py-2 pr-4 text-left text-[10px] font-bold uppercase tracking-widest text-slate-400">Category</th>
+                  ${months.map(m=>`<th class="py-2 px-3 text-right text-[10px] font-bold uppercase tracking-widest text-slate-400" colspan="2">${fmtMonth(m.month_start)}</th>`).join("")}
+                </tr>
+                <tr class="border-b border-slate-100 dark:border-slate-700">
+                  <th></th>
+                  ${months.map(()=>`<th class="py-1 px-3 text-right text-[10px] text-slate-400">Budget</th><th class="py-1 px-3 text-right text-[10px] text-slate-400">Actual</th>`).join("")}
+                </tr>
+              </thead>
+              <tbody>
+                ${cats.map(cat => {
+                  const cells = months.map(m => {
+                    const it = m.items.find(i => i.tag_name === cat);
+                    if (!it) return `<td class="px-3 py-1.5 text-right text-slate-300">—</td><td class="px-3 py-1.5 text-right text-slate-300">—</td>`;
+                    const over = it.is_over;
+                    const budgetCell = it.budget_amount > 0
+                      ? `<td class="px-3 py-1.5 text-right text-slate-500">${fmt(it.budget_amount)}</td>`
+                      : `<td class="px-3 py-1.5 text-right text-slate-300 italic">—</td>`;
+                    return budgetCell +
+                           `<td class="px-3 py-1.5 text-right font-semibold ${over?"text-rose-600 dark:text-rose-400":"text-slate-700 dark:text-slate-300"}">${fmt(it.spent)}${over?` <span class="text-[9px] text-rose-400">▲</span>`:""}</td>`;
+                  }).join("");
+                  return `<tr class="border-b border-slate-50 dark:border-slate-700/40 hover:bg-slate-50/60 dark:hover:bg-slate-700/20 transition-colors">
+                    <td class="py-1.5 pr-4 font-medium text-slate-700 dark:text-slate-300">${cat}</td>${cells}</tr>`;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>`;
+      }
+
+      function sortCats(allCats, months, sortKey) {
+        const totalSpent  = cat => months.reduce((s,m) => { const it = m.items.find(i=>i.tag_name===cat); return s + (it?.spent||0); }, 0);
+        const totalBudget = cat => months.reduce((s,m) => { const it = m.items.find(i=>i.tag_name===cat); return s + (it?.budget_amount||0); }, 0);
+        const hasOver     = cat => months.some(m => { const it = m.items.find(i=>i.tag_name===cat); return it?.is_over; });
+        const copy = [...allCats];
+        if (sortKey === "spent-desc")   return copy.sort((a,b) => totalSpent(b)  - totalSpent(a));
+        if (sortKey === "spent-asc")    return copy.sort((a,b) => totalSpent(a)  - totalSpent(b));
+        if (sortKey === "budget-desc")  return copy.sort((a,b) => totalBudget(b) - totalBudget(a));
+        if (sortKey === "budget-asc")   return copy.sort((a,b) => totalBudget(a) - totalBudget(b));
+        if (sortKey === "over-first")   return copy.sort((a,b) => (hasOver(b)?1:0) - (hasOver(a)?1:0));
+        if (sortKey === "az")           return copy.sort((a,b) => a.localeCompare(b));
+        if (sortKey === "za")           return copy.sort((a,b) => b.localeCompare(a));
+        return copy;
+      }
+
+      function openAllModal(months, allCats) {
+        let modal = document.getElementById("hist-all-modal");
+        if (!modal) {
+          modal = document.createElement("div");
+          modal.id = "hist-all-modal";
+          modal.className = "fixed inset-0 z-50 flex items-center justify-center p-4";
+          modal.style.background = "rgba(0,0,0,0.45)";
+          modal.innerHTML = `
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
+              <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Full history</p>
+                  <h3 class="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">All categories — Last 3 Months</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                  <select id="hist-sort-select" class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 cursor-pointer">
+                    <option value="spent-desc">Actual: High → Low</option>
+                    <option value="spent-asc">Actual: Low → High</option>
+                    <option value="budget-desc">Budget: High → Low</option>
+                    <option value="budget-asc">Budget: Low → High</option>
+                    <option value="over-first">Over budget first</option>
+                    <option value="az">A → Z</option>
+                    <option value="za">Z → A</option>
+                  </select>
+                  <button id="hist-modal-close" class="rounded-lg border border-slate-200 dark:border-slate-700 p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                  </button>
+                </div>
+              </div>
+              <div id="hist-modal-body" class="overflow-auto flex-1 p-5"></div>
+            </div>`;
+          document.body.appendChild(modal);
+          modal.addEventListener("click", e => { if (e.target === modal) modal.classList.add("hidden"); });
+          modal.querySelector("#hist-modal-close").addEventListener("click", () => modal.classList.add("hidden"));
+        }
+
+        const sortSel = modal.querySelector("#hist-sort-select");
+        const body    = modal.querySelector("#hist-modal-body");
+
+        function renderSorted() {
+          body.innerHTML = buildTable(months, sortCats(allCats, months, sortSel.value));
+        }
+
+        // re-bind on every open (allCats/months may differ)
+        const newSel = sortSel.cloneNode(true);
+        sortSel.parentNode.replaceChild(newSel, sortSel);
+        newSel.addEventListener("change", renderSorted);
+
+        renderSorted();
+        modal.classList.remove("hidden");
+      }
+
+      async function loadBudgetHistory() {
+        const container = document.getElementById("budget-history-section");
+        if (!container) return;
+        container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">Loading history…</p>`;
+        try {
+          const r = await fetch("/planning/category-budgets/history?months=3").then(x => x.json());
+          const months = r.data || [];
+          if (!months.length || !months.some(m => m.items.length)) {
+            container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">No budget history yet.</p>`;
+            return;
+          }
+          const allCats      = [...new Set(months.flatMap(m => m.items.map(i => i.tag_name)))].sort();
+          const budgetedCats = allCats.filter(cat =>
+            months.some(m => { const it = m.items.find(i => i.tag_name === cat); return it && it.budget_amount > 0; })
+          );
+          const extraCount = allCats.length - budgetedCats.length;
+
+          container.innerHTML = buildTable(months, budgetedCats.length ? budgetedCats : allCats);
+
+          if (extraCount > 0) {
+            const footer = document.createElement("div");
+            footer.className = "mt-3 flex items-center justify-between";
+            footer.innerHTML = `
+              <p class="text-[11px] text-slate-400">${extraCount} more categor${extraCount===1?"y":"ies"} with actual spend</p>
+              <button id="hist-show-all-btn" class="flex items-center gap-1 rounded-lg border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/10 transition-colors">
+                <span class="material-symbols-outlined text-[14px]">table</span> Show all
+              </button>`;
+            container.appendChild(footer);
+            document.getElementById("hist-show-all-btn").addEventListener("click", () => openAllModal(months, allCats));
+          }
+        } catch(e) {
+          container.innerHTML = `<p class="text-xs text-rose-400 py-4">Failed to load history.</p>`;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => { setTimeout(loadBudgetHistory, 800); });
+    })();
+    </script>
+  </body>
+</html>
+

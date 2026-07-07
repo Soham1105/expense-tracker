@@ -1,0 +1,16 @@
+.venv/
+**/__pycache__/
+*.pyc
+*.pyo
+*.sql
+*.log
+server_out*.txt
+server_err*.txt
+.DS_Store
+.env
+.git/
+.claude/
+docs/
+migrations/
+scripts/__pycache__/
+app/_scratch_*.log

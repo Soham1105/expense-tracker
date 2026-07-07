@@ -1,0 +1,260 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tag Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#607AFB", "background-light": "#f6f7f8" },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+    <style>
+      @keyframes fadeInUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes scaleIn   { from{opacity:0;transform:scale(0.96)}       to{opacity:1;transform:scale(1)} }
+      @keyframes shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+      .anim-fade-up  { animation:fadeInUp 0.3s ease-out both; }
+      .anim-scale-in { animation:scaleIn  0.18s ease-out both; }
+      .stagger > * { animation:fadeInUp 0.3s ease-out both; }
+      .stagger > *:nth-child(1){animation-delay:0ms}   .stagger > *:nth-child(2){animation-delay:60ms}
+      .stagger > *:nth-child(3){animation-delay:120ms} .stagger > *:nth-child(n+4){animation-delay:180ms}
+      .skeleton { background:linear-gradient(90deg,#f1f5f9 25%,#e8edf5 50%,#f1f5f9 75%);
+                  background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:8px; }
+      button:active:not(:disabled){ transform:scale(0.97); }
+      input:focus,select:focus{ box-shadow:0 0 0 3px rgba(19,127,236,0.12); }
+    </style>
+  </head>
+  <body class="bg-background-light text-slate-900 font-display overflow-hidden">
+    <div class="relative flex h-screen w-full">
+
+      <!-- NAV SIDEBAR -->
+      <aside class="hidden w-64 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 px-6 border-b border-slate-100">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px]">dashboard</span>
+              <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+              <span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span>
+              <span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+              <span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span>
+              <span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span>
+              <span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              <span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span>
+              <span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="flex flex-1 flex-col h-full overflow-hidden">
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">      <header class="mb-2">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">Classification Setup</p>
+          <h1 class="mt-1 text-2xl font-bold">Tag Manager</h1>
+          <p class="mt-1 text-sm text-slate-500">Create reusable manual tags here.</p>
+        </header>
+
+      <section class="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+        <div class="space-y-4">
+          <!-- Add tag -->
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm anim-fade-up" style="animation-delay:0ms">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">sell</span>
+              <h2 class="text-lg font-bold">Add Tag</h2>
+            </div>
+            <form id="create-tag-form" class="mt-4 space-y-3">
+              <input id="tag-name" type="text" placeholder="Outside Food" class="w-full rounded-xl border-slate-200 bg-slate-50 text-sm" />
+              <button class="w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary/90 active:scale-95 transition-all shadow-sm" type="submit">Save Tag</button>
+            </form>
+            <p id="tag-manager-status" class="mt-3 text-sm text-slate-500"></p>
+          </div>
+
+          <!-- Merge tags -->
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm anim-fade-up" style="animation-delay:80ms">
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-amber-500">merge</span>
+              <h2 class="text-lg font-bold">Merge Tags</h2>
+            </div>
+            <p class="text-xs text-slate-500 mb-3">All transactions from <strong>Source</strong> will be re-tagged to <strong>Keep</strong>, then source is deactivated.</p>
+            <div class="space-y-2">
+              <div>
+                <label class="text-xs font-semibold text-slate-500">Source (will be removed)</label>
+                <select id="merge-source" class="mt-1 w-full rounded-xl border-slate-200 bg-slate-50 text-sm"><option value="">— select tag —</option></select>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-500">Keep (absorbs source)</label>
+                <select id="merge-target" class="mt-1 w-full rounded-xl border-slate-200 bg-slate-50 text-sm"><option value="">— select tag —</option></select>
+              </div>
+              <button id="merge-btn" class="w-full rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-amber-600 active:scale-95 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" disabled>Merge Tags</button>
+            </div>
+            <p id="merge-status" class="mt-3 text-sm text-slate-500"></p>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm anim-fade-up" style="animation-delay:120ms">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Current Tags</p>
+              <h2 class="mt-2 text-xl font-bold">Reusable manual tags</h2>
+            </div>
+            <span id="tag-count" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{{ tags|length }} tags</span>
+          </div>
+          <div id="tag-list" class="mt-6 flex flex-wrap gap-2 stagger">
+            {% for tag in tags %}
+            <span class="rounded-full bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-200 hover:bg-primary/5 hover:ring-primary/30 hover:text-primary transition-all cursor-default">{{ tag.name }}</span>
+            {% else %}
+            <p class="text-sm text-slate-400">No tags yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+        </main>
+      </div>
+    </div>
+    <script>
+      let _allTags = [];
+
+      function populateMergeSelects(tags) {
+        const sorted = [...tags].sort((a,b) => a.name.localeCompare(b.name));
+        const opts = `<option value="">— select tag —</option>` +
+          sorted.map(t => `<option value="${t.id}">${t.name}</option>`).join("");
+        document.getElementById("merge-source").innerHTML = opts;
+        document.getElementById("merge-target").innerHTML = opts;
+        updateMergeBtn();
+      }
+
+      function updateMergeBtn() {
+        const src = document.getElementById("merge-source")?.value;
+        const tgt = document.getElementById("merge-target")?.value;
+        const btn = document.getElementById("merge-btn");
+        if (btn) btn.disabled = !src || !tgt || src === tgt;
+      }
+
+      function renderTags(tags) {
+        _allTags = tags;
+        const list = document.getElementById("tag-list");
+        const count = document.getElementById("tag-count");
+        if (!list || !count) return;
+        count.textContent = `${tags.length} tags`;
+        if (!tags.length) {
+          list.innerHTML = '<p class="text-sm text-slate-400">No tags yet.</p>';
+          return;
+        }
+        list.innerHTML = tags
+          .map((tag) => `<span class="rounded-full bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-200">${tag.name}</span>`)
+          .join("");
+        populateMergeSelects(tags);
+      }
+
+      async function refreshTags(message = "") {
+        const status = document.getElementById("tag-manager-status");
+        if (status) status.textContent = message;
+        const response = await fetch("/classification/api/tags");
+        const result = await response.json();
+        if (!response.ok || result.success === false) return;
+        renderTags(Array.isArray(result.data) ? result.data : []);
+      }
+
+      document.getElementById("create-tag-form")?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const response = await fetch("/classification/api/tags", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: document.getElementById("tag-name")?.value || "" }),
+        });
+        const result = await response.json();
+        await refreshTags(result.success ? "Tag saved." : (result.message || "Unable to save tag."));
+        if (result.success) event.target.reset();
+      });
+
+      document.getElementById("merge-source")?.addEventListener("change", updateMergeBtn);
+      document.getElementById("merge-target")?.addEventListener("change", updateMergeBtn);
+
+      document.getElementById("merge-btn")?.addEventListener("click", async () => {
+        const src = document.getElementById("merge-source")?.value;
+        const tgt = document.getElementById("merge-target")?.value;
+        const srcName = _allTags.find(t => t.id === src)?.name || src;
+        const tgtName = _allTags.find(t => t.id === tgt)?.name || tgt;
+        if (!confirm(`Merge "${srcName}" into "${tgtName}"? This cannot be undone.`)) return;
+        const resp = await fetch("/classification/api/tags/merge", {
+          method: "POST", headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ source_tag_id: src, target_tag_id: tgt }),
+        });
+        const result = await resp.json();
+        const status = document.getElementById("merge-status");
+        if (status) status.textContent = result.message || (result.success ? "Merged." : "Failed.");
+        if (result.success) await refreshTags();
+      });
+
+      refreshTags();
+    </script>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js"></script>
+  </body>
+</html>
+
+
+
+
+

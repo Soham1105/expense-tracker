@@ -1,0 +1,290 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Merchant Names - FinanceTracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: { extend: { colors: { primary: "#607AFB", "background-light": "#f5f6f8", "background-dark": "#101922" }, fontFamily: { display: "Manrope" } } },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+    <style>
+      @keyframes row-flash {
+        0%   { background-color: transparent; }
+        30%  { background-color: rgba(96,122,251,0.10); }
+        100% { background-color: transparent; }
+      }
+      .row-saved { animation: row-flash 1.2s ease-out forwards; }
+
+      @keyframes slide-down {
+        from { opacity: 0; transform: translateY(-8px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .slide-down { animation: slide-down 0.2s ease-out forwards; }
+
+      @keyframes fade-in {
+        from { opacity: 0; } to { opacity: 1; }
+      }
+      .fade-in { animation: fade-in 0.15s ease-out forwards; }
+
+      .merchant-name-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(96,122,251,0.12); }
+
+      /* Normalize preview tooltip */
+      .norm-preview {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: #f0f2ff;
+        border: 1px solid rgba(96,122,251,0.25);
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 11px;
+        color: #607AFB;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        pointer-events: none;
+      }
+      .norm-preview.visible { display: block; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white">
+    <div class="flex h-screen w-full">
+
+      <!-- NAV -->
+      <aside class="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 border-b border-slate-100 px-6">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px]">dashboard</span><span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span><span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span><span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span><span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span><span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span><span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span><span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span><span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="flex-1 overflow-y-auto">
+
+        <!-- Header -->
+        <header class="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 sticky top-0 z-20">
+          <div class="flex items-center gap-3">
+            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-sm">
+              <span class="material-symbols-outlined text-[18px] text-white">storefront</span>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Cleanup</p>
+              <h1 class="text-lg font-extrabold text-slate-950 leading-tight">Merchant Names</h1>
+            </div>
+          </div>
+          <div id="header-right" class="flex items-center gap-2 flex-shrink-0"></div>
+        </header>
+
+        <!-- Selection bar (appears when rows selected) -->
+        <div id="selection-bar" class="hidden sticky top-16 z-10 border-b border-primary/20 bg-primary/5 px-6 py-2.5 slide-down">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-primary" id="selection-label"></span>
+              <span class="text-[10px] text-primary/60" id="selection-spend"></span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="select-unnamed-btn"
+                class="flex items-center gap-1 rounded-lg border border-primary/30 bg-white px-2.5 py-1 text-[11px] font-semibold text-primary hover:bg-primary/5 transition-colors">
+                <span class="material-symbols-outlined text-[13px]">select_all</span>
+                Select unnamed
+              </button>
+              <button id="merge-btn"
+                class="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1 text-[11px] font-bold text-white hover:bg-primary/90 transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[14px]">merge</span>
+                Merge <span id="merge-count" class="ml-0.5"></span>
+              </button>
+              <button id="deselect-btn"
+                class="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-500 hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined text-[13px]">close</span>
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mx-auto max-w-5xl space-y-4 p-6">
+
+          <!-- Controls -->
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex-1 space-y-1.5">
+              <div class="relative max-w-sm">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-[16px] text-slate-400">search</span>
+                <input id="merchant-search" type="text" placeholder="Search by name or UPI ID (e.g. swiggy, @icici)…"
+                  class="w-full rounded-xl border-slate-200 bg-white pl-9 pr-8 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary" />
+                <button id="search-clear-btn" onclick="document.getElementById('merchant-search').value='';renderMerchants()"
+                  style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:16px;line-height:1;padding:2px"
+                  title="Clear search">&times;</button>
+              </div>
+              <p class="text-[10px] text-slate-400 max-w-sm pl-1">
+                Search by: <span class="font-semibold text-slate-500">display name</span>,
+                <span class="font-semibold text-slate-500">UPI ID</span>, or
+                <span class="font-semibold text-slate-500">bank entity name</span>
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="merchant-count" class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500"></span>
+              <span id="unnamed-count" class="hidden rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 cursor-pointer hover:bg-amber-200 transition-colors" title="Click to sort unnamed first" onclick="document.getElementById('merchant-sort').value='unnamed';renderMerchants()"></span>
+              <select id="merchant-sort" class="rounded-xl border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary">
+                <option value="spend">Most spend</option>
+                <option value="count">Most transactions</option>
+                <option value="recent">Most recent</option>
+                <option value="unnamed">Unnamed first</option>
+              </select>
+              <button id="refresh-btn" onclick="loadMerchants()"
+                class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                <span class="material-symbols-outlined text-[16px]">refresh</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Info bar -->
+          <div class="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-primary">
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-[15px] mt-0.5 flex-shrink-0">edit</span>
+                <div>
+                  <p class="font-bold text-[12px]">Set a display name</p>
+                  <p class="text-[11px] text-primary/70 mt-0.5">The <strong>left column</strong> shows the raw UPI/bank ID. Type a clean name in the <strong>right column</strong> and press Enter or click ✓ to save. It applies to <em>all</em> transactions from that ID.</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-[15px] mt-0.5 flex-shrink-0">merge</span>
+                <div>
+                  <p class="font-bold text-[12px]">Merge duplicate IDs</p>
+                  <p class="text-[11px] text-primary/70 mt-0.5">One merchant can appear under multiple UPI IDs (e.g. Swiggy via Razorpay and direct). <strong>Tick checkboxes</strong> on rows that belong to the same merchant, then click <strong>Merge</strong>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <!-- Column headers -->
+            <div class="grid grid-cols-[28px_minmax(0,2fr)_80px_100px_90px_minmax(0,1.5fr)] gap-4 border-b border-slate-100 bg-slate-50 px-5 py-2.5 items-center">
+              <label class="flex items-center justify-center cursor-pointer" title="Select all visible">
+                <input id="select-all-cb" type="checkbox" class="rounded border-slate-300 text-primary focus:ring-primary"/>
+              </label>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">UPI / Bank ID <span class="normal-case font-normal">(raw)</span></span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Txns</span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Spend</span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Last seen</span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Display Name <span class="normal-case font-normal text-primary">(set here)</span></span>
+            </div>
+            <!-- Rows -->
+            <div id="merchant-list" class="divide-y divide-slate-50">
+              <div class="px-5 py-8 text-center text-sm text-slate-400">Loading…</div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- Merge modal -->
+    <div id="merge-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div class="w-96 rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 fade-in">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
+            <span class="material-symbols-outlined text-[18px] text-primary">merge</span>
+          </div>
+          <div>
+            <h3 class="font-black text-slate-800 leading-tight">Merge UPI IDs</h3>
+            <p class="text-[11px] text-slate-400">Merging <span id="merge-modal-count" class="font-bold text-slate-600"></span></p>
+          </div>
+        </div>
+
+        <!-- UPI IDs being merged -->
+        <div id="merge-upi-list" class="mb-4 max-h-28 overflow-y-auto rounded-lg bg-slate-50 border border-slate-100 p-2 space-y-0.5"></div>
+
+        <!-- Name input + preview -->
+        <div class="mb-1 relative">
+          <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wide mb-1">Canonical Name</label>
+          <input id="merge-canonical-name"
+            class="h-10 w-full rounded-xl border border-slate-200 px-3 text-sm font-medium focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+            placeholder="e.g. Swiggy, HDFC Bank…"/>
+        </div>
+        <div id="merge-name-preview" class="hidden mb-3 flex items-center gap-1.5 text-[11px] text-primary">
+          <span class="material-symbols-outlined text-[13px]">auto_fix</span>
+          Will be saved as: <strong id="merge-name-preview-text" class="ml-0.5"></strong>
+        </div>
+
+        <div class="flex gap-2 justify-end pt-1">
+          <button id="merge-cancel" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>
+          <button id="merge-confirm" class="rounded-xl bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-sm disabled:opacity-60">Merge & Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/merchants.js?v=20260512-5"></script>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js"></script>
+  </body>
+</html>
+
+
+

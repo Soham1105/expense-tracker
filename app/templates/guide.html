@@ -1,0 +1,240 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Feature Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: { extend: { colors: { primary: "#607AFB" }, fontFamily: { display: ["Manrope","sans-serif"] } } },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+    <style>
+      @keyframes fadeInUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+      .anim-fade-up { animation:fadeInUp 0.3s ease-out both; }
+      .stagger > * { animation:fadeInUp 0.3s ease-out both; }
+      .stagger > *:nth-child(1){animation-delay:0ms}  .stagger > *:nth-child(2){animation-delay:60ms}
+      .stagger > *:nth-child(3){animation-delay:120ms} .stagger > *:nth-child(n+4){animation-delay:180ms}
+      button:active:not(:disabled){ transform:scale(0.97); }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-display overflow-hidden">
+    <div class="relative flex h-screen w-full">
+
+      <!-- SIDEBAR -->
+      <aside class="hidden w-64 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 px-6 border-b border-slate-100">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="text-sm font-medium">Dashboard</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html"><span class="material-symbols-outlined text-[20px]">account_balance</span><span class="text-sm font-medium">Accounts</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html"><span class="material-symbols-outlined text-[20px]">savings</span><span class="text-sm font-medium">Budget</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html"><span class="material-symbols-outlined text-[20px]">flag</span><span class="text-sm font-medium">Goals</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="text-sm font-medium">Transactions</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/"><span class="material-symbols-outlined text-[20px]">description</span><span class="text-sm font-medium">Reports</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics"><span class="material-symbols-outlined text-[20px]">insights</span><span class="text-sm font-medium">Analytics</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="text-sm font-medium">Merchants</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html"><span class="material-symbols-outlined text-[20px]">group_work</span><span class="text-sm font-medium">Groups</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html"><span class="material-symbols-outlined text-[20px]">balance</span><span class="text-sm font-medium">Balances</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html"><span class="material-symbols-outlined text-[20px]">rule</span><span class="text-sm font-medium">Tag Rules</span></a>
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav" href="/guide.html"><span class="material-symbols-outlined text-[20px] fill-1">help</span><span class="text-sm font-medium">Guide</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html"><span class="material-symbols-outlined text-[20px]">settings</span><span class="text-sm font-medium">Settings</span></a>
+          </div>          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="flex flex-1 flex-col h-full overflow-hidden">
+        <header class="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span class="text-base font-bold">Feature Guide</span>
+            <span class="text-xs text-slate-400">Everything this app can do</span>
+          </div>
+          <div id="header-right" class="flex items-center gap-2 flex-shrink-0"></div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="max-w-4xl mx-auto space-y-6 stagger">
+
+            <!-- CORE WORKFLOW -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-primary mb-3">Core Workflow</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">upload_file</span>
+                    <p class="text-sm font-bold">Import Bank Statement</p>
+                  </div>
+                  <p class="text-xs text-slate-500">Upload CSV bank statements via the upload page. Transactions are auto-deduplicated, vendor names normalised, and tag rules applied automatically on import.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: Duplicate rows across re-uploads are silently skipped.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">sell</span>
+                    <p class="text-sm font-bold">Tag Transactions</p>
+                  </div>
+                  <p class="text-xs text-slate-500">In Reports, select transactions and bulk-tag, or click a transaction to tag it individually. Tags propagate to counterparty-matched transactions automatically.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: Manually tagged = "manual" badge. Auto-tagged by system = "auto" badge.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">rule</span>
+                    <p class="text-sm font-bold">Tag Rules <a href="/tag-rules.html" class="ml-1 text-primary hover:underline text-[10px]">→ open</a></p>
+                  </div>
+                  <p class="text-xs text-slate-500">Create rules like "Vendor contains Zomato → tag Outside-food". Rules run on every upload automatically. Hit "Apply Rules Now" to run against all existing transactions.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Supports: Contains, Exact, Regex. Fields: Vendor, UPI ID, Narration, Counterparty Name, Payment Mode.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">call_split</span>
+                    <p class="text-sm font-bold">Split Expenses</p>
+                  </div>
+                  <p class="text-xs text-slate-500">Mark any transaction as a shared expense. Assign amounts to people. Link recovery transactions (friend paid back). Edit recovery amounts inline via ✎ button.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: Split recovery transactions inherit all tags from the parent expense automatically.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- ANALYTICS -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-primary mb-3">Analytics <a href="/reports/analytics" class="ml-2 text-[10px] font-normal text-slate-400 hover:text-primary">→ open</a></h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Watchlist</p>
+                  <p class="text-xs text-slate-500">Pin any tag/category to your watchlist. Cards show net spend (expense + invested − income recovered). Set a monthly budget per card — green/amber/red progress bar. Clear budgets with the "Clear" button in the budget modal.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: "+ budget" on each card. Income from recovery transactions auto-subtracts.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Watchlist Modal (click card)</p>
+                  <p class="text-xs text-slate-500">Deep-dive per category: monthly trend chart, top merchants bar chart, subcategory doughnut chart (2-level), P&L showing income vs expense vs invested.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: 6 time presets (1m/3m/6m/1y/2y/all). "View All" jumps to filtered Reports.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Month-over-Month Comparison</p>
+                  <p class="text-xs text-slate-500">Click "Load Comparison" at the bottom of Analytics. Table shows This Month | Last Month | 3-Month Avg | Change% with ▲▼ arrows per category.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Recurring Transactions</p>
+                  <p class="text-xs text-slate-500">Auto-detected patterns from the last 6 months. Highlights merchants with ⚠ "Not seen this month" in amber — spot missed expected transactions. Toggle "Debits only" to filter. Click any row to open counterparty profile.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- GROUPS & BALANCES -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-primary mb-3">Groups & Balances</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">group_work</span>
+                    <p class="text-sm font-bold">Transaction Groups <a href="/groups.html" class="ml-1 text-primary hover:underline text-[10px]">→ open</a></p>
+                  </div>
+                  <p class="text-xs text-slate-500">Group related transactions together (e.g. gold purchases + friend contributions). Types: SPLIT, RETURN, GENERAL, CIRCLE. Balance = DEBIT roles − CREDIT roles − auto-recovered splits − settlements.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: CIRCLE type for chit-fund/investment circles. Roles: CONTRIBUTION_IN/OUT, PAYOUT_IN. Link from Reports page via the violet group badge button.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">balance</span>
+                    <p class="text-sm font-bold">Friend Balances <a href="/balances.html" class="ml-1 text-primary hover:underline text-[10px]">→ open</a></p>
+                  </div>
+                  <p class="text-xs text-slate-500">Per-person summary of who owes you what, based on split line items. Click any person card → right panel shows every transaction with outstanding amounts. Filter: "They owe me" / "I owe them".</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: "Keep" person shows as fully settled (₹560 owed, ₹560 recovered).</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- ORGANISATION -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-primary mb-3">Organisation</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Category Manager</p>
+                  <p class="text-xs text-slate-500">Create hierarchical categories with up to 2 levels of subcategories. Categories appear in the watchlist modal's subcategory doughnut chart.</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: Categories auto-create corresponding system tags so they appear in Reports.</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Categories &amp; Tags <a href="/classification/manage" class="ml-1 text-primary hover:underline text-[10px]">→ open</a></p>
+                  <p class="text-xs text-slate-500">Create reusable manual tags. Merge two tags: all transactions from the source tag are re-pointed to the target, source is deactivated. Useful to consolidate "lunch" + "Lunch" + "lunch - dinner".</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: Merge is irreversible — shows a confirm dialog first.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- PLANNING -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-primary mb-3">Planning</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Monthly Budget <a href="/budget.html" class="ml-1 text-primary hover:underline text-[10px]">→ open</a></p>
+                  <p class="text-xs text-slate-500">Set overall monthly income & expense targets. Per-category budgets shown on watchlist cards with colour-coded progress bars (green → amber → red).</p>
+                  <p class="mt-2 text-[10px] text-slate-400">Hidden: "Clear" button in budget modal removes a category budget. Budget resets each month (set per month).</p>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <p class="text-sm font-bold mb-1">Goals & Wishlist <a href="/goals.html" class="ml-1 text-primary hover:underline text-[10px]">→ open</a></p>
+                  <p class="text-xs text-slate-500">Track savings goals and wishlist items with target amounts and dates. Priority levels: wishlist, nice_to_have, important, critical.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- HIDDEN / POWER FEATURES -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-amber-500 mb-3">Hidden & Power Features</h2>
+              <div class="rounded-xl border border-amber-100 bg-amber-50 p-4 space-y-2">
+                <p class="text-xs font-bold text-amber-800 mb-2">Things that work but aren't obvious:</p>
+                <ul class="text-xs text-slate-600 space-y-1.5 list-none">
+                  <li>• <strong>Counterparty profile panel</strong> — In Analytics, click any merchant in the Recurring section to see all transactions with that counterparty in a slide-out panel.</li>
+                  <li>• <strong>Tag rules auto-run</strong> — Tag rules run automatically on every CSV upload. No need to manually click "Apply Rules".</li>
+                  <li>• <strong>Recovery auto-tag</strong> — When you link a recovery transaction (friend pays back), it inherits all tags from the parent expense automatically.</li>
+                  <li>• <strong>Group auto-recover</strong> — When a group's expense transaction has split recoveries, they're automatically deducted from the group balance without needing to add them as CONTRIBUTION_IN.</li>
+                  <li>• <strong>Investment tracking in watchlist</strong> — Any tag with <code>investment_buy</code> transactions shows an "inv" badge. Net spend = expense + invested − income (friend contributions).</li>
+                  <li>• <strong>Reports → Group linking</strong> — In any transaction row, click the violet group button to add it to a group without leaving Reports.</li>
+                  <li>• <strong>Reports last-month filter</strong> — "Last Month" filter in Reports auto-sets from/to dates and activates when navigating from Analytics "Last Month" KPI.</li>
+                  <li>• <strong>Edit split recovery amount</strong> — In the split panel, existing recovery chips have a ✎ edit button to fix the recorded amount without deleting and re-linking.</li>
+                  <li>• <strong>Tag merge safety</strong> — Merging tags skips duplicate assignments (if a transaction already has the target tag, the source tag is just removed — no double-tag created).</li>
+                  <li>• <strong>Subcategory modal chart</strong> — Opening a category in the watchlist shows a two-ring doughnut: outer = subcategories, inner = sub-subcategories. Click slices to navigate.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- REMAINING / ROADMAP -->
+            <section>
+              <h2 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Remaining / Roadmap</h2>
+              <div class="rounded-xl border border-slate-100 bg-white p-4">
+                <ul class="text-xs text-slate-500 space-y-1.5 list-none">
+                  <li>○ <strong>Tag rules: inline edit</strong> — Currently delete + re-add to change a rule. Inline edit coming.</li>
+                  <li>○ <strong>Saved filter presets</strong> — Save common Reports filter combinations as named bookmarks.</li>
+                  <li>○ <strong>Manual cash entry</strong> — Add offline/cash transactions that don't come from bank imports.</li>
+                  <li>○ <strong>Investment portfolio tracker</strong> — Track current value of gold/FD/stocks vs invested; show gain/loss.</li>
+                  <li>○ <strong>Counterparty profile in Reports</strong> — Click vendor name in transaction row to open profile panel (currently only in Analytics Recurring section).</li>
+                  <li>○ <strong>Export / download</strong> — Download filtered transactions as CSV/Excel.</li>
+                  <li>○ <strong>Budget alerts</strong> — Notification when a category exceeds its monthly budget threshold.</li>
+                </ul>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js"></script>
+  </body>
+</html>
+
+
+

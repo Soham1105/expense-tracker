@@ -1,0 +1,32 @@
+.tag-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid #2563eb;
+  background-color: #3b82f6;   /* blue */
+  color: #ffffff;
+  cursor: pointer;
+  transition: 
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.tag-btn:hover {
+  background-color: #2563eb;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+.tag-btn:active {
+  transform: scale(0.97);
+}
+
+.tag-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* table, th, td {
+  border: 1px solid black;
+} */

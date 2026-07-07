@@ -1,0 +1,651 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Transaction Groups</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: { primary: "#607AFB", "background-light": "#f6f7f8" },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+    <style type="text/tailwindcss">
+      @layer utilities {
+        .tab-active { @apply bg-primary text-white shadow-sm; }
+        .tab-inactive { @apply bg-white text-slate-500 hover:bg-slate-50; }
+      }
+    </style>
+    <style>
+      @keyframes fadeInUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes slideRight{ from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+      @keyframes scaleIn   { from{opacity:0;transform:scale(0.96)}       to{opacity:1;transform:scale(1)} }
+      @keyframes rowFlash  { 0%,100%{background:transparent} 35%{background:rgba(19,127,236,0.08)} }
+      .anim-fade-up  { animation:fadeInUp   0.3s ease-out both; }
+      .anim-slide-rt { animation:slideRight 0.28s ease-out both; }
+      .anim-scale-in { animation:scaleIn    0.18s ease-out both; }
+      .anim-row-flash{ animation:rowFlash   1s ease-out both; }
+      .stagger > * { animation:fadeInUp 0.3s ease-out both; }
+      .stagger > *:nth-child(1){animation-delay:0ms}   .stagger > *:nth-child(2){animation-delay:60ms}
+      .stagger > *:nth-child(3){animation-delay:120ms} .stagger > *:nth-child(n+4){animation-delay:180ms}
+      button:active:not(:disabled){ transform:scale(0.97); }
+      input:focus,select:focus{ box-shadow:0 0 0 3px rgba(19,127,236,0.12); }
+    </style>
+  </head>
+  <body class="bg-background-light text-slate-900 font-display overflow-hidden">
+    <div class="relative flex h-screen w-full">
+
+      <!-- NAV SIDEBAR -->
+      <aside class="hidden w-64 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 px-6 border-b border-slate-100">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px]">dashboard</span>
+              <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+              <span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span>
+              <span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+              <span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span>
+              <span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span>
+              <span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              <span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px] fill-1">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span>
+              <span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="flex flex-1 flex-col h-full overflow-hidden">
+
+        <!-- Header -->
+        <header class="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <button class="lg:hidden text-slate-500 p-1"><span class="material-symbols-outlined">menu</span></button>
+            <div class="hidden lg:flex items-center text-sm text-slate-500">
+              <a class="hover:text-primary" href="/dashboard.html">Dashboard</a>
+              <span class="mx-2">/</span>
+              <span class="text-slate-900 font-medium">Groups</span>
+            </div>
+            <span class="text-base font-bold lg:hidden">Groups</span>
+          </div>
+          <div id="header-right" class="flex items-center gap-2 flex-shrink-0"></div>
+        </header>
+
+        <!-- Filter tabs + content -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-4">
+
+          <!-- Filter bar: status + purpose -->
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="openModal('create-group-modal'); resetGroupPurposeCards();"
+                class="flex items-center gap-1.5 h-9 rounded-lg bg-primary px-4 text-sm font-bold text-white hover:bg-primary/90 active:scale-95 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-[18px]">add</span> New Group
+            </button>
+            <!-- Status tabs -->
+            <div class="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 w-fit">
+              <button data-status-tab="" class="tab-active text-xs font-bold px-3 py-1.5 rounded-lg transition-all">All</button>
+              <button data-status-tab="OPEN" class="tab-inactive text-xs font-bold px-3 py-1.5 rounded-lg transition-all">Open</button>
+              <button data-status-tab="SETTLED" class="tab-inactive text-xs font-bold px-3 py-1.5 rounded-lg transition-all">Settled</button>
+            </div>
+            <!-- Purpose tabs -->
+            <div class="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 w-fit">
+              <button data-purpose-tab="" class="tab-active text-xs font-bold px-3 py-1.5 rounded-lg transition-all">All</button>
+              <button data-purpose-tab="SETTLEMENT" class="tab-inactive text-xs font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px]">restaurant</span>Events
+              </button>
+              <button data-purpose-tab="MERCHANT" class="tab-inactive text-xs font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px]">auto_awesome</span>Bulk Classify
+              </button>
+              <button data-purpose-tab="PORTFOLIO" class="tab-inactive text-xs font-bold px-3 py-1.5 rounded-lg transition-all flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px]">trending_up</span>Tracking
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary KPIs -->
+          <div id="groups-kpis" class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <!-- populated by JS -->
+          </div>
+
+          <!-- Groups grid -->
+          <div id="groups-list" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="col-span-full text-xs text-slate-400 py-8 text-center">Loading&#x2026;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Panel overlay ─────────────────────────────────────────────────── -->
+      <div id="panel-overlay" onclick="closeGroupPanel()"
+           class="hidden fixed inset-0 bg-black/20 z-30"></div>
+
+      <!-- ── Group detail panel ────────────────────────────────────────────── -->
+      <div id="group-panel"
+           class="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-white shadow-2xl z-40 flex flex-col translate-x-full transition-transform duration-300">
+
+        <!-- Panel header -->
+        <div class="flex items-center gap-3 px-5 py-4 border-b border-slate-100 flex-shrink-0">
+          <button onclick="closeGroupPanel()" class="text-slate-400 hover:text-slate-700">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+          <div class="flex items-center gap-2 flex-1 min-w-0">
+            <div class="min-w-0">
+              <p id="panel-title" class="text-base font-black text-slate-800 truncate"></p>
+              <p id="panel-purpose-desc" class="text-[10px] text-slate-400 mt-0.5 hidden"></p>
+            </div>
+            <span id="panel-type-badge" class="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full"></span>
+          </div>
+        </div>
+
+        <!-- Panel scrollable body -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-5">
+
+          <!-- Edit fields -->
+          <div class="space-y-2">
+            <input id="panel-name-input" type="text" placeholder="Group name"
+                   class="w-full text-sm font-semibold border-0 border-b border-slate-200 bg-transparent pb-1 focus:ring-0 focus:border-primary px-0" />
+            <!-- Bucket selector: re-classify the group's type. Changing it saves immediately. -->
+            <div class="flex items-center gap-2">
+              <label for="panel-bucket-select" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Bucket</label>
+              <select id="panel-bucket-select"
+                      class="text-xs border border-slate-200 rounded-lg px-2 py-1 text-slate-600 focus:ring-primary focus:border-primary">
+                <option value="EVENT">Event</option>
+                <option value="PATTERN">Bulk Classify</option>
+                <option value="PORTFOLIO">Tracking</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-3">
+              <select id="panel-status-input"
+                      class="text-xs border border-slate-200 rounded-lg px-2 py-1 text-slate-600 focus:ring-primary focus:border-primary">
+                <option value="OPEN">Open</option>
+                <option value="SETTLED">Settled</option>
+              </select>
+              <button id="panel-save-btn"
+                      class="text-xs font-bold px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90">
+                Save
+              </button>
+            </div>
+            <textarea id="panel-notes-input" rows="1" lang="en" spellcheck="true" placeholder="Notes (optional)"
+                      class="w-full text-xs border border-slate-200 rounded-lg px-3 py-2 resize-none focus:ring-primary focus:border-primary text-slate-600"></textarea>
+            <!-- Shared Joy (EVENT only) — non-bill spending on others (gifts, treating, sponsoring) -->
+            <div id="panel-shared-joy-row" class="hidden flex items-center gap-2 pt-1">
+              <label for="panel-shared-joy-input" class="text-[10px] font-bold text-violet-500 uppercase tracking-wider shrink-0 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">favorite</span> Shared Joy
+              </label>
+              <input id="panel-shared-joy-input" type="number" step="0.01" min="0" placeholder="0"
+                     class="w-28 text-xs border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary" />
+              <span class="text-[10px] text-slate-400">amount spent on others</span>
+            </div>
+          </div>
+
+          <!-- Balance strip -->
+          <div id="panel-balance-strip" class="grid grid-cols-4 gap-2 bg-slate-50 rounded-xl p-3">
+            <div class="text-center">
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Paid Out</p>
+              <p id="bal-expense" class="text-sm font-black text-rose-600"></p>
+            </div>
+            <div class="text-center">
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Deducted</p>
+              <p id="bal-deducted" class="text-sm font-black text-blue-600"></p>
+            </div>
+            <div class="text-center">
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Settled</p>
+              <p id="bal-settled" class="text-sm font-black text-green-600"></p>
+            </div>
+            <div class="text-center">
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Net</p>
+              <p id="bal-net" class="text-lg font-black"></p>
+            </div>
+          </div>
+          <!-- Auto-recovered row (only shown when split recoveries exist) -->
+          <div id="bal-auto-recovered-row" class="flex items-center justify-between px-1 py-1.5 rounded-lg bg-emerald-50 border border-emerald-100 text-[10px]" style="display:none">
+            <span class="flex items-center gap-1 text-emerald-700 font-semibold">
+              <span class="material-symbols-outlined text-[12px]">swap_horiz</span>
+              Split recoveries (auto-deducted from splits)
+            </span>
+            <span id="bal-auto-recovered" class="font-black text-emerald-700"></span>
+          </div>
+
+          <!-- Split / Divide (EVENT-style groups only) -->
+          <div id="panel-split-section" class="hidden rounded-xl border border-slate-200 p-3 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px]">calculate</span> Split / Divide
+              </p>
+              <p class="text-[11px] font-semibold text-slate-500">Total <span id="split-total" class="font-black text-slate-700"></span></p>
+            </div>
+            <div class="flex items-center gap-2">
+              <label for="split-people" class="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Among</label>
+              <input id="split-people" type="number" min="1" step="1" value="2"
+                     class="w-16 text-xs border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary" />
+              <span class="text-[10px] text-slate-400">people (incl. you)</span>
+            </div>
+            <div class="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
+              <span class="text-[11px] text-slate-500">Each pays</span>
+              <span id="split-per-head" class="text-base font-black text-primary"></span>
+            </div>
+            <label class="flex items-start gap-2 cursor-pointer">
+              <input id="split-set-owed" type="checkbox" class="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-primary focus:ring-primary" />
+              <span class="text-[11px] text-slate-600">Record others' share as owed to me
+                <span id="split-owed-preview" class="font-semibold text-rose-600"></span></span>
+            </label>
+            <button id="split-apply-btn" type="button"
+                    class="w-full text-xs font-bold py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90">Save split</button>
+            <p id="split-saved" class="text-[10px] text-slate-400"></p>
+          </div>
+
+          <!-- Monthly breakdown -->
+          <div id="panel-monthly-breakdown"></div>
+
+          <!-- Participants (SPLIT only) -->
+          <div id="panel-participants-section">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">People</p>
+            </div>
+            <div id="panel-participants" class="flex flex-wrap gap-1.5 mb-2"></div>
+            <form id="add-participant-form" class="flex gap-2">
+              <input id="participant-name" type="text" placeholder="Add person…"
+                     class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary" />
+              <button type="submit"
+                      class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Add</button>
+            </form>
+          </div>
+
+          <!-- Linked transactions -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Transactions</p>
+              <button onclick="openTxnSearch()"
+                      class="text-[10px] font-bold text-primary hover:underline flex items-center gap-0.5">
+                <span class="material-symbols-outlined text-[14px]">add</span> Link
+              </button>
+            </div>
+            <div id="panel-links"></div>
+          </div>
+
+          <!-- Portfolio holding (shown only for PORTFOLIO type) -->
+          <div id="panel-portfolio-section" class="hidden space-y-3">
+            <p class="text-[10px] font-black uppercase tracking-widest text-emerald-500">Holding</p>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="rounded-xl bg-emerald-50 border border-emerald-100 p-3">
+                <p class="text-[9px] text-emerald-500 uppercase font-bold tracking-wider mb-0.5">Invested</p>
+                <p id="portfolio-invested" class="text-lg font-black text-emerald-700"></p>
+              </div>
+              <div class="rounded-xl bg-amber-50 border border-amber-100 p-3">
+                <p class="text-[9px] text-amber-600 uppercase font-bold tracking-wider mb-0.5">Realized</p>
+                <p id="portfolio-realized" class="text-lg font-black text-amber-700"></p>
+              </div>
+            </div>
+            <div class="rounded-xl border border-slate-200 p-3 space-y-2">
+              <div class="flex items-center gap-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider w-24 shrink-0">Current value</label>
+                <input id="portfolio-current-value" type="number" step="0.01" min="0" placeholder="0"
+                       class="flex-1 text-xs border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider w-24 shrink-0">Cost basis</label>
+                <input id="portfolio-cost-basis" type="number" step="0.01" min="0" placeholder="defaults to total invested"
+                       class="flex-1 text-xs border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary" />
+              </div>
+              <div class="flex items-center gap-2">
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider w-24 shrink-0">Asset class</label>
+                <select id="portfolio-asset-class"
+                        class="flex-1 text-xs border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary">
+                  <option value="">—</option>
+                  <option value="EQUITY">Equity / Stocks</option>
+                  <option value="MUTUAL_FUND">Mutual Fund</option>
+                  <option value="ETF">ETF</option>
+                  <option value="BOND">Bond / Debt</option>
+                  <option value="GOLD">Gold</option>
+                  <option value="CRYPTO">Crypto</option>
+                  <option value="FD">Fixed Deposit</option>
+                  <option value="REAL_ESTATE">Real Estate</option>
+                  <option value="OTHER">Other</option>
+                </select>
+              </div>
+            </div>
+            <div id="portfolio-returns-card" class="rounded-xl p-3 text-center">
+              <p class="text-[9px] uppercase font-bold tracking-wider mb-0.5" id="portfolio-returns-label">Unrealized Return</p>
+              <p id="portfolio-returns" class="text-2xl font-black"></p>
+              <p id="portfolio-returns-pct" class="text-[10px] font-semibold mt-0.5"></p>
+            </div>
+          </div>
+
+          <!-- Pattern group: profile + inline propagate form (shown only for PATTERN type) -->
+          <div id="panel-merchant-section" class="hidden space-y-3">
+            <p class="text-[10px] font-black uppercase tracking-widest text-sky-500">Pattern Profile</p>
+            <div class="rounded-xl bg-sky-50 border border-sky-100 p-3 text-center">
+              <p class="text-[9px] text-sky-400 uppercase font-bold tracking-wider mb-1">Total Spend</p>
+              <p id="merchant-total-spend" class="text-xl font-black text-sky-700"></p>
+            </div>
+
+            <!-- Inline propagate form: apply classification to all linked txns -->
+            <div class="rounded-xl border border-slate-200 p-3 space-y-3">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Apply Classification</p>
+
+              <!-- Tag picker -->
+              <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tags</label>
+                <div class="relative mt-1">
+                  <input id="pp-tag-search" type="text" placeholder="Search tags…" autocomplete="off"
+                         class="w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-primary focus:border-primary" />
+                  <div id="pp-tag-dropdown" class="absolute left-0 right-0 top-full z-10 mt-1 hidden max-h-40 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg"></div>
+                </div>
+                <div id="pp-selected-tags" class="mt-1.5 flex flex-wrap gap-1"></div>
+              </div>
+
+              <!-- Vendor name -->
+              <div>
+                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Vendor name</label>
+                <input id="pp-vendor-name" type="text" placeholder="Leave blank to skip"
+                       class="mt-1 w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-primary focus:border-primary" />
+              </div>
+
+              <!-- Flow / counterparty / etc -->
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Flow Type</label>
+                  <select id="pp-flow-type" class="mt-1 w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-primary focus:border-primary">
+                    <option value="">— skip —</option>
+                    <option value="expense">Expense</option>
+                    <option value="income">Income</option>
+                    <option value="transfer">Transfer (self)</option>
+                    <option value="refund">Refund / Cashback</option>
+                    <option value="investment_buy">Investment Buy</option>
+                    <option value="investment_sell">Investment Sell</option>
+                    <option value="fee">Fee / Charge</option>
+                    <option value="loan_given">Loan Given</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Counterparty</label>
+                  <select id="pp-counterparty-type" class="mt-1 w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-primary focus:border-primary">
+                    <option value="">— skip —</option>
+                    <option value="merchant">Merchant</option>
+                    <option value="friend">Friend</option>
+                    <option value="family">Family</option>
+                    <option value="employer">Employer</option>
+                    <option value="bank">Bank</option>
+                    <option value="government">Government</option>
+                    <option value="self">Self</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Paid for</label>
+                  <select id="pp-consumption-ownership" class="mt-1 w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-primary focus:border-primary">
+                    <option value="">— skip —</option>
+                    <option value="self">Self</option>
+                    <option value="family">Family</option>
+                    <option value="shared">Shared</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Settlement</label>
+                  <select id="pp-settlement-state" class="mt-1 w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:ring-primary focus:border-primary">
+                    <option value="">— skip —</option>
+                    <option value="none">None needed</option>
+                    <option value="owed_to_me">Owed to me</option>
+                    <option value="i_owe">I owe</option>
+                    <option value="settled">Settled</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Optional auto-tag rule -->
+              <div class="rounded-lg border border-slate-200 bg-slate-50 p-2.5">
+                <label class="flex items-start gap-2 cursor-pointer">
+                  <input id="pp-create-rule" type="checkbox" class="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-primary focus:ring-primary" />
+                  <div>
+                    <p class="text-[11px] font-bold text-slate-700">Create auto-tag rule</p>
+                    <p class="text-[10px] text-slate-500">Future txns from the same counterparty get tagged automatically.</p>
+                  </div>
+                </label>
+                <div id="pp-rule-details" class="mt-2 hidden grid grid-cols-2 gap-2">
+                  <select id="pp-rule-field" class="text-[11px] border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary">
+                    <option value="counterparty_identifier">UPI / Account ID</option>
+                    <option value="narration">Narration</option>
+                    <option value="vendor_name">Vendor Name</option>
+                  </select>
+                  <input id="pp-rule-value" type="text" placeholder="Match value"
+                         class="text-[11px] border border-slate-200 rounded-lg px-2 py-1 focus:ring-primary focus:border-primary" />
+                </div>
+              </div>
+
+              <button id="pp-submit-btn" type="button"
+                      class="w-full py-2 rounded-xl bg-sky-600 text-white text-xs font-bold hover:bg-sky-700 active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                Apply to All Linked Transactions
+              </button>
+            </div>
+          </div>
+
+          <!-- Settlements (hidden for MERCHANT type) -->
+          <div id="panel-settlement-section">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Settlements</p>
+              </div>
+              <div id="panel-settlements" class="mb-3"></div>
+              <form id="add-settlement-form" class="bg-slate-50 rounded-xl p-3 space-y-2">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Log payment received</p>
+                <div class="flex gap-2">
+                  <input id="settle-person" type="text" placeholder="From (optional)"
+                         class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary" />
+                  <input id="settle-amount" type="number" step="0.01" placeholder="Amount"
+                         class="w-28 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary" />
+                </div>
+                <div class="flex gap-2">
+                  <input id="settle-date" type="date"
+                         class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary" />
+                  <input id="settle-notes" type="text" placeholder="Notes"
+                         class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary" />
+                </div>
+                <button type="submit"
+                        class="w-full text-xs font-bold py-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600">
+                  Record Payment
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel footer actions -->
+        <div class="flex items-center justify-between gap-2 px-5 py-3 border-t border-slate-100 flex-shrink-0">
+          <button id="panel-settle-btn" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-green-500 text-white hover:bg-green-600"></button>
+          <button id="panel-delete-btn"
+                  class="text-xs font-bold px-3 py-1.5 rounded-lg text-rose-500 hover:bg-rose-50">
+            Delete Group
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end flex wrapper -->
+
+    <!-- ── Create Group Modal ─────────────────────────────────────────────── -->
+    <div id="create-group-modal"
+         class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 anim-scale-in">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-black text-slate-800">New Group</h3>
+          <button onclick="closeModal('create-group-modal'); resetGroupPurposeCards();" class="text-slate-400 hover:text-slate-700">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form id="create-group-form" class="space-y-4">
+          <!-- Step 1: Pick the kind of group (3 canonical types — see slice 1 in plan).
+               Each card sets #cg-type-hidden to EVENT / PATTERN / PORTFOLIO directly. -->
+          <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">What kind of group?</p>
+            <div class="grid grid-cols-1 gap-2">
+              <button type="button" id="kind-event"
+                      onclick="selectGroupKind('EVENT')"
+                      class="kind-card flex items-start gap-3 rounded-xl border-2 border-slate-200 p-3 text-left transition-all hover:border-violet-400/60 hover:bg-violet-50">
+                <span class="material-symbols-outlined text-[24px] text-violet-500 mt-0.5">restaurant</span>
+                <span class="flex-1 min-w-0">
+                  <span class="block text-xs font-black text-slate-700">Event</span>
+                  <span class="block text-[11px] text-slate-500 leading-snug mt-0.5">Combine 2–3 transactions from one occasion (dinner, trip leg). Category, Shared Joy, and payback all apply to the group.</span>
+                </span>
+              </button>
+              <button type="button" id="kind-pattern"
+                      onclick="selectGroupKind('PATTERN')"
+                      class="kind-card flex items-start gap-3 rounded-xl border-2 border-slate-200 p-3 text-left transition-all hover:border-sky-400/60 hover:bg-sky-50">
+                <span class="material-symbols-outlined text-[24px] text-sky-500 mt-0.5">auto_awesome</span>
+                <span class="flex-1 min-w-0">
+                  <span class="block text-xs font-black text-slate-700">Bulk Classify Pattern</span>
+                  <span class="block text-[11px] text-slate-500 leading-snug mt-0.5">Apply a category/tags once to many similar transactions (all Swiggy → Food). Shared Joy and payback stay per-transaction.</span>
+                </span>
+              </button>
+              <button type="button" id="kind-portfolio"
+                      onclick="selectGroupKind('PORTFOLIO')"
+                      class="kind-card flex items-start gap-3 rounded-xl border-2 border-slate-200 p-3 text-left transition-all hover:border-emerald-400/60 hover:bg-emerald-50">
+                <span class="material-symbols-outlined text-[24px] text-emerald-500 mt-0.5">trending_up</span>
+                <span class="flex-1 min-w-0">
+                  <span class="block text-xs font-black text-slate-700">Tracking</span>
+                  <span class="block text-[11px] text-slate-500 leading-snug mt-0.5">Track investments and other long-term items as one holding (cost basis, current value, returns). No Shared Joy or payback.</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <!-- Hidden canonical type set by the cards above -->
+          <input type="hidden" id="cg-type-hidden" value="" />
+
+          <input id="cg-name" type="text" placeholder="Group name (e.g. Goa Trip, Myntra)"
+                 required
+                 class="w-full text-sm border border-slate-200 rounded-xl px-4 py-2.5 focus:ring-primary focus:border-primary" />
+          <textarea id="cg-notes" rows="2" lang="en" spellcheck="true" placeholder="Notes (optional)"
+                    class="w-full text-sm border border-slate-200 rounded-xl px-4 py-2.5 resize-none focus:ring-primary focus:border-primary"></textarea>
+          <div class="flex gap-2 pt-1">
+            <button type="button" onclick="closeModal('create-group-modal'); resetGroupPurposeCards();"
+                    class="flex-1 text-sm font-bold py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
+              Cancel
+            </button>
+            <button type="submit" id="cg-submit-btn" disabled
+                    class="flex-1 text-sm font-bold py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed">
+              Create
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Transaction Search Modal ───────────────────────────────────────── -->
+    <div id="txn-search-modal"
+         class="hidden fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/30">
+      <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-lg mx-0 sm:mx-4 flex flex-col anim-scale-in"
+           style="max-height:85vh">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 flex-shrink-0">
+          <h3 class="text-sm font-black text-slate-800">Link Transactions</h3>
+          <button onclick="closeTxnSearch()" class="text-slate-400 hover:text-slate-700">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <!-- Search filters -->
+        <div class="px-5 py-3 space-y-2 border-b border-slate-100 flex-shrink-0">
+          <input id="txn-search-input" type="text" placeholder="Search by merchant, narration…"
+                 class="w-full text-sm border border-slate-200 rounded-xl px-4 py-2 focus:ring-primary focus:border-primary" />
+          <div class="flex gap-2">
+            <input id="txn-search-from" type="date"
+                   class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-2 focus:ring-primary focus:border-primary" />
+            <input id="txn-search-to" type="date"
+                   class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-2 focus:ring-primary focus:border-primary" />
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div id="txn-results" class="flex-1 overflow-y-auto px-4 py-2 space-y-0.5"></div>
+
+        <!-- Role + amount + confirm -->
+        <div class="px-5 py-3 border-t border-slate-100 flex-shrink-0 space-y-2">
+          <div class="flex gap-2 items-center">
+            <label class="text-[10px] font-bold text-slate-500 uppercase shrink-0">Role</label>
+            <select id="txn-role-select"
+                    class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary">
+              <option value="EXPENSE">Expense — money you paid</option>
+              <option value="REFUND">Refund — money returned to you</option>
+              <option value="RECOVERY">Recovery — friend's share you received</option>
+              <option value="SETTLEMENT">Settlement — final lump-sum payback</option>
+            </select>
+          </div>
+          <div class="flex gap-2 items-center">
+            <label class="text-[10px] font-bold text-slate-500 uppercase shrink-0">Amount</label>
+            <input id="txn-attributed-amount" type="number" step="0.01"
+                   placeholder="Leave blank = full txn amount"
+                   class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-1.5 focus:ring-primary focus:border-primary" />
+          </div>
+          <button id="link-txns-btn"
+                  class="w-full text-sm font-bold py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90">
+            Link Selected
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/merchant_group.js?v=20260525-leaftag" defer></script>
+    <script src="/js/groups.js?v=20260530-savefeedback" defer></script>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js"></script>
+  </body>
+</html>
+
+
+

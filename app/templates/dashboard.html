@@ -1,0 +1,528 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Dashboard - FinanceTracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: { primary: "#607AFB", "background-light": "#f5f6f8" },
+            fontFamily: { display: "Manrope" },
+          },
+        },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="bg-background-light text-slate-900 font-display">
+    <div class="flex h-screen w-full">
+
+      <!-- NAV SIDEBAR -->
+      <aside class="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 border-b border-slate-100 px-6">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px] fill-1">dashboard</span>
+              <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span>
+              <span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span>
+              <span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+              <span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span>
+              <span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span>
+              <span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              <span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span>
+              <span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>
+          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="flex-1 overflow-y-auto">
+        <header class="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6 gap-4">
+          <div class="min-w-0 flex-1">
+            <div id="dash-greeting" class="text-sm text-slate-700 truncate">
+              <span class="font-extrabold">Welcome back 👋</span>
+            </div>
+          </div>
+          <div id="header-right" class="flex items-center gap-2 flex-shrink-0"></div>
+        </header>
+
+        <section class="mx-auto max-w-4xl space-y-5 p-6">
+
+          <!-- ── QUICK ACTIONS ───────────────────────────────────────── -->
+          <div class="flex items-center gap-2">
+            <button onclick="openUploadPanel()" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-primary/40 transition-all shadow-sm">
+              <span class="material-symbols-outlined text-[17px] text-primary">cloud_upload</span>
+              Upload Statement
+            </button>
+
+            <a id="reviewNextLink" class="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90 shadow-sm" href="/reports/">
+              <span class="material-symbols-outlined text-[17px]">rate_review</span>
+              Review Queue
+            </a>
+          </div>
+
+          <!-- ── THIS MONTH + NET WORTH ──────────────────────────────── -->
+          <div class="grid gap-4 sm:grid-cols-2">
+
+            <!-- This month -->
+            <div class="rounded-3xl bg-slate-950 p-6 text-white">
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400" id="dashMonthLabel">This month</p>
+              <div class="mt-4 space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-sm text-rose-400">Spent</span>
+                  <div class="text-right">
+                    <span id="dashExpense" class="text-2xl font-extrabold text-white">₹0.00</span>
+                    <div id="dashExpenseDelta" class="mt-0.5 text-right"></div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-sm text-emerald-400">Income</span>
+                  <div class="text-right">
+                    <span id="dashIncome" class="text-2xl font-extrabold text-white">₹0.00</span>
+                    <div id="dashIncomeDelta" class="mt-0.5 text-right"></div>
+                  </div>
+                </div>
+                <div class="flex items-baseline justify-between">
+                  <span class="text-sm text-violet-400">Invested</span>
+                  <span id="dashInvested" class="text-lg font-extrabold text-violet-300">₹0.00</span>
+                </div>
+                <div class="flex items-baseline justify-between border-t border-slate-800 pt-2">
+                  <span class="text-sm text-slate-400">Net</span>
+                  <span id="dashNetFlow" class="text-xl font-extrabold text-white">₹0.00</span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                  <span class="text-sm text-sky-400">Saved</span>
+                  <div class="text-right">
+                    <span id="dashSavingsRate" class="text-sm font-extrabold text-sky-300">—</span>
+                    <span id="dashSavingsDelta" class="ml-1 text-[10px] font-bold"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bank balances (replaces net worth when statement data exists) -->
+            <div id="dash-bank-balances" class="hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"></div>
+
+            <!-- Net worth (hidden when bank balance data is available) -->
+            <div id="dash-net-worth-card" class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Net worth</p>
+              <p id="dashNetWorth" class="mt-4 text-3xl font-extrabold text-slate-950">—</p>
+              <div class="mt-3 flex items-center justify-between text-sm text-slate-500">
+                <span>Assets <span id="dashAssets" class="font-bold text-emerald-700">—</span></span>
+                <span>Liabilities <span id="dashLiabilities" class="font-bold text-rose-600">—</span></span>
+              </div>
+              <a href="/accounts.html" class="mt-4 inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline">
+                View accounts <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- ── NEEDS ATTENTION ─────────────────────────────────────── -->
+          <div class="rounded-3xl border border-amber-100 bg-amber-50/60 p-5 ring-1 ring-amber-100">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-amber-600">Needs attention</p>
+                <div class="mt-2 flex flex-wrap items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-amber-500">label_off</span>
+                    <span class="text-sm font-semibold text-slate-700"><span id="dashUntagged" class="font-extrabold text-amber-700">0</span> untagged</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-amber-500">pending</span>
+                    <span class="text-sm font-semibold text-slate-700"><span id="dashNeedsReview" class="font-extrabold text-amber-700">0</span> needs review</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-400">swap_horiz</span>
+                    <span class="text-sm font-semibold text-slate-700"><span id="dashExcluded" class="font-extrabold text-slate-700">0</span> transfers/paybacks</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 flex-shrink-0">
+                <a href="/reports/" class="rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary/90 text-center">Review in Reports</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── UPCOMING + SHARED JOY ───────────────────────────────── -->
+          <div class="grid gap-4 sm:grid-cols-2">
+            <!-- Upcoming planned expenses due -->
+            <a id="dash-upcoming" href="/accounts.html" class="hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-primary/30 hover:bg-primary/5">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Upcoming this month</p>
+                <span class="material-symbols-outlined text-[18px] text-amber-500">event_upcoming</span>
+              </div>
+              <p id="dash-upcoming-total" class="mt-3 text-2xl font-extrabold text-slate-950">₹0</p>
+              <p id="dash-upcoming-meta" class="mt-1 text-xs text-slate-500"></p>
+            </a>
+            <!-- Shared Joy giving -->
+            <a id="dash-sharedjoy" href="/budget.html" class="hidden rounded-3xl border border-violet-100 bg-violet-50/50 p-5 shadow-sm transition hover:border-violet-300 dark:border-violet-900/50 dark:bg-violet-950/30 dark:hover:border-violet-700">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-violet-500 dark:text-violet-300">✨ Shared Joy</p>
+                <span id="dash-sharedjoy-pct" class="text-xs font-bold text-violet-600 dark:text-violet-300"></span>
+              </div>
+              <p id="dash-sharedjoy-spent" class="mt-3 text-2xl font-extrabold text-violet-700 dark:text-violet-200">₹0</p>
+              <div class="mt-2 h-2 w-full overflow-hidden rounded-full bg-violet-100 dark:bg-violet-900/50">
+                <div id="dash-sharedjoy-bar" class="h-full rounded-full bg-violet-500 dark:bg-violet-400 transition-all duration-500" style="width:0%"></div>
+              </div>
+              <p id="dash-sharedjoy-meta" class="mt-1.5 text-xs text-violet-500/80 dark:text-violet-300/70"></p>
+            </a>
+          </div>
+
+          <!-- ── QUICK LINKS ─────────────────────────────────────────── -->
+          <div>
+            <!-- Budget Progress -->
+            <div id="dash-budget-section" class="hidden col-span-2 sm:col-span-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm mb-3">
+              <div class="flex items-center justify-between mb-2">
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Monthly budget</p>
+                  <p class="mt-0.5 text-sm font-extrabold text-slate-900">
+                    <span id="dash-budget-spent">�</span><span class="text-slate-400 font-normal"> of </span><span id="dash-budget-total">�</span>
+                  </p>
+                </div>
+                <span id="dash-budget-pace" class="rounded-full px-3 py-1 text-xs font-bold"></span>
+              </div>
+              <div class="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                <div id="dash-budget-bar" class="h-full rounded-full transition-all duration-500" style="width:0%"></div>
+              </div>
+              <p id="dash-budget-meta" class="mt-1.5 text-[10px] text-slate-400"></p>
+            </div>
+
+            <!-- Spending personality -->
+            <div id="dash-personality" class="mb-3"></div>
+
+            <!-- Top Categories -->
+            <div id="dash-categories-section" class="hidden col-span-2 sm:col-span-4 mb-3">
+              <div class="mb-2 flex items-center justify-between">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Top categories this month</p>
+                <a href="/reports/" class="text-[10px] font-bold text-primary hover:underline">See all ?</a>
+              </div>
+              <div id="dashCategoryBarsVisible" class="grid gap-1.5 sm:grid-cols-2"></div>
+            </div>
+
+            <p class="col-span-2 sm:col-span-4 mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Quick links</p>
+            <div class="col-span-2 sm:col-span-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <button onclick="openUploadPanel()" class="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:border-primary/30 hover:bg-primary/5 w-full">
+                <span class="material-symbols-outlined text-[28px] text-primary">upload_file</span>
+                <span class="text-xs font-bold text-slate-700">Upload</span>
+              </button>
+              <a href="/reports/" class="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:border-primary/30 hover:bg-primary/5">
+                <span class="material-symbols-outlined text-[28px] text-primary">description</span>
+                <span class="text-xs font-bold text-slate-700">Reports</span>
+              </a>
+              <a href="/reports/analytics" class="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:border-primary/30 hover:bg-primary/5">
+                <span class="material-symbols-outlined text-[28px] text-primary">insights</span>
+                <span class="text-xs font-bold text-slate-700">Analytics</span>
+              </a>
+              <a href="/budget.html" class="flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm transition hover:border-primary/30 hover:bg-primary/5">
+                <span class="material-symbols-outlined text-[28px] text-primary">savings</span>
+                <span class="text-xs font-bold text-slate-700">Budget</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- ── OPEN REVIEW ITEMS (slim list) ─────────────────────── -->
+          <div>
+            <div class="mb-3 flex items-center justify-between">
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Open review</p>
+              <a href="/reports/" class="text-xs font-bold text-primary hover:underline">See all →</a>
+            </div>
+            <div id="dashboardReviewQueue" class="space-y-2">
+              <p class="text-sm text-slate-400">Loading...</p>
+            </div>
+          </div>
+
+          <!-- ── DATA STATS (slim row) ──────────────────────────────── -->
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-xs text-slate-500 shadow-sm">
+            <span><span id="dashRows" class="font-extrabold text-slate-800">0</span> transactions</span>
+            <span><span id="dashSources" class="font-extrabold text-slate-800">0</span> sources</span>
+            <p id="dashboardHeroMeta" class="flex-1 text-right text-[11px] text-slate-400"></p>
+          </div>
+
+        </section>
+      </main>
+    </div>
+
+    <script src="js/dashboard.js?v=20260601-active-month"></script>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js"></script>
+    <script>
+      // Fetch net worth separately (not in dashboard.js)
+      fetch('/planning/net-worth')
+        .then(r => r.json())
+        .then(result => {
+          const d = result.data || {};
+          const fmt = v => '₹' + Number(v || 0).toLocaleString('en-IN', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+          const el = document.getElementById('dashNetWorth');
+          if (el) {
+            el.textContent = fmt(d.net_worth);
+            el.className = 'mt-4 text-3xl font-extrabold ' + (d.net_worth >= 0 ? 'text-slate-950' : 'text-rose-600');
+          }
+          const ae = document.getElementById('dashAssets');
+          if (ae) ae.textContent = fmt(d.total_assets);
+          const le = document.getElementById('dashLiabilities');
+          if (le) le.textContent = fmt(d.total_liabilities);
+        })
+        .catch(() => {});
+    </script>
+
+  <!-- Upload panel backdrop -->
+  <div id="upload-panel-backdrop" class="fixed inset-0 z-40 hidden bg-black/30 backdrop-blur-[2px]" onclick="closeUploadPanel()"></div>
+
+  <!-- Upload side panel -->
+  <div id="upload-panel" class="fixed inset-y-0 right-0 z-50 flex w-full max-w-[420px] flex-col bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl" style="transform:translateX(100%);transition:transform 0.28s cubic-bezier(0.4,0,0.2,1)">
+
+    <!-- Panel header -->
+    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-5 py-4 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="rounded-xl bg-primary/10 p-2 text-primary">
+          <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-900 dark:text-white">Upload Statement</h3>
+          <p class="text-[11px] text-slate-400 dark:text-slate-500">Import your bank transactions</p>
+        </div>
+      </div>
+      <button id="upload-panel-close" class="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+
+    <!-- Panel body -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-5">
+
+      <!-- Source selector -->
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">Statement source</label>
+        <select id="statement_source" name="statement_source" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition">
+          <option value="BOB">BOB Bank Statement</option>
+          <option value="RBL">RBL Bank Statement</option>
+          <option value="KOTAK">Kotak Bank Statement</option>
+          <option value="GPAY">GPay Statement</option>
+          <option value="SUPERMONEY">Super Money Statement</option>
+          <option value="CRED">CRED Statement</option>
+          <option value="CUSTOM">Other bank CSV...</option>
+        </select>
+        <input id="custom_statement_source" class="hidden w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none" placeholder="Bank name, e.g. HDFC" />
+      </div>
+
+      <!-- PDF password (RBL only, shown by upload.js) -->
+      <div id="statementPasswordGroup" class="hidden space-y-1.5">
+        <label class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">PDF Password</label>
+        <input type="password" id="statement_password" name="statement_password" autocomplete="one-time-code" data-lpignore="true"
+          class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+          placeholder="PDF password (RBL only)" />
+        <p class="text-[11px] text-slate-400">Cleared immediately after upload. Never stored.</p>
+      </div>
+
+      <!-- File drop zone -->
+      <div>
+        <label class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400 block mb-1.5">Statement file</label>
+        <div id="upload-dropzone"
+          class="group relative flex flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-6 text-center cursor-pointer transition-all hover:border-primary/50 hover:bg-primary/5"
+          onclick="selectFile()">
+          <span class="material-symbols-outlined text-[36px] text-slate-300 dark:text-slate-600 group-hover:text-primary transition-colors">attach_file</span>
+          <div>
+            <p id="fileName" class="text-sm font-semibold text-slate-600 dark:text-slate-300">Click to select file</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">CSV or PDF · BOB, RBL, Kotak, GPay…</p>
+          </div>
+        </div>
+        <input type="file" id="fileInput" name="file" accept=".csv,.pdf" style="position:absolute;left:-9999px;width:1px;height:1px" />
+      </div>
+
+      <!-- Upload button -->
+      <button onclick="uploadFile()" class="w-full rounded-xl bg-primary py-3 text-sm font-bold text-white shadow-sm hover:bg-primary/90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">upload</span>
+        Upload Statement
+      </button>
+
+      <!-- Result section (populated by upload.js) -->
+      <div id="statementUploadInsight" class="hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-4 text-sm"></div>
+    </div>
+
+    <!-- Panel footer -->
+    <div class="border-t border-slate-100 dark:border-slate-800 px-5 py-3 flex-shrink-0">
+      <p class="text-[11px] text-slate-400 text-center">Uploaded files are processed server-side and never stored permanently</p>
+    </div>
+  </div>
+
+  <!-- Upload status modal (used by upload.js internally) -->
+  <div id="modal" style="display:none;" class="fixed inset-0 z-[60] bg-black/40 flex items-center justify-center">
+    <div class="bg-white dark:bg-slate-900 rounded-xl w-96 p-5 relative shadow-2xl border border-slate-200 dark:border-slate-700 anim-scale-in">
+      <button onclick="closeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 dark:hover:text-white">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+      <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-2">Upload Status</h3>
+      <p id="modalMessage" class="text-sm text-slate-600 dark:text-slate-300">Processing...</p>
+    </div>
+  </div>
+
+  <script>
+  function openUploadPanel() {
+    document.getElementById("upload-panel").style.transform = "translateX(0)";
+    document.getElementById("upload-panel-backdrop").classList.remove("hidden");
+  }
+  function closeUploadPanel() {
+    document.getElementById("upload-panel").style.transform = "translateX(100%)";
+    document.getElementById("upload-panel-backdrop").classList.add("hidden");
+  }
+  document.getElementById("upload-panel-close")?.addEventListener("click", closeUploadPanel);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeUploadPanel(); });
+
+  // Deep-link: /dashboard.html?upload=1&source=RBL opens the upload panel preset to a source.
+  (function () {
+    const params = new URLSearchParams(location.search);
+    if (params.get("upload") !== "1") return;
+    const src = (params.get("source") || "").toUpperCase();
+    setTimeout(() => {
+      const sel = document.getElementById("statement_source");
+      if (sel && src && [...sel.options].some(o => o.value === src)) {
+        sel.value = src;
+        sel.dispatchEvent(new Event("change"));
+      }
+      try { openUploadPanel(); } catch (e) {}
+    }, 200);
+  })();
+  </script>
+
+  <!-- CSV Column Mapping Modal -->
+  <div id="csv-map-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="w-full max-w-lg mx-4 rounded-2xl bg-white dark:bg-slate-900 shadow-2xl border border-slate-200 dark:border-slate-700 anim-scale-in">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-white">Map CSV Columns</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Tell us what each column in your CSV means</p>
+        </div>
+        <button id="csv-map-close" class="text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button>
+      </div>
+      <div class="px-5 py-4 space-y-3 max-h-96 overflow-y-auto" id="csv-map-body"></div>
+      <div class="px-5 py-3 border-t border-slate-100 dark:border-slate-800 flex gap-2 justify-end">
+        <button id="csv-map-skip" class="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">Skip — use auto-detect</button>
+        <button id="csv-map-apply" class="rounded-xl bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 shadow-sm">Apply Mapping</button>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    const FIELDS = [
+      { key: "date",      label: "Transaction Date",        required: true  },
+      { key: "amount",    label: "Amount",                  required: true  },
+      { key: "narration", label: "Description/Narration",   required: false },
+      { key: "direction", label: "Direction (debit/credit)", required: false },
+      { key: "balance",   label: "Running Balance",         required: false },
+    ];
+    let _csvFile = null, _csvHeaders = [];
+    function showCsvMapper(file, headers) {
+      _csvFile = file; _csvHeaders = headers;
+      const modal = document.getElementById("csv-map-modal");
+      const body  = document.getElementById("csv-map-body");
+      if (!modal || !body) return;
+      body.innerHTML = FIELDS.map(f => `
+        <div class="flex items-center justify-between gap-3">
+          <label class="text-sm font-medium text-slate-700 dark:text-slate-300 w-40 flex-shrink-0">
+            ${f.label}${f.required ? '<span class="text-rose-400 ml-0.5">*</span>' : ""}
+          </label>
+          <select data-map-field="${f.key}" class="flex-1 h-9 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2 text-sm focus:border-primary focus:outline-none dark:text-slate-200">
+            <option value="">— skip —</option>
+            ${headers.map((h,i) => `<option value="${i}">${h}</option>`).join("")}
+          </select>
+        </div>`).join("");
+      const guess = { date: /date|time/i, amount: /amount|amt|debit|credit|value/i, narration: /narr|desc|detail|remark|ref/i, direction: /dr.*cr|type|mode/i, balance: /balance|bal/i };
+      body.querySelectorAll("[data-map-field]").forEach(sel => {
+        const idx = headers.findIndex(h => (guess[sel.dataset.mapField] || /never/).test(h));
+        if (idx >= 0) sel.value = String(idx);
+      });
+      modal.classList.remove("hidden"); modal.classList.add("flex");
+    }
+    function closeCsvMapper() {
+      const m = document.getElementById("csv-map-modal");
+      if (m) { m.classList.add("hidden"); m.classList.remove("flex"); }
+    }
+    document.getElementById("csv-map-close")?.addEventListener("click", closeCsvMapper);
+    document.getElementById("csv-map-skip")?.addEventListener("click", closeCsvMapper);
+    document.getElementById("csv-map-apply")?.addEventListener("click", () => {
+      window.toast?.info("Column mapping noted — uploading with auto-detect");
+      closeCsvMapper();
+    });
+    document.addEventListener("change", e => {
+      const input = e.target.closest('input[type="file"]');
+      if (!input) return;
+      const file = input.files?.[0];
+      if (!file || !file.name.toLowerCase().endsWith(".csv")) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const firstLine = (ev.target.result || "").split("\n")[0] || "";
+        const headers = firstLine.split(",").map(h => h.replace(/^["'\s]+|["'\s]+$/g, ""));
+        if (headers.length >= 3 && headers.some(h => h.length > 0)) showCsvMapper(file, headers);
+      };
+      reader.readAsText(file.slice(0, 2048));
+    });
+  })();
+  </script>
+
+  <script src="/js/upload.js?v=20260524-1"></script>
+
+  </body>
+</html>
+
+
+
+

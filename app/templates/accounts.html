@@ -1,0 +1,279 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Accounts - FinanceTracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: { primary: "#607AFB", "background-light": "#f5f6f8" },
+            fontFamily: { display: "Manrope" },
+          },
+        },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+  </head>
+  <body class="bg-background-light font-display text-slate-900">
+    <div class="flex h-screen w-full">
+
+      <!-- NAV SIDEBAR -->
+      <aside class="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 border-b border-slate-100 px-6">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px]">dashboard</span>
+              <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px] fill-1">account_balance</span>
+              <span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span>
+              <span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span>
+              <span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+              <span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span>
+              <span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span>
+              <span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              <span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span>
+              <span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span>
+              <span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px]">rule</span>
+              <span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html">
+              <span class="material-symbols-outlined text-[20px]">help</span>
+              <span class="text-sm font-medium">Guide</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span>
+              <span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>
+          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode" style="display:flex;align-items:center;gap:8px;width:100%;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;color:#64748b;cursor:pointer;border:none;background:none;transition:background 0.14s,color 0.14s;text-align:left">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="flex-1 overflow-y-auto">
+
+        <!-- Page header -->
+        <header class="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-6">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Finance</p>
+            <h1 class="text-xl font-extrabold text-slate-950">Accounts &amp; Net Worth</h1>
+          </div>
+          <div id="header-right" class="flex items-center gap-2 flex-shrink-0"></div>
+        </header>
+
+        <div class="mx-auto max-w-4xl space-y-5 p-6">
+
+          <!-- ── ROW 1: NET WORTH + SAVINGS STRIP ─────────────────────── -->
+          <div data-prv-strict="1" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-1">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Net Worth</p>
+              <p id="netWorthTotal" class="mt-1.5 text-2xl font-black text-slate-950">—</p>
+              <p id="netWorthDelta" class="mt-0.5 text-[10px] font-bold"></p>
+              <p id="netWorthAsOf" class="mt-0.5 text-[10px] text-slate-400"></p>
+              <p class="mt-1 text-[10px] text-slate-400">Assets minus liabilities across all your accounts</p>
+            </div>
+            <div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-600">Total Assets</p>
+              <p id="netWorthAssets" class="mt-1.5 text-2xl font-black text-emerald-700">—</p>
+              <p class="mt-1 text-[10px] text-emerald-600/70">Sum of balances of accounts you own (bank, savings, investments)</p>
+            </div>
+            <div class="rounded-2xl border border-rose-100 bg-rose-50 p-4 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-rose-600">Total Liabilities</p>
+              <p id="netWorthLiabilities" class="mt-1.5 text-2xl font-black text-rose-700">—</p>
+              <p class="mt-1 text-[10px] text-rose-600/70">Amount you owe (credit cards, loans, dues)</p>
+            </div>
+            <div class="rounded-2xl border border-sky-100 bg-sky-50 p-4 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-sky-600">Saved this month</p>
+              <p id="monthNetSaved" class="mt-1.5 text-2xl font-black text-sky-700">—</p>
+              <p id="monthNetMeta" class="mt-0.5 text-[10px] text-slate-400"></p>
+            </div>
+          </div>
+
+          <!-- ── ROW 2: THIS MONTH INCOME / SPENT ──────────────────────── -->
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Income this month</p>
+              <p id="monthIncome" class="mt-1.5 text-xl font-black text-emerald-700">—</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Spent this month</p>
+              <p id="monthSpent" class="mt-1.5 text-xl font-black text-rose-700">—</p>
+            </div>
+          </div>
+
+          <!-- ── ROW 2b: TREND CHARTS ─────────────────────────────────── -->
+          <div class="grid gap-3 lg:grid-cols-[1fr_260px]">
+
+            <!-- Monthly income vs expense bar chart -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div class="flex items-center justify-between mb-3">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Income vs Expenses — last 6 months</p>
+                <div class="flex items-center gap-3 text-[10px] text-slate-400">
+                  <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#059669"></span>Income</span>
+                  <span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:#dc2626"></span>Expense</span>
+                </div>
+              </div>
+              <div id="monthly-chart-wrap" style="height:120px">
+                <svg id="monthly-chart" width="100%" height="120" style="overflow:visible"></svg>
+              </div>
+              <div id="monthly-chart-labels" class="flex justify-around mt-1"></div>
+            </div>
+
+            <!-- Net worth sparkline -->
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" style="border-top:3px solid #607AFB">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Net Worth Trend</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Last 24 snapshots</p>
+                </div>
+                <span id="nw-spark-badge" class="rounded-full px-2.5 py-1 text-[11px] font-bold"></span>
+              </div>
+              <div style="height:110px; position:relative">
+                <svg id="nw-sparkline" width="100%" height="110" style="overflow:visible"></svg>
+                <div id="nw-tooltip" style="position:absolute;display:none;background:white;border:1px solid #e5e9f2;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:600;color:#1e293b;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.08);white-space:nowrap"></div>
+              </div>
+              <p id="nw-spark-meta" class="mt-2 text-[10px] text-slate-400"></p>
+            </div>
+
+          </div>
+
+          <!-- ── ROW 3: ACCOUNTS + ADD FORM ────────────────────────────── -->
+          <div class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+
+            <!-- Account list -->
+            <div>
+              <div class="mb-3 flex items-center justify-between">
+                <h2 class="text-base font-extrabold text-slate-950">Your accounts</h2>
+                <p id="accountsListMeta" class="text-xs text-slate-400"></p>
+              </div>
+              <div id="accountsList" data-prv-strict="1" class="space-y-3">
+                <p class="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-400">Loading…</p>
+              </div>
+
+            </div>
+
+            <!-- Add account form -->
+            <aside>
+              <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">Add account</p>
+                <form id="accountsForm" class="mt-3 space-y-3">
+                  <input name="account_name" class="w-full rounded-lg border-slate-200 text-sm" placeholder="e.g. HDFC Savings" required />
+                  <select name="account_type" class="w-full rounded-lg border-slate-200 text-sm">
+                    <option value="bank">Bank account</option>
+                    <option value="cash">Cash</option>
+                    <option value="wallet">Wallet / UPI</option>
+                    <option value="credit_card">Credit card</option>
+                    <option value="personal_loan">Personal loan</option>
+                    <option value="home_loan">Home loan</option>
+                    <option value="fd">Fixed deposit</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <select name="asset_class" id="formAssetClass" class="w-full rounded-lg border-slate-200 text-sm">
+                    <option value="asset">Asset — adds to net worth</option>
+                    <option value="liability">Liability — subtracts</option>
+                  </select>
+                  <input name="current_balance" class="w-full rounded-lg border-slate-200 text-sm" placeholder="Current balance" type="number" step="0.01" min="0" />
+                  <input name="institution_name" class="w-full rounded-lg border-slate-200 text-sm" placeholder="Bank name (optional)" />
+                  <input name="source_name" class="w-full rounded-lg border-slate-200 text-sm" placeholder="Source tag e.g. HDFC (optional)" />
+                  <button class="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-primary/90" type="submit">Save account</button>
+                  <p id="accountsFormState" class="text-xs text-slate-400 text-center">Source tag links this account to uploaded statements.</p>
+                </form>
+              </div>
+
+              <!-- Quick links -->
+              <div class="mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-2">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-400 mb-1">Jump to</p>
+                <a href="/budget.html" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                  <span class="material-symbols-outlined text-[18px] text-primary">savings</span> Budget
+                </a>
+                <a href="/goals.html" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                  <span class="material-symbols-outlined text-[18px] text-primary">flag</span> Goals &amp; Wishlist
+                </a>
+                <a href="/reports/analytics" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                  <span class="material-symbols-outlined text-[18px] text-primary">insights</span> Analytics
+                </a>
+              </div>
+            </aside>
+          </div>
+
+        </div><!-- /max-w-4xl -->
+
+        <!-- Hidden IDs for accounts.js compat -->
+        <div class="hidden" aria-hidden="true">
+          <span id="accountsTotalBalance"></span><span id="accountsTrackedCount"></span>
+          <span id="accountsLinkedCount"></span><span id="accountsManualCount"></span>
+          <span id="accountsNeedsLinkCount"></span><span id="accountsMismatchTotal"></span>
+          <span id="accountsHeroMeta"></span>
+          <span id="netWorthBreakdown"></span><span id="netWorthBreakdownList"></span>
+          <button id="netWorthBreakdownToggle"></button>
+          <span id="budgetMeta"></span><span id="budgetPaceBadge"></span><span id="budgetMonthProgress"></span>
+          <span id="budgetAmount"></span><span id="budgetSpent"></span><span id="budgetRemaining"></span>
+          <span id="budgetUsagePercent"></span><span id="budgetProjectedOutflow"></span>
+          <span id="budgetPlannedRemaining"></span><span id="budgetReviewQueue"></span>
+          <span id="budgetPaceMeta"></span><span id="budgetInsightHeading"></span>
+          <span id="budgetBucketMeta"></span><div id="budgetTopBuckets"></div>
+          <div id="budgetProgressBar"></div><div id="budgetInsightPanel"></div>
+          <div id="budgetInsightOverviewPanel"></div><div id="budgetInsightBucketsPanel"></div>
+          <span id="plannedTotal"></span><span id="plannedMeta"></span><div id="plannedExpenseList"></div>
+          <span id="wishlistTotal"></span><span id="wishlistMeta"></span><div id="wishlistList"></div>
+          <span id="budgetFormState"></span><span id="plannedExpenseFormState"></span><span id="wishlistFormState"></span>
+        </div>
+
+      </main>
+    </div>
+    <script src="js/accounts.js?v=20260524-acct-2"></script>
+    <script src="/js/toast.js"></script>
+    <script src="/js/app-init.js"></script>
+  </body>
+</html>
+
+
+
+

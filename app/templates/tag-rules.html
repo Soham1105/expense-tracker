@@ -1,0 +1,226 @@
+﻿<!doctype html>
+<html class="light" lang="en">
+  <head>
+  <script>if(localStorage.getItem("ft_dark_mode")==="1")document.documentElement.classList.add("dark");</script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tag Rules</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="/js/tag-rules.js?v=3" defer></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: { extend: { colors: { primary: "#607AFB" }, fontFamily: { display: ["Manrope","sans-serif"] } } },
+      };
+    </script>
+    <link href="/css/app.css" rel="stylesheet" />
+    <style>
+      @keyframes fadeInUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes scaleIn   { from{opacity:0;transform:scale(0.96)}       to{opacity:1;transform:scale(1)} }
+      @keyframes rowFlash  { 0%,100%{background:transparent} 35%{background:rgba(19,127,236,0.08)} }
+      @keyframes shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+      .anim-fade-up  { animation:fadeInUp  0.3s ease-out both; }
+      .anim-slide-dn { animation:slideDown 0.22s ease-out both; }
+      .anim-scale-in { animation:scaleIn   0.18s ease-out both; }
+      .anim-row-flash{ animation:rowFlash  1s ease-out both; }
+      .stagger > * { animation:fadeInUp 0.3s ease-out both; }
+      .stagger > *:nth-child(1){animation-delay:0ms}  .stagger > *:nth-child(2){animation-delay:55ms}
+      .stagger > *:nth-child(3){animation-delay:110ms} .stagger > *:nth-child(n+4){animation-delay:160ms}
+      .skeleton { background:linear-gradient(90deg,#f1f5f9 25%,#e8edf5 50%,#f1f5f9 75%);
+                  background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:8px; }
+      button:active:not(:disabled){ transform:scale(0.97); }
+      input:focus,select:focus{ box-shadow:0 0 0 3px rgba(19,127,236,0.12); }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900 font-display overflow-hidden">
+    <div class="relative flex h-screen w-full">
+
+      <!-- SIDEBAR -->
+      <aside class="hidden w-64 flex-col border-r border-slate-200 bg-white lg:flex">
+        <div class="flex h-16 items-center gap-3 px-6 border-b border-slate-100">
+          <div class="flex items-center justify-center rounded-lg bg-primary/10 p-2 text-primary">
+            <span class="material-symbols-outlined">account_balance_wallet</span>
+          </div>
+          <h2 class="text-lg font-bold tracking-tight">FinanceTracker</h2>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 py-6">
+          <div class="flex flex-col gap-1">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/dashboard.html">
+              <span class="material-symbols-outlined text-[20px]">dashboard</span><span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/accounts.html">
+              <span class="material-symbols-outlined text-[20px]">account_balance</span><span class="text-sm font-medium">Accounts</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/budget.html">
+              <span class="material-symbols-outlined text-[20px]">savings</span><span class="text-sm font-medium">Budget</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/goals.html">
+              <span class="material-symbols-outlined text-[20px]">flag</span><span class="text-sm font-medium">Goals</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/">
+              <span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="text-sm font-medium">Transactions</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/">
+              <span class="material-symbols-outlined text-[20px]">description</span><span class="text-sm font-medium">Reports</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/reports/analytics">
+              <span class="material-symbols-outlined text-[20px]">insights</span><span class="text-sm font-medium">Analytics</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/merchants.html">
+              <span class="material-symbols-outlined text-[20px]">storefront</span><span class="text-sm font-medium">Merchants</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/groups.html">
+              <span class="material-symbols-outlined text-[20px]">group_work</span><span class="text-sm font-medium">Groups</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/balances.html">
+              <span class="material-symbols-outlined text-[20px]">balance</span><span class="text-sm font-medium">Balances</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2.5 text-primary active-nav" href="/tag-rules.html">
+              <span class="material-symbols-outlined text-[20px] fill-1">rule</span><span class="text-sm font-medium">Tag Rules</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/guide.html"><span class="material-symbols-outlined text-[20px]">help</span><span class="text-sm font-medium">Guide</span></a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900" href="/settings.html">
+              <span class="material-symbols-outlined text-[20px]">settings</span><span class="text-sm font-medium">Settings</span>
+            </a>
+          </div>          <div class="mt-2 border-t border-slate-100 pt-2">
+            <button id="dark-mode-toggle" title="Toggle dark mode">
+              <span class="material-symbols-outlined text-[18px] dm-icon">dark_mode</span>
+              <span class="text-sm font-medium dm-label">Dark mode</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="flex flex-1 flex-col h-full overflow-hidden">
+        <header class="flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 flex-shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 shadow-sm">
+              <span class="material-symbols-outlined text-[15px] text-white">rule</span>
+            </div>
+            <div>
+              <span class="text-sm font-black text-slate-900">Tag Rules</span>
+              <span class="ml-2 text-xs text-slate-400">Auto-tag by pattern</span>
+            </div>
+          </div>
+          <div id="header-right" class="flex items-center gap-2 flex-shrink-0"></div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+          <!-- Apply bar -->
+          <div class="flex items-center gap-3">
+            <button id="apply-btn"
+              class="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary/90 active:scale-95 transition-all shadow-sm disabled:opacity-60">
+              <span class="material-symbols-outlined text-[17px]">play_arrow</span> Apply Rules Now
+            </button>
+            <span id="apply-status" class="text-xs text-slate-500 transition-all duration-300"></span>
+          </div>
+
+          <!-- Add rule form -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm anim-fade-up" style="animation-delay:0ms">
+            <h3 class="text-sm font-black text-slate-700 mb-4">Add New Rule</h3>
+            <form id="rule-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Rule name (optional)</label>
+                <input id="rule-name" type="text" placeholder="e.g. Zomato → Food"
+                  class="w-full h-9 rounded-lg border border-slate-200 px-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Match field</label>
+                <select id="rule-match-field" class="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-primary focus:ring-primary">
+                  <option value="vendor_name">Vendor Name</option>
+                  <option value="counterparty_identifier">UPI / Account ID</option>
+                  <option value="counterparty_entity_name">Counterparty Name</option>
+                  <option value="narration">Narration</option>
+                  <option value="payment_mode">Payment Mode</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Match type</label>
+                <select id="rule-match-type" class="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-primary focus:ring-primary">
+                  <option value="CONTAINS">Contains</option>
+                  <option value="EXACT">Exact</option>
+                  <option value="REGEX">Regex</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Match value</label>
+                <input id="rule-match-value" type="text" placeholder="e.g. Zomato"
+                  class="w-full h-9 rounded-lg border border-slate-200 px-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Apply tag</label>
+                <select id="rule-tag-id" class="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-primary focus:ring-primary">
+                  <option value="">— select tag —</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">Priority (higher = runs first)</label>
+                <input id="rule-priority" type="number" value="0" min="0" max="100"
+                  class="w-full h-9 rounded-lg border border-slate-200 px-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+              </div>
+              <div class="sm:col-span-2 lg:col-span-3 flex items-center justify-between">
+                <p id="preview-count" class="text-xs font-medium text-primary"></p>
+                <button type="submit"
+                  class="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary/90 active:scale-95 transition-all shadow-sm">
+                  <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                    Add Rule
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Rules table -->
+          <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden anim-fade-up" style="animation-delay:80ms">
+            <div class="px-5 py-3 border-b border-slate-100">
+              <h3 class="text-sm font-black text-slate-700">Active Rules</h3>
+              <p class="text-xs text-slate-400 mt-0.5">Rules run in priority order. Higher priority wins if a transaction matches multiple rules.</p>
+            </div>
+            <div id="rules-empty" class="hidden px-5 py-12 text-center text-sm text-slate-400">
+              No rules yet. Add one above and click "Apply Rules Now" to auto-tag transactions.
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead class="bg-slate-50 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th class="px-4 py-3">Name</th>
+                    <th class="px-4 py-3">Condition</th>
+                    <th class="px-4 py-3">Tag</th>
+                    <th class="px-4 py-3">Priority</th>
+                    <th class="px-4 py-3">Active</th>
+                    <th class="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody id="rules-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- How it works -->
+          <div class="rounded-2xl border border-slate-100 bg-slate-50 p-5 anim-fade-up" style="animation-delay:160ms">
+            <h4 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">How it works</h4>
+            <ul class="text-xs text-slate-500 space-y-1 list-disc list-inside">
+              <li>Rules run against all transactions when you click <strong>Apply Rules Now</strong>.</li>
+              <li>A transaction already tagged with the same tag is skipped (no duplicates).</li>
+              <li><strong>Contains</strong> — case-insensitive substring match (most common).</li>
+              <li><strong>Exact</strong> — full case-insensitive equality.</li>
+              <li><strong>Regex</strong> — PostgreSQL-style regex (~*).</li>
+              <li>Transactions tagged by rules show as "auto" in Reports; manually tagged ones show as "manual".</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js"></script>
+  </body>
+</html>
+
+
+

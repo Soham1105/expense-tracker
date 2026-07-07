@@ -1,0 +1,16 @@
+# Render Blueprint — deploys the FastAPI app as a Docker web service.
+# In Render: New → Blueprint → point at this repo. Then fill in the env vars
+# marked sync:false (they are secrets and are NOT stored in the repo).
+services:
+  - type: web
+    name: expense-tracker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        sync: false          # paste your Supabase connection string
+      - key: APP_USERNAME
+        sync: false          # your login username
+      - key: APP_PASSWORD
+        sync: false          # your login password (strong!)

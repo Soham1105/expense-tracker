@@ -1,0 +1,1279 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   app.css — Shared design system for FinanceTracker
+   Loaded on every page. Complements Tailwind with depth, gradients, polish.
+───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --primary:          #607AFB;
+  --primary-dark:     #4a60d8;
+  --primary-light:    #eef0ff;
+  --primary-gradient: linear-gradient(135deg, #607AFB 0%, #4a60d8 100%);
+  --primary-glow:     rgba(96,122,251,0.20);
+  --primary-glow-sm:  rgba(96,122,251,0.12);
+
+  --shadow-xs:    0 1px 3px rgba(0,0,0,0.05);
+  --shadow-sm:    0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-hover: 0 8px 28px rgba(96,122,251,0.14), 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-xl:    0 20px 48px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+
+  --border:       #e5e9f2;
+  --bg-page:      linear-gradient(145deg, #f4f6fb 0%, #edf0f8 100%);
+  --radius-card:  14px;
+  --radius-btn:   10px;
+}
+
+
+/* ── Page background ──────────────────────────────────────────────────────── */
+body {
+  /* `fixed` attachment repaints the whole viewport on every scroll frame → jank.
+     Default (scroll) attachment composites cleanly; visually identical for a flat bg. */
+  background: var(--bg-page) !important;
+  min-height: 100vh;
+}
+
+
+/* ── Scrollbars ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #c8d0df; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #9aa4b8; }
+
+
+/* ── Sidebar ──────────────────────────────────────────────────────────────── */
+aside {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%) !important;
+  border-right-color: var(--border) !important;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.04);
+  overflow: hidden; /* clips text during collapse animation */
+}
+
+/* Smooth width transition — enabled after page load to avoid initial flash */
+aside.sidebar-transition {
+  transition: width 0.26s cubic-bezier(0.4,0,0.2,1) !important;
+}
+
+/* Collapsed state */
+aside.sidebar-collapsed {
+  width: 4rem !important;
+  min-width: 4rem;
+}
+
+/* Center logo header when collapsed */
+aside.sidebar-collapsed > div:first-child {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  gap: 0 !important;
+}
+
+/* Hide brand title */
+aside.sidebar-collapsed h2 {
+  display: none !important;
+}
+
+/* Center + compress nav links */
+aside.sidebar-collapsed nav a {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  gap: 0 !important;
+}
+
+/* Disable horizontal hover translate when collapsed */
+aside.sidebar-collapsed nav a:hover {
+  transform: none !important;
+}
+
+/* Hide text labels in nav links (class added via JS) */
+aside.sidebar-collapsed .nav-label {
+  display: none !important;
+}
+
+/* Hide categories widget */
+aside.sidebar-collapsed .sidebar-categories {
+  display: none !important;
+}
+
+
+/* ── Sidebar edge toggle (floats on sidebar/content border) ─────────────────── */
+/* Zero-width flex child inserted between <aside> and the main content div.
+   The button sits at left:-11px so it straddles the border exactly. */
+.sidebar-edge-wrap {
+  width: 0;
+  position: relative;
+  overflow: visible;
+  flex-shrink: 0;
+  z-index: 45;                /* higher than header (z-20) + filter bar (z-10) */
+  pointer-events: none;       /* wrap doesn't intercept; only the button does */
+}
+.sidebar-edge-toggle {
+  position: absolute;
+  left: -11px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #e0e5ef;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 0;
+  pointer-events: auto;       /* re-enable on the button itself */
+  transition: background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease, transform 0.14s ease;
+}
+/* Hidden hit-area expander — makes the click target ~36px wide without changing visuals.
+   Helps when the user clicks slightly off the visible 22px button. */
+.sidebar-edge-toggle::before {
+  content: "";
+  position: absolute;
+  inset: -7px;                /* expand hit area by 7px each side → ~36x36 */
+  border-radius: 50%;
+}
+.sidebar-edge-toggle:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(96,122,251,0.20);
+  transform: translateY(-50%) scale(1.15) !important;
+}
+html.dark .sidebar-edge-toggle {
+  background: #2d3a52;
+  border-color: #3a4662;
+  color: #64748b;
+}
+html.dark .sidebar-edge-toggle:hover {
+  background: rgba(96,122,251,0.22);
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(96,122,251,0.25);
+}
+
+/* Sidebar logo icon — gradient pill (scoped to header div only, not nav links) */
+aside > div:first-child .bg-primary\/10 {
+  background: var(--primary-gradient) !important;
+  box-shadow: 0 2px 8px var(--primary-glow-sm);
+}
+aside > div:first-child .bg-primary\/10 span {
+  color: #ffffff !important;
+}
+
+/* Sidebar nav brand title */
+aside h2 {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Nav link defaults */
+aside nav a {
+  transition: background 0.14s ease, color 0.14s ease, transform 0.14s ease;
+  border-radius: 10px;
+  position: relative;
+  overflow: visible;
+}
+aside nav a:hover {
+  background: rgba(96,122,251,0.07) !important;
+  color: var(--primary) !important;
+  transform: translateX(3px);
+}
+aside nav a:hover .material-symbols-outlined {
+  color: var(--primary) !important;
+}
+
+/* Active nav link — gradient pill + left accent bar */
+aside nav a.active-nav {
+  background: linear-gradient(90deg, rgba(96,122,251,0.13) 0%, rgba(96,122,251,0.04) 100%) !important;
+  color: var(--primary) !important;
+  font-weight: 700;
+}
+aside nav a.active-nav .material-symbols-outlined {
+  color: var(--primary) !important;
+}
+aside nav a.active-nav::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 3px;
+  background: var(--primary-gradient);
+  border-radius: 0 3px 3px 0;
+}
+
+
+/* ── Page header — glassmorphism ─────────────────────────────────────────── */
+/* Target only navigation headers (flex containers); excludes <header class="mb-2"> content headings */
+header.flex {
+  /* More opaque bg + lighter blur so the sticky header doesn't re-composite an
+     expensive blur of the scrolling content behind it every frame. */
+  background: rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(6px) saturate(1.2);
+  -webkit-backdrop-filter: blur(6px) saturate(1.2);
+  border-bottom-color: var(--border) !important;
+  box-shadow: 0 1px 0 var(--border), 0 2px 12px rgba(0,0,0,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.card, .kpi-card {
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: box-shadow 0.22s ease, transform 0.22s ease !important;
+  border-radius: var(--radius-card) !important;
+}
+.card:hover {
+  box-shadow: var(--shadow-hover) !important;
+  transform: translateY(-2px);
+}
+.kpi-card {
+  transition: box-shadow 0.22s ease, transform 0.22s ease, border-color 0.22s ease !important;
+}
+.kpi-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+  border-color: rgba(96,122,251,0.25) !important;
+}
+
+/* White rounded containers — automatic depth */
+.bg-white.rounded-2xl,
+.bg-white.rounded-xl,
+.bg-white.rounded-3xl {
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.22s ease, transform 0.22s ease;
+}
+/* Only lift cards that are interactive (have cursor-pointer or data-person etc.) */
+.bg-white.rounded-2xl[data-person],
+.bg-white.rounded-2xl[data-wl-name],
+.bg-white.rounded-xl[data-wl-name],
+.bg-white.rounded-2xl[data-rule-id]:hover,
+.bg-white.rounded-2xl.cursor-pointer:hover,
+.bg-white.rounded-xl.cursor-pointer:hover {
+  box-shadow: var(--shadow-hover) !important;
+  transform: translateY(-2px);
+}
+
+
+/* ── Primary buttons — gradient ──────────────────────────────────────────── */
+button.bg-primary,
+a.bg-primary {
+  background: var(--primary-gradient) !important;
+  border: none;
+  box-shadow: 0 2px 10px var(--primary-glow-sm), 0 1px 3px rgba(0,0,0,0.08);
+  transition: box-shadow 0.18s ease, transform 0.12s ease, opacity 0.15s ease;
+}
+button.bg-primary:hover:not(:disabled),
+a.bg-primary:hover {
+  box-shadow: 0 4px 20px var(--primary-glow), 0 2px 6px rgba(0,0,0,0.10);
+  transform: translateY(-1px);
+}
+button.bg-primary:active:not(:disabled),
+a.bg-primary:active {
+  transform: scale(0.97) !important;
+  box-shadow: 0 1px 4px var(--primary-glow-sm) !important;
+}
+button.bg-primary:disabled { opacity: 0.55; transform: none !important; box-shadow: none !important; }
+
+
+/* ── Amber/secondary buttons ─────────────────────────────────────────────── */
+button.bg-amber-500 {
+  box-shadow: 0 2px 8px rgba(245,158,11,0.20);
+  transition: box-shadow 0.18s ease, transform 0.12s ease;
+}
+button.bg-amber-500:hover:not(:disabled) {
+  box-shadow: 0 4px 16px rgba(245,158,11,0.30);
+  transform: translateY(-1px);
+}
+
+/* ── Outline / secondary buttons ────────────────────────────────────────── */
+button:not(.bg-primary):not(.bg-amber-500):not([class*="bg-slate"]):not([class*="bg-rose"]):not([class*="bg-emerald"]) {
+  transition: box-shadow 0.15s ease, transform 0.12s ease, background 0.12s ease;
+}
+
+
+/* ── Form inputs ─────────────────────────────────────────────────────────── */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(96,122,251,0.15) !important;
+}
+
+
+/* ── Tables ──────────────────────────────────────────────────────────────── */
+thead tr {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+}
+thead th {
+  color: #64748b !important;
+  letter-spacing: 0.06em;
+}
+tbody tr {
+  transition: background 0.10s ease;
+}
+tbody tr:hover td,
+tbody tr:hover > * {
+  background-color: rgba(96,122,251,0.035) !important;
+}
+html.dark thead tr {
+  background: linear-gradient(180deg, #141414 0%, #0f0f0f 100%) !important;
+}
+html.dark thead th {
+  color: #a3a3a3 !important;
+}
+html.dark tbody tr:hover td,
+html.dark tbody tr:hover > * {
+  background-color: rgba(96,122,251,0.13) !important;
+}
+/* Universal hover-bg fix: JS-injected rows on /reports/ etc. use `hover:bg-slate-50/80`
+   which paints WHITE in dark mode. Force a near-black tint instead. */
+html.dark .hover\:bg-slate-50\/80:hover,
+html.dark .hover\:bg-slate-50:hover { background-color: #1f1f1f !important; }
+html.dark tr.hover\:bg-slate-50\/80:hover > * { background-color: transparent !important; }
+html.dark #merchant-list > div:hover {
+  background-color: rgba(96,122,251,0.12) !important;
+}
+html.dark [id^="merchant-txns-"] {
+  background-color: #0f0f0f !important;
+  border-color: #262626 !important;
+}
+html.dark [id^="merchant-txns-"] div:hover {
+  background-color: rgba(96,122,251,0.08) !important;
+}
+
+
+/* ── Modals ──────────────────────────────────────────────────────────────── */
+/* Backdrop blur on all full-screen overlays */
+.fixed.inset-0.z-50,
+.fixed.inset-0.z-40 {
+  backdrop-filter: blur(4px) saturate(1.2);
+  -webkit-backdrop-filter: blur(4px) saturate(1.2);
+}
+/* Inner modal card pops */
+.fixed.inset-0.z-50 > div,
+.fixed.inset-0.z-40 > div {
+  box-shadow: var(--shadow-xl) !important;
+  border: 1px solid var(--border);
+}
+
+
+/* ── Badges / chips ──────────────────────────────────────────────────────── */
+/* Primary tint chips */
+[class*="bg-primary\/10"],
+[class*="bg-primary/10"] {
+  background: var(--primary-light) !important;
+}
+/* Dark mode: primary tint chips → translucent navy-primary instead of pastel #eef0ff */
+html.dark [class*="bg-primary\/10"],
+html.dark [class*="bg-primary/10"] {
+  background: rgba(96,122,251,0.16) !important;
+}
+/* Round status chips with ring */
+.rounded-full.ring-1 {
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.rounded-full.ring-1:hover {
+  transform: scale(1.05);
+}
+
+
+/* ── Progress bars ───────────────────────────────────────────────────────── */
+/* Gradient fill for progress bars where color is set inline */
+[style*="background:#22c55e"],
+[style*="background: #22c55e"] {
+  background: linear-gradient(90deg, #16a34a, #22c55e) !important;
+}
+[style*="background:#ef4444"],
+[style*="background: #ef4444"] {
+  background: linear-gradient(90deg, #dc2626, #ef4444) !important;
+}
+[style*="background:#f59e0b"],
+[style*="background: #f59e0b"] {
+  background: linear-gradient(90deg, #d97706, #f59e0b) !important;
+}
+
+
+/* ── Slide panels (right drawers) ────────────────────────────────────────── */
+#cp-panel,
+#detail-panel {
+  box-shadow: -4px 0 32px rgba(0,0,0,0.10), -1px 0 0 var(--border);
+  border-left-color: var(--border) !important;
+}
+
+
+/* ── Stagger animation re-trigger helper ─────────────────────────────────── */
+@keyframes fadeInUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scaleIn   { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+@keyframes slideRight{ from{opacity:0;transform:translateX(22px)} to{opacity:1;transform:translateX(0)} }
+@keyframes rowFlash  { 0%,100%{background:transparent} 35%{background:rgba(96,122,251,0.08)} }
+@keyframes shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes spinOnce  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+.anim-fade-up  { animation: fadeInUp   0.30s ease-out both; }
+.anim-slide-dn { animation: slideDown  0.22s ease-out both; }
+.anim-scale-in { animation: scaleIn    0.18s ease-out both; }
+.anim-slide-rt { animation: slideRight 0.28s ease-out both; }
+.anim-row-flash{ animation: rowFlash   1.1s ease-out both; }
+
+.stagger > * { animation: fadeInUp 0.30s ease-out both; }
+.stagger > *:nth-child(1) { animation-delay:  0ms; }
+.stagger > *:nth-child(2) { animation-delay: 55ms; }
+.stagger > *:nth-child(3) { animation-delay:110ms; }
+.stagger > *:nth-child(4) { animation-delay:165ms; }
+.stagger > *:nth-child(n+5) { animation-delay:210ms; }
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f3f9 25%, #e4e9f4 50%, #f0f3f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+
+
+/* ── Global button press ─────────────────────────────────────────────────── */
+button:active:not(:disabled) { transform: scale(0.97) !important; }
+
+
+/* ── Separator utility ───────────────────────────────────────────────────── */
+.divide-y > * + * {
+  border-top-color: var(--border) !important;
+}
+
+
+/* ── Selection bar (merchants) ───────────────────────────────────────────── */
+#selection-bar {
+  background: rgba(96,122,251,0.06) !important;
+  border-bottom-color: rgba(96,122,251,0.18) !important;
+  backdrop-filter: blur(8px);
+}
+
+
+/* ── KPI card accent lines (analytics) ──────────────────────────────────── */
+#kpi-expense    { font-variant-numeric: tabular-nums; }
+#kpi-income     { font-variant-numeric: tabular-nums; }
+#kpi-invested   { font-variant-numeric: tabular-nums; }
+#kpi-net        { font-variant-numeric: tabular-nums; }
+
+
+/* ── Table action buttons ────────────────────────────────────────────────── */
+button[data-edit-rule],
+button[data-save-rule] {
+  transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+button[data-edit-rule]:hover { background: rgba(96,122,251,0.08) !important; color: var(--primary) !important; }
+
+
+/* ── Empty states ────────────────────────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  color: #94a3b8;
+}
+.empty-state .material-symbols-outlined {
+  font-size: 48px;
+  color: #dde3ef;
+}
+
+
+/* ── Focus-visible ring for keyboard nav ─────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+
+/* ── Toast notifications ─────────────────────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  bottom: 64px; /* raised above the privacy pill (34px pill + 10px gap + 20px bottom) */
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+  max-width: 380px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: white;
+  box-shadow: var(--shadow-xl);
+  font-size: 13px;
+  font-weight: 500;
+  color: #1e293b;
+  animation: toastIn 0.28s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.toast.leaving { animation: toastOut 0.22s ease-in both; }
+.toast-icon { font-size: 18px; flex-shrink: 0; }
+.toast.success .toast-icon { color: #16a34a; }
+.toast.error   .toast-icon { color: #dc2626; }
+.toast.info    .toast-icon { color: var(--primary); }
+.toast.warning .toast-icon { color: #d97706; }
+.toast-close {
+  margin-left: auto;
+  flex-shrink: 0;
+  cursor: pointer;
+  opacity: 0.4;
+  font-size: 16px;
+  line-height: 1;
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+.toast-close:hover { opacity: 0.8; }
+@keyframes toastIn {
+  from { opacity:0; transform:translateY(16px) scale(0.96); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes toastOut {
+  from { opacity:1; transform:translateY(0) scale(1); }
+  to   { opacity:0; transform:translateY(8px) scale(0.96); }
+}
+
+
+/* ── Dark mode ───────────────────────────────────────────────────────────── */
+
+/* Smooth transition when switching modes */
+html {
+  color-scheme: light;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+/* Prevent transition on page load (only animate user-initiated toggles) */
+html.no-transition * {
+  transition: none !important;
+}
+
+html.dark body { background: linear-gradient(145deg, #0a0a0a 0%, #0f0f0f 100%) !important; }
+html.dark aside {
+  background: linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%) !important;
+  border-right-color: #262626 !important;
+}
+html.dark aside > div:first-child { border-bottom-color: #262626 !important; }
+html.dark aside h2 { background: var(--primary-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+html.dark aside nav a { color: #a3a3a3 !important; }
+html.dark aside nav a:hover { background: rgba(96,122,251,0.10) !important; color: var(--primary) !important; }
+html.dark aside nav a.active-nav { background: rgba(96,122,251,0.18) !important; color: var(--primary) !important; }
+html.dark header.flex {
+  background: rgba(10,10,10,0.94) !important;
+  border-bottom-color: #262626 !important;
+  box-shadow: 0 1px 0 #262626, 0 2px 12px rgba(0,0,0,0.40);
+}
+html.dark .bg-white,
+html.dark .bg-white.rounded-2xl,
+html.dark .bg-white.rounded-xl,
+html.dark .bg-white.rounded-3xl {
+  background: #141414 !important;
+  border-color: #262626 !important;
+}
+html.dark .card, html.dark .kpi-card { background: #141414 !important; border-color: #262626 !important; }
+html.dark .bg-slate-50 { background: #0f0f0f !important; }
+html.dark .bg-slate-100 { background: #1f1f1f !important; }
+/* Opacity variants of bg-slate-50/100 — Tailwind generates `bg-slate-50/60` etc.
+   as separate classes; without these the panels keep their light-mode tint and
+   show as near-white over a dark page (e.g. /reports/ advanced filters panel). */
+html.dark .bg-slate-50\/40,
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-50\/80 { background: #0f0f0f !important; }
+html.dark .bg-slate-100\/40,
+html.dark .bg-slate-100\/60,
+html.dark .bg-slate-100\/80 { background: #1f1f1f !important; }
+html.dark [class*="divide-slate"] > * { border-color: #262626 !important; }
+html.dark [class*="border-slate-200"],
+html.dark [class*="border-slate-100"] { border-color: #262626 !important; }
+html.dark [class*="border-emerald-"]  { border-color: rgba(52,211,153,0.20) !important; }
+html.dark [class*="border-rose-"]     { border-color: rgba(251,113,133,0.20) !important; }
+html.dark [class*="border-sky-"]      { border-color: rgba(56,189,248,0.20)  !important; }
+html.dark [class*="border-violet-"]   { border-color: rgba(167,139,250,0.20) !important; }
+html.dark [class*="border-amber-"]    { border-color: rgba(251,191,36,0.20)  !important; }
+html.dark [class*="border-primary"]   { border-color: rgba(96,122,251,0.30)  !important; }
+html.dark .text-slate-900, html.dark .text-slate-800 { color: #e5e5e5 !important; }
+html.dark .text-slate-700, html.dark .text-slate-600 { color: #a3a3a3 !important; }
+html.dark .text-slate-500, html.dark .text-slate-400 { color: #737373 !important; }
+/* Text-like inputs only — exclude checkbox/radio so their checkmark SVG (drawn by
+   Tailwind forms via background-image) survives. background-color (longhand) here,
+   not background shorthand, so we don't clobber any background-image either. */
+html.dark input:not([type="checkbox"]):not([type="radio"]),
+html.dark select,
+html.dark textarea {
+  background-color: #1f1f1f !important;
+  border-color: #262626 !important;
+  color: #e5e5e5 !important;
+}
+/* Native dropdown list: Chrome/Edge paint <option> popups white unless the
+   options themselves carry a dark background. Without this, opening any select
+   in dark mode (Flow Type, Counterparty, Asset Class, etc.) shows a white list. */
+html.dark select option,
+html.dark select optgroup {
+  background-color: #1f1f1f !important;
+  color: #e5e5e5 !important;
+}
+/* Checkbox + radio — dark fill when unchecked, primary fill when checked.
+   Tailwind forms paints the white check/dot via background-image which is preserved. */
+html.dark input[type="checkbox"],
+html.dark input[type="radio"] {
+  background-color: #1f1f1f !important;
+  border-color: #525252 !important;
+}
+html.dark input[type="checkbox"]:checked,
+html.dark input[type="radio"]:checked {
+  background-color: #607AFB !important;     /* primary — matches text-primary class */
+  border-color: #607AFB !important;
+}
+html.dark .skeleton { background: linear-gradient(90deg,#1f1f1f 25%,#262626 50%,#1f1f1f 75%); background-size:200% 100%; }
+html.dark #toast-container .toast { background: #141414; border-color: #262626; color: #e5e5e5; }
+
+/* ── Dark mode: critical text fixes ─────────────────────────────────────── */
+/* slate-950 (near-black amounts) — was invisible on dark bg */
+html.dark .text-slate-950 { color: #fafafa !important; }
+/* slate-500/400 separated & brightened (was both #737373 — too dark, ~3:1 contrast) */
+html.dark .text-slate-500 { color: #a3a3a3 !important; }
+html.dark .text-slate-400 { color: #8a8a8a !important; }
+
+/* ── Dark mode: colored text — lighten 600/700/800 to readable equivalents ─ */
+/* Greens muted: neon mint #6ee7b7/#34d399 → sage-mint that reads "positive" without glowing */
+html.dark .text-emerald-700, html.dark .text-emerald-800 { color: #7dd3c0 !important; }
+html.dark .text-emerald-600                               { color: #9adbc7 !important; }
+html.dark .text-rose-700,    html.dark .text-rose-800     { color: #fb7185 !important; }
+html.dark .text-rose-600                                   { color: #fda4af !important; }
+html.dark .text-sky-700,     html.dark .text-sky-800       { color: #38bdf8 !important; }
+html.dark .text-sky-600                                    { color: #7dd3fc !important; }
+html.dark .text-violet-700,  html.dark .text-violet-600    { color: #a78bfa !important; }
+html.dark .text-amber-700,   html.dark .text-amber-800     { color: #fbbf24 !important; }
+html.dark .text-amber-600,   html.dark .text-amber-500     { color: #fcd34d !important; }
+html.dark .text-green-600,   html.dark .text-green-700     { color: #7dd3c0 !important; }
+html.dark .text-blue-600,    html.dark .text-blue-700      { color: #60a5fa !important; }
+html.dark .text-fuchsia-600, html.dark .text-fuchsia-700   { color: #e879f9 !important; }
+html.dark .text-orange-600,  html.dark .text-orange-700    { color: #fb923c !important; }
+html.dark .text-teal-600,    html.dark .text-teal-700      { color: #7dc7c0 !important; }
+
+/* ── Dark mode: colored backgrounds — alphas boosted for near-black base ─ */
+/* On #0a0a0a/#141414 the old 0.07–0.10 alphas were nearly invisible — boosted ~70% */
+html.dark .bg-emerald-50  { background: rgba(125,211,192,0.12) !important; }
+html.dark .bg-rose-50     { background: rgba(251,113,133,0.15) !important; }
+html.dark .bg-sky-50      { background: rgba(56,189,248,0.15)  !important; }
+html.dark .bg-violet-50   { background: rgba(167,139,250,0.15) !important; }
+html.dark .bg-amber-50    { background: rgba(251,191,36,0.15)  !important; }
+html.dark .bg-amber-50\/60,
+html.dark .bg-amber-50\/40,
+html.dark .bg-amber-50\/80 { background: rgba(251,191,36,0.15) !important; }
+html.dark .bg-amber-100   { background: rgba(251,191,36,0.22)  !important; }
+html.dark .bg-green-50    { background: rgba(125,211,192,0.12) !important; }
+html.dark .bg-blue-50     { background: rgba(96,165,250,0.15)  !important; }
+html.dark .bg-fuchsia-50  { background: rgba(232,121,249,0.15) !important; }
+html.dark .bg-orange-50   { background: rgba(251,146,60,0.15)  !important; }
+html.dark .bg-red-50      { background: rgba(248,113,113,0.15) !important; }
+html.dark .bg-emerald-100 { background: rgba(125,211,192,0.20) !important; }
+html.dark .bg-rose-100    { background: rgba(251,113,133,0.22) !important; }
+html.dark .bg-sky-100     { background: rgba(56,189,248,0.22)  !important; }
+
+/* ── Dark mode: colored borders ─────────────────────────────────────────── */
+html.dark [class*="border-emerald"] { border-color: rgba(125,211,192,0.20) !important; }
+html.dark [class*="border-rose"]    { border-color: rgba(251,113,133,0.25) !important; }
+html.dark [class*="border-sky"]     { border-color: rgba(56,189,248,0.25)  !important; }
+html.dark [class*="border-violet"]  { border-color: rgba(167,139,250,0.25) !important; }
+html.dark [class*="border-amber"]   { border-color: rgba(251,191,36,0.25)  !important; }
+html.dark [class*="border-green"]   { border-color: rgba(125,211,192,0.20) !important; }
+html.dark [class*="border-blue"]    { border-color: rgba(96,165,250,0.25)  !important; }
+html.dark [class*="border-fuchsia"] { border-color: rgba(232,121,249,0.25) !important; }
+
+/* ── Dark mode: ring colors ──────────────────────────────────────────────── */
+html.dark [class*="ring-slate"]   { --tw-ring-color: rgba(38,38,38,0.85)    !important; }
+html.dark [class*="ring-emerald"] { --tw-ring-color: rgba(125,211,192,0.18) !important; }
+html.dark [class*="ring-rose"]    { --tw-ring-color: rgba(251,113,133,0.20)!important; }
+html.dark [class*="ring-sky"]     { --tw-ring-color: rgba(56,189,248,0.20) !important; }
+html.dark [class*="ring-violet"]  { --tw-ring-color: rgba(167,139,250,0.20)!important; }
+html.dark [class*="ring-fuchsia"] { --tw-ring-color: rgba(232,121,249,0.20)!important; }
+html.dark [class*="ring-amber"]   { --tw-ring-color: rgba(251,191,36,0.20)  !important; }
+
+/* ── Dark mode: gradient backgrounds ────────────────────────────────────── */
+html.dark .from-emerald-50 { --tw-gradient-from: rgba(125,211,192,0.10) !important; }
+html.dark .from-rose-50    { --tw-gradient-from: rgba(251,113,133,0.12) !important; }
+html.dark .from-sky-50     { --tw-gradient-from: rgba(56,189,248,0.12)  !important; }
+html.dark .to-white        { --tw-gradient-to:   #141414 !important; }
+html.dark .from-white      { --tw-gradient-from: #141414 !important; }
+
+
+/* #dark-mode-toggle is hidden (moved to header via JS) — sidebar CSS removed */
+
+
+/* ── Keyboard shortcuts modal ────────────────────────────────────────────── */
+#shortcuts-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+#shortcuts-modal.open { display: flex; }
+#shortcuts-modal .modal-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-xl);
+  padding: 24px;
+  width: 440px;
+  max-width: 95vw;
+  animation: scaleIn 0.18s ease-out both;
+}
+html.dark #shortcuts-modal .modal-card { background: #141414; border-color: #262626; color: #e5e5e5; }
+#shortcuts-modal .shortcut-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+html.dark #shortcuts-modal .shortcut-row { border-bottom-color: #262626; }
+#shortcuts-modal .shortcut-row:last-child { border-bottom: none; }
+#shortcuts-modal kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: #475569;
+  font-weight: 600;
+}
+html.dark #shortcuts-modal kbd { background: #1f1f1f; border-color: #262626; color: #a3a3a3; }
+
+
+/* ── Privacy mode — mask .amt elements with XXXX.XX placeholder ─────────── */
+/* Amounts are replaced via JS; CSS only styles the masked state */
+.amt[data-orig] {
+  font-family: ui-monospace, "SF Mono", monospace !important;
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  letter-spacing: 0.04em;
+  user-select: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+html.dark .amt[data-orig] {
+  color: #525252 !important;
+  -webkit-text-fill-color: #525252 !important;
+}
+
+/* Strict amounts (bank balance, net worth, all-time totals) — shown as ●●● */
+.amt[data-strict-mask] {
+  font-family: inherit !important;
+  letter-spacing: 0.15em;
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+  background: #f1f5f9;
+  border-radius: 4px;
+  padding: 0 6px;
+  font-size: 0.85em !important;
+  position: relative;
+}
+.amt[data-strict-mask]::after {
+  content: " 👁";
+  font-size: 0.7em;
+  opacity: 0.6;
+}
+html.dark .amt[data-strict-mask] {
+  color: #404040 !important;
+  -webkit-text-fill-color: #404040 !important;
+  background: #1f1f1f;
+}
+.amt[data-strict-mask]:hover {
+  background: #e2e8f0;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+html.dark .amt[data-strict-mask]:hover {
+  background: #2a2a2a;
+  color: #525252 !important;
+  -webkit-text-fill-color: #525252 !important;
+}
+
+/* #privacy-toggle removed from sidebar — floating pill (#priv-float-btn) covers all pages */
+
+/* ── Quick-create tag popover ─────────────────────────────────────────────── */
+.quick-tag-popover {
+  position: fixed;
+  z-index: 9996;
+  min-width: 240px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.06);
+}
+html.dark .quick-tag-popover {
+  background: #141414;
+  border-color: #262626;
+  color: #e5e5e5;
+}
+html.dark .quick-tag-popover input {
+  background: #0a0a0a;
+  border-color: #3a3a3a;
+  color: #fafafa;
+}
+
+/* PIN modal */
+.pin-modal-overlay {
+  position: fixed; inset: 0; z-index: 9997;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+}
+.pin-modal-overlay.open { display: flex; }
+.pin-modal-card {
+  background: white; border-radius: 24px; border: 1px solid var(--border);
+  box-shadow: var(--shadow-xl); padding: 32px 36px; text-align: center;
+  width: 300px; max-width: 90vw; animation: scaleIn 0.18s ease-out both;
+}
+html.dark .pin-modal-card { background: #141414; border-color: #262626; }
+.pin-modal-icon  { font-size: 38px; margin-bottom: 10px; line-height: 1; }
+.pin-modal-title { font-size: 16px; font-weight: 800; color: #1e293b; margin: 0 0 4px; }
+.pin-modal-sub   { font-size: 12px; color: #94a3b8; margin: 0; }
+html.dark .pin-modal-title { color: #e5e5e5; }
+.pin-dots { display: flex; gap: 12px; justify-content: center; padding: 18px 0 22px; }
+.pin-dot  {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid #e2e8f0; background: transparent;
+  transition: all 0.15s ease;
+}
+.pin-dot.filled { background: var(--primary); border-color: var(--primary); transform: scale(1.15); }
+.pin-dot.error  { background: #f43f5e; border-color: #f43f5e; animation: pinShake 0.3s ease; }
+html.dark .pin-dot { border-color: #3a3a3a; }
+#pin-cancel-btn {
+  padding: 8px 22px; border-radius: 10px; border: 1px solid var(--border);
+  background: none; font-size: 13px; font-weight: 600; color: #64748b;
+  cursor: pointer; transition: background 0.14s ease;
+}
+#pin-cancel-btn:hover { background: #f8fafc; }
+html.dark #pin-cancel-btn { border-color: #262626; color: #a3a3a3; }
+html.dark #pin-cancel-btn:hover { background: #1f1f1f; }
+@keyframes pinShake {
+  0%,100% { transform: translateX(0); }
+  25%      { transform: translateX(-5px); }
+  75%      { transform: translateX(5px); }
+}
+
+
+/* ── Engagement — category row overrun shake ─────────────────────────────── */
+.cat-overrun { animation: budgetShake 0.6s ease-out 1; border-left: 3px solid #ef4444 !important; }
+/* Goal complete glow */
+.goal-complete { animation: goalGlow 2s ease-in-out infinite; }
+@keyframes goalGlow {
+  0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  50%      { box-shadow: 0 0 0 8px rgba(16,185,129,0.12); }
+}
+/* Fun insight card slide-in */
+.fun-card { animation: fadeInUp 0.35s ease-out both; }
+
+
+/* ── Budget overrun — pulse + shake ─────────────────────────────────────── */
+@keyframes budgetPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,0);    border-color: #fecaca; }
+  50%      { box-shadow: 0 0 0 6px rgba(220,38,38,0.15); border-color: #ef4444; }
+}
+@keyframes budgetShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-4px); }
+  40%     { transform: translateX(4px); }
+  60%     { transform: translateX(-3px); }
+  80%     { transform: translateX(3px); }
+}
+.budget-overrun {
+  border-color: #fecaca !important;
+  background: linear-gradient(135deg, #fff5f5, #fef2f2) !important;
+  animation: budgetPulse 2s ease-in-out infinite, budgetShake 0.5s ease-out 1;
+}
+
+
+/* ── Privacy pill — bottom-right, above toast area ───────────────────────── */
+.priv-float-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9990;
+  height: 34px;
+  padding: 0 10px;
+  gap: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+  /* Amounts visible → prominent, inviting the user to hide them */
+  background: rgba(96,122,251,0.10);
+  color: var(--primary);
+  border: 1px solid rgba(96,122,251,0.22);
+  box-shadow: 0 2px 8px rgba(96,122,251,0.12);
+}
+.priv-float-btn:hover {
+  background: rgba(96,122,251,0.18);
+  box-shadow: 0 4px 14px rgba(96,122,251,0.22);
+  transform: translateY(-1px);
+}
+
+/* Amounts hidden (locked) → subtle, non-intrusive */
+.priv-float-btn.locked {
+  background: rgba(255,255,255,0.55);
+  color: #94a3b8;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  animation: none;
+}
+.priv-float-btn.locked:hover {
+  background: rgba(255,255,255,0.90);
+  color: #475569;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+html.dark .priv-float-btn {
+  background: rgba(96,122,251,0.18);
+  border-color: rgba(96,122,251,0.35);
+  color: #a5b4fc;
+}
+html.dark .priv-float-btn:hover { background: rgba(96,122,251,0.28); color: #c7d2fe; }
+html.dark .priv-float-btn.locked { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); color: #737373; }
+html.dark .priv-float-btn.locked:hover { background: rgba(255,255,255,0.10); color: #a3a3a3; }
+
+
+/* ── Transaction quick-view panel ────────────────────────────────────────── */
+#txn-quick-panel {
+  position: fixed;
+  inset-y: 0;
+  right: 0;
+  z-index: 60;
+  width: 380px;
+  background: white;
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 32px rgba(0,0,0,0.10);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+#txn-quick-panel.open { transform: translateX(0); }
+html.dark #txn-quick-panel { background: #141414; border-left-color: #262626; }
+
+
+/* ── Goals page hover-reveal action toolbar ─────────────────────────────── */
+.goal-item-row { position: relative; overflow: visible; }
+
+.goal-action-bar {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.88);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(96, 122, 251, 0.20);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+.dark .goal-action-bar {
+  background: rgba(16, 18, 26, 0.90);
+  border: 1px solid rgba(185, 200, 222, 0.20);
+  box-shadow: 0 0 16px rgba(185, 200, 222, 0.07), 0 4px 20px rgba(0, 0, 0, 0.55);
+}
+.goal-item-row:hover .goal-action-bar {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+.goal-row-content { transition: opacity 0.2s ease; }
+.goal-item-row:hover > .goal-row-content { opacity: 0.5; }
+
+/* is-editing: suppress toolbar when edit form is open */
+.goal-item-row.is-editing .goal-action-bar { opacity: 0 !important; pointer-events: none !important; }
+.goal-item-row.is-editing > .goal-row-content { opacity: 1 !important; }
+/* ₹ prefix via CSS — invisible to _wrapAmts text-node scanner */
+[data-rupee]::before { content: "₹"; }
+
+/* Top-right toolbar variant for tall cards (accounts) */
+.goal-card-action-bar {
+  position: absolute;
+  top: 10px; right: 10px;
+  transform: scale(0.88);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+  display: flex; align-items: center; gap: 2px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(96, 122, 251, 0.20);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+.dark .goal-card-action-bar {
+  background: rgba(16, 18, 26, 0.90);
+  border: 1px solid rgba(185, 200, 222, 0.20);
+  box-shadow: 0 0 16px rgba(185, 200, 222, 0.07), 0 4px 20px rgba(0, 0, 0, 0.55);
+}
+.goal-item-row:hover .goal-card-action-bar {
+  opacity: 1; transform: scale(1); pointer-events: auto;
+}
+.goal-item-row.is-editing .goal-card-action-bar { opacity: 0 !important; pointer-events: none !important; }
+
+/* ── Gauge upcoming — blink red for due/overdue items ───────────────────────── */
+@keyframes pulse-red {
+  0%, 100% { border-color: rgb(252 165 165); box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+  50%       { border-color: rgb(239 68 68);  box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+}
+.gauge-due-blink { animation: pulse-red 1.6s ease-in-out infinite; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE — "shining black" depth + glassy translucent colored buttons
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Shine: cards get a subtle vertical gradient + hairline top highlight ── */
+html.dark .bg-white,
+html.dark .card,
+html.dark .kpi-card,
+html.dark .setting-card,
+html.dark .bg-white.rounded-2xl,
+html.dark .bg-white.rounded-xl,
+html.dark .bg-white.rounded-3xl {
+  background: linear-gradient(180deg, #1a1a1a 0%, #141414 60%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 1px 2px rgba(0,0,0,0.5),
+    0 8px 24px rgba(0,0,0,0.25) !important;
+}
+/* Opt-out: small button-group wrappers inside toolbars don't need card-level shine.
+   Strips the gradient + drop shadow so they read as inline controls, not floating cards. */
+html.dark #filter-bar .bg-white,
+html.dark header.flex .bg-white {
+  background: #141414 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Sidebar: same gradient sheen + faint right-edge highlight */
+html.dark aside {
+  background: linear-gradient(180deg, #121212 0%, #0a0a0a 100%) !important;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,0.03) !important;
+}
+
+/* Header: top-edge highlight + crisper bottom border + soft drop shadow */
+html.dark header.flex {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.04),
+    0 1px 0 #262626,
+    0 2px 12px rgba(0,0,0,0.4) !important;
+}
+
+/* Inputs / selects / textareas: focus halo in primary tint */
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  box-shadow: 0 0 0 2px rgba(96,122,251,0.25), 0 0 14px rgba(96,122,251,0.10) !important;
+  border-color: rgba(96,122,251,0.45) !important;
+}
+
+/* Buttons: faint white edge glow on hover for non-colored buttons.
+   Colored buttons get their own glow below — this is the neutral baseline. */
+html.dark button:not(:disabled):not(.bg-primary):not([class*="bg-amber"]):not([class*="bg-emerald"]):not([class*="bg-violet"]):not([class*="bg-sky"]):not([class*="bg-green"]):not([class*="bg-rose"]):not([class*="bg-red"]):hover {
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 4px 14px rgba(0,0,0,0.4);
+}
+
+
+/* ── Glassy translucent colored action buttons ──────────────────────────── */
+/* Pattern per color: dark gradient + colored border + colored text + soft glow.
+   Selectors limited to `button.` and `a.` so JS-set progress bars (div/span) stay saturated. */
+
+/* Amber (Extract Items, Save, Confirm Receipt, Merge Tags …) */
+html.dark button.bg-amber-500, html.dark button.bg-amber-600,
+html.dark a.bg-amber-500,      html.dark a.bg-amber-600 {
+  background: linear-gradient(180deg, rgba(245,158,11,0.20) 0%, rgba(245,158,11,0.10) 100%) !important;
+  border: 1px solid rgba(245,158,11,0.45) !important;
+  color: #fcd34d !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(245,158,11,0.12) !important;
+}
+html.dark button.hover\:bg-amber-600:hover, html.dark a.hover\:bg-amber-600:hover,
+html.dark button.hover\:bg-amber-700:hover, html.dark a.hover\:bg-amber-700:hover {
+  background: linear-gradient(180deg, rgba(245,158,11,0.30) 0%, rgba(245,158,11,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 18px rgba(245,158,11,0.22) !important;
+  color: #fde68a !important;
+}
+
+/* Emerald (Save Reward, Upload, Confirm Badge …) */
+html.dark button.bg-emerald-500, html.dark button.bg-emerald-600,
+html.dark a.bg-emerald-500,      html.dark a.bg-emerald-600 {
+  background: linear-gradient(180deg, rgba(16,185,129,0.20) 0%, rgba(16,185,129,0.10) 100%) !important;
+  border: 1px solid rgba(16,185,129,0.45) !important;
+  color: #6ee7b7 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(16,185,129,0.12) !important;
+}
+html.dark button.hover\:bg-emerald-600:hover, html.dark a.hover\:bg-emerald-600:hover,
+html.dark button.hover\:bg-emerald-700:hover, html.dark a.hover\:bg-emerald-700:hover {
+  background: linear-gradient(180deg, rgba(16,185,129,0.30) 0%, rgba(16,185,129,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 18px rgba(16,185,129,0.22) !important;
+  color: #a7f3d0 !important;
+}
+
+/* Violet (Group & Classify, Apply to All, Add Goal …) */
+html.dark button.bg-violet-500, html.dark button.bg-violet-600,
+html.dark a.bg-violet-500,      html.dark a.bg-violet-600 {
+  background: linear-gradient(180deg, rgba(139,92,246,0.22) 0%, rgba(139,92,246,0.10) 100%) !important;
+  border: 1px solid rgba(139,92,246,0.45) !important;
+  color: #c4b5fd !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(139,92,246,0.14) !important;
+}
+html.dark button.hover\:bg-violet-600:hover, html.dark a.hover\:bg-violet-600:hover,
+html.dark button.hover\:bg-violet-700:hover, html.dark a.hover\:bg-violet-700:hover {
+  background: linear-gradient(180deg, rgba(139,92,246,0.32) 0%, rgba(139,92,246,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 20px rgba(139,92,246,0.25) !important;
+  color: #ddd6fe !important;
+}
+
+/* Sky (Create Group, action buttons …) */
+html.dark button.bg-sky-500, html.dark button.bg-sky-600,
+html.dark a.bg-sky-500,      html.dark a.bg-sky-600 {
+  background: linear-gradient(180deg, rgba(14,165,233,0.22) 0%, rgba(14,165,233,0.10) 100%) !important;
+  border: 1px solid rgba(14,165,233,0.45) !important;
+  color: #7dd3fc !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(14,165,233,0.14) !important;
+}
+html.dark button.hover\:bg-sky-600:hover, html.dark a.hover\:bg-sky-600:hover,
+html.dark button.hover\:bg-sky-700:hover, html.dark a.hover\:bg-sky-700:hover {
+  background: linear-gradient(180deg, rgba(14,165,233,0.32) 0%, rgba(14,165,233,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 20px rgba(14,165,233,0.25) !important;
+  color: #bae6fd !important;
+}
+
+/* Green (Add Split, Settle …) */
+html.dark button.bg-green-500, html.dark button.bg-green-600,
+html.dark a.bg-green-500,      html.dark a.bg-green-600 {
+  background: linear-gradient(180deg, rgba(34,197,94,0.20) 0%, rgba(34,197,94,0.10) 100%) !important;
+  border: 1px solid rgba(34,197,94,0.45) !important;
+  color: #86efac !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(34,197,94,0.14) !important;
+}
+html.dark button.hover\:bg-green-600:hover, html.dark a.hover\:bg-green-600:hover,
+html.dark button.hover\:bg-green-700:hover, html.dark a.hover\:bg-green-700:hover {
+  background: linear-gradient(180deg, rgba(34,197,94,0.30) 0%, rgba(34,197,94,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 20px rgba(34,197,94,0.22) !important;
+  color: #bbf7d0 !important;
+}
+
+/* Rose (Delete confirmations, danger buttons) */
+html.dark button.bg-rose-500, html.dark button.bg-rose-600,
+html.dark a.bg-rose-500,      html.dark a.bg-rose-600 {
+  background: linear-gradient(180deg, rgba(244,63,94,0.22) 0%, rgba(244,63,94,0.10) 100%) !important;
+  border: 1px solid rgba(244,63,94,0.45) !important;
+  color: #fda4af !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(244,63,94,0.14) !important;
+}
+html.dark button.hover\:bg-rose-600:hover, html.dark a.hover\:bg-rose-600:hover,
+html.dark button.hover\:bg-rose-700:hover, html.dark a.hover\:bg-rose-700:hover {
+  background: linear-gradient(180deg, rgba(244,63,94,0.32) 0%, rgba(244,63,94,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 20px rgba(244,63,94,0.25) !important;
+  color: #fecdd3 !important;
+}
+
+/* Red (alternative danger color) */
+html.dark button.bg-red-500, html.dark button.bg-red-600,
+html.dark a.bg-red-500,      html.dark a.bg-red-600 {
+  background: linear-gradient(180deg, rgba(239,68,68,0.22) 0%, rgba(239,68,68,0.10) 100%) !important;
+  border: 1px solid rgba(239,68,68,0.45) !important;
+  color: #fca5a5 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    0 0 12px rgba(239,68,68,0.14) !important;
+}
+html.dark button.hover\:bg-red-600:hover, html.dark a.hover\:bg-red-600:hover,
+html.dark button.hover\:bg-red-700:hover, html.dark a.hover\:bg-red-700:hover {
+  background: linear-gradient(180deg, rgba(239,68,68,0.32) 0%, rgba(239,68,68,0.18) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 20px rgba(239,68,68,0.25) !important;
+  color: #fecaca !important;
+}
+
+/* The primary brand button already has its own dark treatment near app.css:255 —
+   left untouched. Hovering it gets the existing primary-glow box-shadow. */

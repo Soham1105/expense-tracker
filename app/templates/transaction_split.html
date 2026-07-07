@@ -1,0 +1,344 @@
+﻿<div
+  id="split-transaction-modal"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/45 p-2 md:p-3"
+>
+  <div
+    class="relative flex h-[90vh] w-[min(86vw,70rem)] flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50 shadow-[0_24px_60px_-30px_rgba(15,23,42,0.3)]"
+  >
+    <div class="border-b border-slate-200 bg-white px-4 py-3">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <p class="text-xs font-bold uppercase tracking-[0.24em] text-primary">Split Workspace</p>
+          <h1 class="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">
+            Split Transaction
+          </h1>
+        </div>
+        <button
+          id="split-close-btn"
+          type="button"
+          class="inline-flex size-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-700"
+          aria-label="Close split modal"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </div>
+    <main class="flex-1 w-full overflow-y-auto bg-slate-50 px-4 py-4">
+      <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+        <div class="flex flex-col gap-6">
+          <section class="panel-surface p-4">
+            <div class="grid grid-cols-1 gap-3 border-b border-slate-100 pb-3 lg:grid-cols-[minmax(0,1fr)_190px]">
+              <div class="flex min-w-0 items-center gap-3">
+                <div
+                  class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/10"
+                >
+                  <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                </div>
+                <div class="min-w-0">
+                  <input
+                    id="split-vendor-name"
+                    class="w-full min-w-0 border-none bg-transparent p-0 text-base font-black text-slate-900 focus:ring-0 dark:text-slate-100"
+                    type="text"
+                    value=""
+                  />
+                  <p id="split-txn-meta" class="mt-1 text-xs text-slate-500"></p>
+                  <p id="split-txn-time" class="mt-1 text-xs text-slate-400 hidden"></p>
+                </div>
+              </div>
+              <div class="w-full rounded-lg bg-slate-50 px-3 py-2 ring-1 ring-slate-200 lg:w-32 lg:justify-self-end lg:text-right">
+                <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  Total Amount
+                </p>
+                <p
+                  id="split-total-amount"
+                  class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-100"
+                >
+                  INR 0.00
+                </p>
+              </div>
+            </div>
+            <div id="split-narration-wrap" class="hidden pt-3">
+              <label class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Narration
+              </label>
+              <p
+                id="split-narration"
+                class="mt-2 rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-600 ring-1 ring-slate-200"
+              ></p>
+            </div>
+            <div
+              id="split-editing-shell"
+              class="grid grid-cols-1 gap-3 pt-3 lg:grid-cols-[minmax(0,1fr)_300px]"
+            >
+              <div class="hidden flex-col gap-2">
+                <label class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Notes
+                </label>
+                <input
+                  id="split-notes"
+                  class="form-input h-10 w-full rounded-lg border-slate-200 bg-slate-50 text-sm focus:border-primary focus:ring-primary"
+                  placeholder="Optional note"
+                  type="text"
+                />
+                <label class="mt-1 flex items-center gap-2 text-sm font-medium text-slate-600">
+                  <input
+                    id="split-no-required-toggle"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
+                  />
+                  No split required for this transaction
+                </label>
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  Split Mode
+                </label>
+                <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2">
+                  <button
+                    id="split-mode-itemized"
+                    type="button"
+                    class="rounded-md bg-white px-3 py-1.5 text-sm font-bold text-primary shadow-sm dark:bg-slate-700 whitespace-nowrap"
+                  >
+                    Items
+                  </button>
+                  <button
+                    id="split-mode-quick"
+                    type="button"
+                    class="rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-900 dark:hover:text-slate-100 whitespace-nowrap"
+                  >
+                    People
+                  </button>
+                  <button
+                    id="split-add-line-item"
+                    type="button"
+                    class="ml-auto rounded-md bg-primary px-3 py-1.5 text-sm font-bold text-white shadow-sm whitespace-nowrap"
+                  >
+                    Add Item
+                  </button>
+                  <button
+                    id="split-scan-receipt-btn"
+                    type="button"
+                    onclick="_scanReceiptForSplit()"
+                    title="Upload a bill photo to auto-fill items"
+                    class="rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-600 shadow-sm hover:bg-slate-50 whitespace-nowrap flex items-center gap-1.5 transition-colors"
+                  >
+                    <span class="material-symbols-outlined text-[15px] leading-none text-primary">receipt</span>
+                    Scan Receipt
+                  </button>
+                  <input id="split-receipt-file-input" type="file" accept="image/*" class="hidden" />
+                </div>
+              </div>
+            </div>
+            <div id="split-quick-actions" class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3">
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Quick Actions</p>
+              <div class="mt-3 flex flex-col gap-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button
+                    id="split-only-mine"
+                    type="button"
+                    class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition-colors hover:bg-slate-100"
+                  >
+                    Only Mine
+                  </button>
+                  <input
+                    id="split-equal-count"
+                    type="number"
+                    min="2"
+                    step="1"
+                    value="2"
+                    class="form-input h-9 w-20 rounded-lg border-slate-200 bg-white text-sm focus:border-primary focus:ring-primary"
+                  />
+                  <button
+                    id="split-apply-equal"
+                    type="button"
+                    class="rounded-lg bg-primary px-3 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-primary/90"
+                  >
+                    Equal Split
+                  </button>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <input
+                    id="split-my-share-amount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value=""
+                    placeholder="My share"
+                    class="form-input h-9 w-28 rounded-lg border-slate-200 bg-white text-sm focus:border-primary focus:ring-primary"
+                  />
+                  <select
+                    id="split-my-share-other"
+                    class="form-select h-9 w-32 rounded-lg border-slate-200 bg-white text-sm focus:border-primary focus:ring-primary"
+                  >
+                    <option value="Friends">Friends</option>
+                    <option value="Family">Family</option>
+                    <option value="Work">Work</option>
+                    <option value="Reimbursable">Reimbursable</option>
+                  </select>
+                  <button
+                    id="split-apply-my-share"
+                    type="button"
+                    class="rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-slate-800"
+                  >
+                    My Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="split-line-items-section" class="panel-surface p-4">
+            <div class="mb-3 flex items-center justify-between">
+              <h3 class="text-lg font-bold text-slate-900">
+                Line Items
+              </h3>
+              <p id="split-line-item-hint" class="text-xs font-medium text-slate-500">
+                Add rows as needed
+              </p>
+            </div>
+            <div id="split-line-items" class="flex flex-col gap-3"></div>
+          </section>
+        </div>
+
+        <div class="flex flex-col gap-6">
+          <div id="split-summary-panel" class="panel-surface sticky top-16 p-4">
+            <h3
+              class="mb-5 flex items-center gap-2 text-lg font-bold text-slate-900"
+            >
+              <span class="material-symbols-outlined text-primary">analytics</span>
+              Split Summary
+            </h3>
+          <div class="space-y-6">
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm font-bold">
+                  <span class="text-slate-600 dark:text-slate-400">Total Allocated</span>
+                  <span
+                    id="split-allocated-total"
+                    class="text-slate-900 dark:text-slate-100"
+                  >
+                    INR 0.00 / INR 0.00
+                  </span>
+                </div>
+                <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    id="split-allocation-progress"
+                    class="h-full rounded-full bg-primary transition-all duration-300"
+                    style="width: 0%"
+                  ></div>
+                </div>
+                <p
+                  id="split-allocation-status"
+                  class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-tight text-slate-500"
+                >
+                  <span class="material-symbols-outlined text-xs">info</span>
+                  Add line items
+                </p>
+              </div>
+              <div class="space-y-3">
+                <h4
+                  class="border-b border-slate-100 pb-2 text-xs font-bold uppercase tracking-widest text-slate-400"
+                >
+                  Spending by Tag
+                </h4>
+                <div id="split-category-summary" class="space-y-2"></div>
+              </div>
+
+              <div class="space-y-3">
+                <h4
+                  class="border-b border-slate-100 pb-2 text-xs font-bold uppercase tracking-widest text-slate-400"
+                >
+                  Expense For Breakdown
+                </h4>
+                <div id="split-person-summary" class="space-y-2"></div>
+              </div>
+
+              <div id="split-submit-status" class="text-xs text-slate-600"></div>
+            </div>
+          </div>
+
+          <div
+            id="split-no-required-panel"
+            class="hidden panel-surface sticky top-16 p-5"
+          >
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-slate-500">rule</span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Split skipped</h3>
+                <p class="mt-1 text-sm text-slate-500">
+                  This transaction will be treated as complete for split. Item rows,
+                  people share, and recovery linking stay hidden unless you untick the option.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col gap-3 border-t border-slate-200 bg-white px-4 py-3 md:flex-row md:items-center md:justify-between">
+        <p class="text-xs text-slate-500">Review the summary, then save the split when it looks right.</p>
+        <div class="flex items-center justify-end gap-3">
+          <button
+            id="split-discard-changes"
+            class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-500 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            Discard Changes
+          </button>
+          <button
+            id="split-finalize-btn"
+            class="flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary/90"
+          >
+            <span class="material-symbols-outlined">check_circle</span>
+            Finalize Split
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div
+    id="split-recovery-picker"
+    class="hidden absolute inset-0 z-10 flex items-center justify-center bg-slate-950/35 p-4"
+  >
+    <div class="w-full max-w-2xl rounded-2xl border border-slate-200 bg-white shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Link Refund / Payback</h3>
+          <p id="split-recovery-picker-subtitle" class="mt-1 text-xs text-slate-500">
+            Matching credit transactions
+          </p>
+        </div>
+        <button
+          id="split-recovery-picker-close"
+          type="button"
+          class="inline-flex size-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-700"
+        >
+          <span class="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+      <div class="space-y-3 px-4 py-3">
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px]">
+          <input
+            id="split-recovery-picker-note"
+            type="text"
+            class="form-input h-10 w-full rounded-lg border-slate-200 bg-white text-sm focus:border-primary focus:ring-primary"
+            placeholder="Optional note"
+          />
+          <select
+            id="split-recovery-picker-type"
+            class="form-select h-10 w-full rounded-lg border-slate-200 bg-white text-sm focus:border-primary focus:ring-primary"
+          >
+            <option value="Merchant Refund">Merchant Refund</option>
+            <option value="Friend Paid Back">Friend Paid Back</option>
+            <option value="Family Paid Back">Family Paid Back</option>
+            <option value="Work Reimbursement">Work Reimbursement</option>
+            <option value="Other Recovery">Other Recovery</option>
+          </select>
+        </div>
+        <div id="split-recovery-picker-status" class="text-xs text-slate-500"></div>
+        <div id="split-recovery-picker-list" class="max-h-[22rem] space-y-2 overflow-y-auto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+

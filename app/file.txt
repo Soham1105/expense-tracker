@@ -1,0 +1,61 @@
+Based on what the Reports page already has (date/source/direction/tag
+  filters, advanced filters, presets, KPI strip, spend pie, bulk Group &
+  Classify, quick-tag, groups, shared joy, export), here are suggestions that
+   add new value rather than duplicate existing features. I've grouped them
+  and noted value/effort.
+
+  A. Faster review & classification (highest leverage — builds on what we 
+  just did)
+
+  1. "Needs review" focus mode — a one-click toggle (chip in the filter bar)
+  that shows only auto-tagged/unreviewed rows. This directly drains the
+  backlog the new needs_review flag creates (the 37 auto-propagated txns),
+  and pairs with the existing Confirm auto-tagged button. High value, low
+  effort.
+  2. Untagged spotlight + completeness meter — a small "82% classified · 41
+  untagged (₹38k)" bar with a one-tap filter to the untagged set. Turns
+  classification into a finishable task. High, low.
+  3. +N more tag overflow chip — rows now show root + leaf (2 chips); a
+  subtle +2 chip (hover/tap reveals the rest) so nothing feels hidden after
+  the leaf-display change. Medium, low.
+  4. Expanded bulk actions — today bulk select only offers Group & Classify.
+  Add bulk Mark reviewed, Set flow type, Mark "no tag needed", and Hide for
+  the selected rows. High, medium.
+
+  B. Data integrity
+
+  5. Duplicate-import detection — flag likely duplicates (same amount + date
+  + counterparty within a few days) with a "possible duplicate" badge and a
+  quick dismiss/merge. Protects against re-uploaded statements
+  double-counting. High, medium.
+  6. Running totals in the table footer — show the summed debit/credit/net of
+   the currently filtered rows in the footer (the KPI strip is global; this
+  is per-view). Medium, low.
+
+  C. Insight on the page itself
+
+  7. Group the spend pie by leaf — add a "Leaf / Subcategory" option to the
+  existing group by selector so you can see petrol (4-wheeler) vs petrol
+  (2-Wheeler) right here, leveraging the new separation. Medium, low.
+  8. Anomaly highlight — subtly mark a transaction that's much larger than
+  that category's typical spend ("3× your usual Groceries"). Medium, medium.
+  9. Recurring/subscription surfacing — you already have a /recurring
+  endpoint; badge recurring merchants and show "N subscriptions ≈ ₹X/mo".
+  Medium, medium.
+
+  D. Power-user speed
+
+  10. Keyboard review — j/k to move between rows, t to open quick-tag, c to
+  confirm, e to edit. Makes reviewing dozens of rows fast. Medium, medium.
+  11. Quick date chips — This month / Last month / Last 30d / This week next
+  to the date range (faster than picking dates). Low, low.
+
+  ---
+  My recommended starter set (most value, builds straight on the leaf-tag +
+  needs-review work): #1 Needs-review mode, #2 Untagged spotlight, #3 +N more
+   chip, #5 Duplicate detection.
+
+  Want me to implement that starter set, or would you like to pick a
+  different combination? (And if you have your own ideas for this page, share
+   them and I'll fold them in.)
+

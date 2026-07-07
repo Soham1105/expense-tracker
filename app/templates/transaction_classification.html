@@ -1,0 +1,1523 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+  <script>
+    (function () {
+      var dark = localStorage.getItem("ft_dark_mode") === "1";
+      var root = document.documentElement;
+      root.classList.toggle("dark", dark);
+      /* Inline background-color so the viewport is correct before Tailwind CDN loads — avoids a flash of light theme. */
+      root.style.backgroundColor = dark ? "#0a0a0a" : "#f0f2f8";
+      root.style.colorScheme = dark ? "dark" : "light";
+    })();
+  </script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Classify Transaction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: { primary: "#607AFB", "background-light": "#f0f2f8", "background-dark": "#0a0a0a" },
+            fontFamily: { display: ["Manrope", "sans-serif"] },
+            keyframes: {
+              "pop-in": { "0%": { transform: "scale(0.92)", opacity: "0" }, "100%": { transform: "scale(1)", opacity: "1" } },
+              "slide-up": { "0%": { transform: "translateY(6px)", opacity: "0" }, "100%": { transform: "translateY(0)", opacity: "1" } },
+              "pulse-ring": { "0%,100%": { "box-shadow": "0 0 0 0 rgba(96,122,251,0.3)" }, "50%": { "box-shadow": "0 0 0 6px rgba(96,122,251,0)" } },
+            },
+            animation: {
+              "pop-in": "pop-in 0.15s ease-out",
+              "slide-up": "slide-up 0.2s ease-out",
+              "pulse-ring": "pulse-ring 2s ease-in-out infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Pill active state */
+      .pill-btn { transition: all 0.12s ease; }
+      .pill-btn:active { transform: scale(0.93); }
+      .pill-active { box-shadow: 0 0 0 2px #607AFB; font-weight: 800; }
+
+      /* Category select custom arrow */
+      select.styled-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%2394a3b8' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px;
+        -webkit-appearance: none;
+      }
+
+      /* Smooth mode panel transitions */
+      #simple-mode-panel, #split-mode-panel { animation: slide-up 0.18s ease-out; }
+
+      /* Keyboard shortcut badge */
+      kbd { display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.18); border-radius: 4px;
+            padding: 1px 5px; font-size: 10px; font-family: inherit; letter-spacing: 0; }
+
+      /* ── Dark mode ────────────────────────────────────────────────────── */
+      .dark body  { background-color: #0a0a0a; color: #fafafa; }
+      .dark main  { background-color: #0a0a0a; }
+
+      /* Header */
+      .dark header { background-color: rgba(10,10,10,0.94); border-bottom-color: #262626; }
+
+      /* Cards / surfaces — use background-color not background shorthand
+         so styled-select background-image (arrow) is preserved */
+      .dark .bg-white  { background-color: #141414 !important; }
+      .dark .bg-slate-50, .dark .bg-slate-50\/60, .dark .bg-slate-50\/80 { background-color: #0f0f0f !important; }
+      .dark .bg-slate-100 { background-color: #1f1f1f !important; }
+      .dark .bg-slate-200 { background-color: #262626 !important; }
+
+      /* Borders */
+      .dark .border-slate-100 { border-color: #141414 !important; }
+      .dark .border-slate-200, .dark .border-slate-200\/80 { border-color: #262626 !important; }
+      .dark .border-dashed.border-slate-200 { border-color: #262626 !important; }
+      .dark .ring-slate-200\/80, .dark .ring-1.ring-slate-200 { --tw-ring-color: #262626 !important; }
+      .dark .ring-slate-100 { --tw-ring-color: #141414 !important; }
+      .dark .divide-slate-100 > * + * { border-color: #141414; }
+
+      /* Text */
+      /* ── Module color tokens ─────────────────────────────
+         Tags   : sky    (#0ea5e9)  Groups: violet (#7c3aed)
+         Joy    : purple (#9333ea)  Categories: user-defined  */
+      :root {
+        --clr-tag:   #0ea5e9; --clr-tag-bg:   #f0f9ff;
+        --clr-group: #7c3aed; --clr-group-bg: #f5f3ff;
+        --clr-joy:   #9333ea; --clr-joy-bg:   #faf5ff;
+      }
+      .dark .text-slate-950 { color: #f8fafc !important; }
+      .dark .text-slate-900 { color: #fafafa !important; }
+      .dark .text-slate-800 { color: #e5e5e5 !important; }
+      .dark .text-slate-700 { color: #cbd5e1 !important; }
+      .dark .text-slate-600 { color: #a3a3a3 !important; }
+      .dark .text-slate-500 { color: #737373 !important; }
+
+      /* Generic inputs — background-color only, preserves background-image */
+      .dark input:not([type=radio]):not([type=checkbox]),
+      .dark select,
+      .dark textarea {
+        background-color: #141414 !important;
+        color: #fafafa !important;
+        border-color: #262626 !important;
+      }
+      .dark input::placeholder, .dark textarea::placeholder { color: #3a3a3a !important; }
+      .dark input:focus, .dark select:focus { background-color: #1f1f1f !important; }
+
+      /* Privacy mode — hide amount boxes entirely instead of showing ₹XXXX.XX */
+      html.privacy-mode #tx-amount,
+      html.privacy-mode #header-tx-amount,
+      html.privacy-mode #tx-amount-context,
+      html.privacy-mode #person-self-amount,
+      html.privacy-mode [data-field="amount"] { visibility: hidden; }
+
+      /* ID-specific overrides for Display Name and Category —
+         ID specificity beats the global class rules above */
+      .dark #simple-vendor,
+      .dark #simple-category {
+        background-color: #141414 !important;
+        color: #fafafa !important;
+        border-color: #3a3a3a !important;
+      }
+      .dark #simple-vendor:focus,
+      .dark #simple-category:focus {
+        background-color: #1f1f1f !important;
+        border-color: #3a3a3a !important;   /* keep neutral border even on focus */
+        box-shadow: none !important;        /* kill the primary halo + outer glow */
+        outline: none;
+      }
+
+      /* ── Display Name / Category — neutral REGARDLESS of "done/pending" JS classes ──
+         applyInputTone() in transaction_classification.js paints these inputs with
+         border-emerald-300 + bg-emerald-50/70 once the user fills them. That gave the
+         "green/white" tint the user did not want. Same story for the wrapper cards via
+         applyCardTone() (border-emerald-200 + bg-emerald-50/40). Override all states. */
+      .dark #simple-vendor.bg-emerald-50\/70,
+      .dark #simple-vendor.bg-amber-50\/70,
+      .dark #simple-category.bg-emerald-50\/70,
+      .dark #simple-category.bg-amber-50\/70 {
+        background-color: #141414 !important;
+        background-image: none !important;
+        border-color: #3a3a3a !important;
+        box-shadow: none !important;
+      }
+      .dark #simple-vendor.border-emerald-300,
+      .dark #simple-vendor.border-amber-300,
+      .dark #simple-category.border-emerald-300,
+      .dark #simple-category.border-amber-300 {
+        border-color: #3a3a3a !important;
+      }
+      .dark #simple-main-details-card.bg-emerald-50\/40,
+      .dark #simple-main-details-card.bg-amber-50\/50,
+      .dark #simple-spend-category-card.bg-emerald-50\/40,
+      .dark #simple-spend-category-card.bg-amber-50\/50,
+      .dark #simple-context-card.bg-emerald-50\/40,
+      .dark #simple-context-card.bg-amber-50\/50 {
+        background-color: transparent !important;
+        background-image: none !important;
+        box-shadow: none !important;
+      }
+      .dark #simple-main-details-card.border-emerald-200,
+      .dark #simple-main-details-card.border-amber-200,
+      .dark #simple-spend-category-card.border-emerald-200,
+      .dark #simple-spend-category-card.border-amber-200,
+      .dark #simple-context-card.border-emerald-200,
+      .dark #simple-context-card.border-amber-200 {
+        border-color: transparent !important;
+      }
+
+      /* Mode selector cards */
+      .dark [class*="border-slate-200"][class*="bg-white"] { background: #141414; border-color: #262626; }
+      .dark label:hover span[class*="border-slate-200"] { border-color: #3a3a3a; }
+
+      /* Pill buttons */
+      .dark .pill-btn { background: #141414; border-color: #262626; color: #a3a3a3; }
+      .dark .pill-btn:hover { border-color: #3a3a3a; color: #e5e5e5; }
+      .dark .pill-btn.pill-active { color: #fafafa; }
+
+      /* ── Status strip (Simple panel) ───────────────────────────────────────
+         Neutral by default. When JS flips it to "matched/auto-ready" by adding
+         bg-emerald-50/80 + border-emerald-200, the STRIP itself stays neutral
+         (no tint that bleeds into the Display Name field below). The indicator
+         lives in the PILL — a glassy primary chip with a pulsing dot — plus a
+         one-shot light-sweep that fires along the bottom edge of the strip. */
+
+      .dark #simple-auto-review-strip {
+        position: relative;
+        background: #0f0f0f !important;
+        background-image: none !important;
+        border-color: #141414 !important;
+        box-shadow: none !important;
+        overflow: hidden;
+      }
+      /* Override the global .bg-emerald-50/80 white-shine on this specific element */
+      .dark #simple-auto-review-strip.bg-emerald-50\/80,
+      .dark #simple-auto-review-strip.border-emerald-200 {
+        background: #0f0f0f !important;
+        background-image: none !important;
+        border-color: #141414 !important;
+        box-shadow: none !important;
+      }
+      /* Bottom-edge light-sweep — animates once when matched class applied, settles to soft glow */
+      .dark #simple-auto-review-strip.bg-emerald-50\/80::after {
+        content: "";
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, rgba(96,122,251,0.85) 50%, transparent 100%);
+        animation: cls-strip-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) 1 forwards;
+        pointer-events: none;
+      }
+      @keyframes cls-strip-sweep {
+        0%   { transform: translateX(-100%); opacity: 1; }
+        55%  { transform: translateX(0%);    opacity: 1; }
+        100% { transform: translateX(0%);    opacity: 0; }
+      }
+
+      /* Pill — neutral default */
+      .dark #simple-auto-review-pill {
+        background: #262626 !important;
+        color: #a3a3a3 !important;
+        border: 1px solid transparent;
+        transition: all 0.25s ease;
+      }
+      /* Pill — matched/auto-ready state: glassy primary chip + pulsing dot */
+      .dark #simple-auto-review-pill.bg-emerald-100 {
+        position: relative;
+        background: linear-gradient(180deg, rgba(96,122,251,0.24) 0%, rgba(96,122,251,0.12) 100%) !important;
+        color: #c7d2fe !important;
+        border-color: rgba(96,122,251,0.45) !important;
+        padding-left: 22px !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.12),
+          0 0 12px rgba(96,122,251,0.22) !important;
+      }
+      .dark #simple-auto-review-pill.bg-emerald-100::before {
+        content: "";
+        position: absolute;
+        left: 9px;
+        top: 50%;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #a5b4fc;
+        transform: translateY(-50%);
+        box-shadow: 0 0 6px rgba(165,180,252,0.7);
+        animation: cls-pulse-dot 1.6s ease-in-out infinite;
+      }
+      @keyframes cls-pulse-dot {
+        0%, 100% { opacity: 1;    transform: translateY(-50%) scale(1); }
+        50%       { opacity: 0.55; transform: translateY(-50%) scale(1.4); }
+      }
+
+      /* Sidebar summary card dark gradient */
+      .dark #summary-balance-card { background-image: linear-gradient(135deg, #141414, #0f0f0f); background-color: #141414; }
+
+      /* Shadow */
+      .dark .shadow-sm { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4) !important; }
+
+      /* Scrollbar */
+      .dark ::-webkit-scrollbar { width: 6px; }
+      .dark ::-webkit-scrollbar-track { background: #141414; }
+      .dark ::-webkit-scrollbar-thumb { background: #262626; border-radius: 3px; }
+
+      /* ── Force dark inputs/selects (overrides Tailwind forms plugin) ── */
+      .dark input[type="text"],
+      .dark input[type="number"],
+      .dark input[type="date"],
+      .dark input[type="search"],
+      .dark input[type="email"],
+      .dark select {
+        background-color: #141414 !important;
+        color: #fafafa !important;
+        border-color: #3a3a3a !important;
+      }
+      .dark input[type="text"]:focus,
+      .dark input[type="number"]:focus,
+      .dark select:focus {
+        background-color: #1f1f1f !important;
+      }
+      .dark input::placeholder { color: #3a3a3a !important; }
+      .dark select option { background-color: #141414; color: #fafafa; }
+
+      /* JS-generated subcategory selects + split row inputs —
+         background-color only so styled-select arrows survive */
+      .dark #simple-subcategory-chain select,
+      .dark #person-self-subcategory-chain select,
+      .dark #split-rows input,
+      .dark #split-rows select,
+      .dark #recovery-line-item,
+      .dark #recovery-candidate,
+      .dark #recovery-amount,
+      .dark #recovery-type,
+      .dark #simple-self-transfer-transaction {
+        background-color: #141414 !important;
+        color: #fafafa !important;
+        border-color: #3a3a3a !important;
+      }
+
+      /* Hero card narration */
+      .dark #tx-narration { background: #0f0f0f !important; color: #a3a3a3 !important; ring-color: #141414; }
+
+      /* Quick guide card */
+      .dark #classification-sidebar .bg-white { background: #141414 !important; }
+
+      /* Recovery + linked rows */
+      .dark #linked-recoveries span { background: #1f1f1f; color: #a3a3a3; }
+
+      /* ── Colored surfaces ─────────────────────────────────────────────── */
+      .dark .bg-amber-50   { background-color: rgba(245,158,11,0.08) !important; }
+      .dark .bg-amber-100  { background-color: rgba(245,158,11,0.15) !important; }
+      .dark .bg-sky-50     { background-color: rgba(14,165,233,0.08) !important; }
+      /* Cyan replaces emerald/teal on this page — user found green tones odd in dark mode */
+      /* Note: bg-emerald-50 (FILLED-row STATE highlight) uses neutral white-shine
+         below, NOT cyan, so the "this row has data" cue doesn't look green-tinted. */
+      .dark .bg-teal-50    { background-color: rgba(34,211,238,0.10) !important; }
+      .dark .bg-teal-100   { background-color: rgba(34,211,238,0.15) !important; }
+      .dark .bg-rose-50    { background-color: rgba(244,63,94,0.08) !important; }
+      .dark .bg-violet-50  { background-color: rgba(139,92,246,0.08) !important; }
+      /* FILLED-row state highlight — was emerald green, then cyan, now NEUTRAL white-shine */
+      .dark .bg-emerald-50 {
+        background-color: rgba(255,255,255,0.04) !important;
+        background-image: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.10) !important;
+      }
+
+      /* ── Colored borders ──────────────────────────────────────────────── */
+      .dark .border-slate-300   { border-color: #262626 !important; }
+      .dark .border-amber-200   { border-color: rgba(245,158,11,0.25) !important; }
+      .dark .border-sky-200     { border-color: rgba(14,165,233,0.2) !important; }
+      .dark .border-rose-200    { border-color: rgba(244,63,94,0.2) !important; }
+      .dark .border-teal-200    { border-color: rgba(34,211,238,0.30) !important; }
+      .dark .border-violet-200  { border-color: rgba(139,92,246,0.2) !important; }
+      /* FILLED-row state border — neutral white instead of green/cyan */
+      .dark .border-emerald-200 { border-color: rgba(255,255,255,0.18) !important; }
+
+      /* ── Colored rings ────────────────────────────────────────────────── */
+      .dark .ring-rose-100    { --tw-ring-color: rgba(244,63,94,0.18) !important; }
+      .dark .ring-sky-100     { --tw-ring-color: rgba(14,165,233,0.15) !important; }
+      .dark .ring-amber-100   { --tw-ring-color: rgba(245,158,11,0.15) !important; }
+      .dark .ring-teal-100    { --tw-ring-color: rgba(34,211,238,0.20) !important; }
+      .dark .ring-violet-100  { --tw-ring-color: rgba(139,92,246,0.12) !important; }
+      .dark .ring-emerald-100 { --tw-ring-color: rgba(34,211,238,0.20) !important; }
+
+      /* ── Colored text ─────────────────────────────────────────────────── */
+      .dark .text-rose-500    { color: #fda4af !important; }
+      .dark .text-rose-600    { color: #fb7185 !important; }
+      .dark .text-rose-800    { color: #fca5a5 !important; }
+      .dark .text-sky-600     { color: #38bdf8 !important; }
+      .dark .text-sky-800     { color: #7dd3fc !important; }
+      .dark .text-teal-600    { color: #67e8f9 !important; }
+      .dark .text-teal-700    { color: #a5f3fc !important; }
+      .dark .text-emerald-700 { color: #67e8f9 !important; }
+      .dark .text-violet-700  { color: #c4b5fd !important; }
+      .dark .text-amber-600   { color: #fbbf24 !important; }
+      .dark .text-amber-700   { color: #fcd34d !important; }
+      .dark .text-amber-800   { color: #fde68a !important; }
+
+      /* ── Colored pill buttons — override base .dark .pill-btn ─────────── */
+      .dark .pill-btn.bg-rose-50    { background: rgba(244,63,94,0.12) !important;  border-color: rgba(244,63,94,0.28) !important;  color: #fda4af !important; }
+      .dark .pill-btn.bg-teal-50    { background: linear-gradient(180deg, rgba(34,211,238,0.18) 0%, rgba(34,211,238,0.08) 100%) !important; border-color: rgba(34,211,238,0.40) !important; color: #67e8f9 !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 10px rgba(34,211,238,0.12) !important; }
+      .dark .pill-btn.bg-emerald-50 { background: linear-gradient(180deg, rgba(34,211,238,0.18) 0%, rgba(34,211,238,0.08) 100%) !important; border-color: rgba(34,211,238,0.40) !important; color: #67e8f9 !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 10px rgba(34,211,238,0.12) !important; }
+      .dark .pill-btn.bg-sky-50     { background: rgba(14,165,233,0.1) !important;  border-color: rgba(14,165,233,0.28) !important; color: #7dd3fc !important; }
+      .dark .pill-btn.bg-violet-50  { background: rgba(139,92,246,0.1) !important;  border-color: rgba(139,92,246,0.28) !important; color: #c4b5fd !important; }
+      .dark .pill-btn.bg-amber-50   { background: rgba(245,158,11,0.1) !important;  border-color: rgba(245,158,11,0.28) !important; color: #fcd34d !important; }
+
+      /* ── Mode selector checked backgrounds ───────────────────────────── */
+      .dark .peer:checked ~ .peer-checked\:bg-amber-50 { background-color: rgba(245,158,11,0.1) !important; }
+      .dark .peer:checked ~ .peer-checked\:bg-teal-50  { background-color: rgba(34,211,238,0.10) !important; }
+
+      /* ── Person self panel "Your share" header ────────────────────────── */
+      .dark #person-self-panel > div:first-child { background-color: rgba(96,122,251,0.1) !important; }
+
+      /* ── Identity hint (sky alert) ───────────────────────────────────── */
+      .dark #simple-identity-hint { background: rgba(14,165,233,0.08) !important; border-color: rgba(14,165,233,0.2) !important; color: #7dd3fc !important; }
+
+      /* ── Mode warning (amber) + lock note ───────────────────────────── */
+      .dark #mode-warning  { background: rgba(245,158,11,0.08) !important; border-color: rgba(245,158,11,0.2) !important; color: #fcd34d !important; }
+      .dark #mode-lock-note { background: #0f0f0f !important; border-color: #141414 !important; color: #a3a3a3 !important; }
+
+      /* ── Scan Bill button (now in the page header) ─────────────────────── */
+      .dark #header-scan-bill-btn,
+      .dark button[onclick="openReceiptPanel()"] {
+        background: rgba(245,158,11,0.10) !important;
+        border-color: rgba(245,158,11,0.40) !important;
+        color: #fcd34d !important;
+      }
+      .dark #header-scan-bill-btn:hover,
+      .dark button[onclick="openReceiptPanel()"]:hover {
+        background: rgba(245,158,11,0.20) !important;
+        border-color: rgba(245,158,11,0.55) !important;
+      }
+
+      /* ── Link recovery button (bg-slate-900 blends into page bg) ─────── */
+      .dark #link-recovery-btn { background-color: #3a3a3a !important; }
+      .dark #link-recovery-btn:hover { background-color: #737373 !important; }
+
+      /* ── hover:bg-slate-50 in dark ───────────────────────────────────── */
+      .dark .hover\:bg-slate-50:hover { background-color: #0f0f0f !important; }
+
+      /* ── Receipt upload side panel ───────────────────────────────────── */
+      .dark #receipt-upload-panel { background-color: #141414 !important; border-color: #262626 !important; }
+      .dark #receipt-upload-panel .border-slate-200,
+      .dark #receipt-upload-panel [class*="border-slate-200"] { border-color: #262626 !important; }
+      .dark #receipt-drop-zone { background-color: #0f0f0f !important; border-color: #262626 !important; }
+      .dark #receipt-drop-zone:hover { border-color: #f59e0b !important; }
+      .dark #receipt-store-name { background-color: #141414 !important; border-color: #262626 !important; color: #fafafa !important; }
+      .dark #receipt-store-name::placeholder { color: #3a3a3a !important; }
+      .dark #receipt-items-section > div:last-child { background-color: #0f0f0f !important; border-color: #262626 !important; }
+      /* Dynamic item rows are injected by receipt_upload.js with dark: classes —
+         the page-level .dark rules above already handle bg-white, text-slate-*,
+         and border-slate-200. Thumbnail border + bordered amount row covered. */
+      .dark #receipt-thumbnail { border-color: #262626 !important; background-color: #0a0a0a !important; }
+
+      /* ── Hover text colors — Tailwind hover:text-slate-* lacks dark variant ── */
+      .dark .hover\:text-slate-700:hover { color: #cbd5e1 !important; }
+      .dark .hover\:text-slate-600:hover { color: #a3a3a3 !important; }
+      .dark .hover\:text-slate-900:hover { color: #fafafa !important; }
+      .dark .hover\:text-slate-200:hover { color: #e5e5e5 !important; }
+      .dark .hover\:text-slate-300:hover { color: #cbd5e1 !important; }
+      .dark .hover\:text-slate-400:hover { color: #a3a3a3 !important; }
+
+      /* ── Hover bg color fixes (slate-100/200 hovers on dark elements) ───── */
+      .dark .hover\:bg-slate-100:hover { background-color: #1f1f1f !important; }
+      .dark .hover\:bg-slate-200:hover { background-color: #262626 !important; }
+
+      /* ── Header bg-slate-100 badge (transaction context) ─────────────── */
+      .dark #header-tx-badge { background-color: #1f1f1f !important; }
+      .dark #header-tx-vendor { color: #cbd5e1 !important; }
+
+      /* ── Subtle separator text (breadcrumb /, hero card ·) ───────────── */
+      .dark .text-slate-300 { color: #3a3a3a !important; }
+
+      /* ── Recovery linking panel sub-headers ──────────────────────────── */
+      .dark #recovery-link-panel { background-color: transparent !important; }
+
+      /* ── Split-rows table chrome — wrapper border + add-row button ───── */
+      .dark #split-rows + #add-split-row,
+      .dark #add-split-row { border-color: #262626 !important; color: #737373 !important; }
+      .dark #add-split-row:hover { background-color: #0f0f0f !important; color: #607AFB !important; }
+      .dark #split-rows-lock-note { background-color: #0f0f0f !important; border-color: #262626 !important; }
+
+      /* ── Person-self panel left accent retains in dark ─────────────────── */
+      .dark #person-self-panel { background-color: #141414 !important; border-color: #262626 !important; }
+
+      /* ── Privacy pill — this page doesn't load /css/app.css so the styles
+           from there don't apply. Inline the floating-pill positioning here so
+           the lock-icon button sits at the bottom-right instead of inside the
+           body flow at the bottom-left. */
+      .priv-float-btn {
+        position: fixed; bottom: 20px; right: 20px; z-index: 9990;
+        height: 34px; padding: 0 10px; gap: 5px; border-radius: 20px;
+        cursor: pointer; display: flex; align-items: center;
+        font-size: 12px; font-weight: 600; white-space: nowrap;
+        transition: all 0.18s ease;
+        background: rgba(96,122,251,0.10); color: #607AFB;
+        border: 1px solid rgba(96,122,251,0.22);
+        box-shadow: 0 2px 8px rgba(96,122,251,0.12);
+      }
+      .priv-float-btn:hover {
+        background: rgba(96,122,251,0.18);
+        box-shadow: 0 4px 14px rgba(96,122,251,0.22);
+        transform: translateY(-1px);
+      }
+      .priv-float-btn.locked {
+        background: rgba(255,255,255,0.55); color: #737373;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      }
+      .priv-float-btn.locked:hover {
+        background: rgba(255,255,255,0.90); color: #525252;
+      }
+      .dark .priv-float-btn {
+        background: rgba(96,122,251,0.18);
+        border-color: rgba(96,122,251,0.35);
+        color: #a5b4fc;
+      }
+      .dark .priv-float-btn:hover { background: rgba(96,122,251,0.28); color: #c7d2fe; }
+      .dark .priv-float-btn.locked { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); color: #737373; }
+      .dark .priv-float-btn.locked:hover { background: rgba(255,255,255,0.10); color: #a3a3a3; }
+
+      /* ── PIN modal (also missing because /css/app.css isn't loaded here).
+           app-init.js opens this modal whenever the privacy pill is clicked;
+           without these rules the modal renders as plain block text in the
+           page flow, so unlocking/locking appears to "not work". */
+      @keyframes scaleIn   { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+      @keyframes pinShake  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+      .pin-modal-overlay {
+        position: fixed; inset: 0; z-index: 9997;
+        background: rgba(0,0,0,0.55);
+        backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        display: none; align-items: center; justify-content: center;
+      }
+      .pin-modal-overlay.open { display: flex; }
+      .pin-modal-card {
+        background: white; border-radius: 24px; border: 1px solid #e5e5e5;
+        box-shadow: 0 20px 48px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.06);
+        padding: 32px 36px; text-align: center;
+        width: 300px; max-width: 90vw; animation: scaleIn 0.18s ease-out both;
+      }
+      .pin-modal-icon  { font-size: 38px; margin-bottom: 10px; line-height: 1; }
+      .pin-modal-title { font-size: 16px; font-weight: 800; color: #1e293b; margin: 0 0 4px; }
+      .pin-modal-sub   { font-size: 12px; color: #94a3b8; margin: 0; }
+      .pin-dots { display: flex; gap: 12px; justify-content: center; padding: 18px 0 22px; }
+      .pin-dot  {
+        width: 14px; height: 14px; border-radius: 50%;
+        border: 2px solid #e2e8f0; background: transparent;
+        transition: all 0.15s ease;
+      }
+      .pin-dot.filled { background: #607AFB; border-color: #607AFB; transform: scale(1.15); }
+      .pin-dot.error  { background: #f43f5e; border-color: #f43f5e; animation: pinShake 0.3s ease; }
+      #pin-cancel-btn {
+        padding: 8px 22px; border-radius: 10px; border: 1px solid #e5e5e5;
+        background: none; font-size: 13px; font-weight: 600; color: #64748b;
+        cursor: pointer; transition: background 0.14s ease;
+      }
+      #pin-cancel-btn:hover { background: #f8fafc; }
+      /* Dark-mode equivalents */
+      .dark .pin-modal-card  { background: #141414; border-color: #262626; }
+      .dark .pin-modal-title { color: #e5e5e5; }
+      .dark .pin-modal-sub   { color: #a3a3a3; }
+      .dark .pin-dot         { border-color: #3a3a3a; }
+      .dark #pin-cancel-btn  { border-color: #262626; color: #a3a3a3; }
+      .dark #pin-cancel-btn:hover { background: #1f1f1f; }
+
+      /* ── Amount masking when locked. Tiny subset of the .amt rules from app.css
+           so that the actual transaction amount on this page gets masked when the
+           user puts privacy on (the whole point of the lock toggle). */
+      .amt[data-orig] {
+        font-family: ui-monospace, "SF Mono", monospace !important;
+        color: #94a3b8 !important;
+        -webkit-text-fill-color: #94a3b8 !important;
+        letter-spacing: 0.04em;
+        user-select: none;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      .dark .amt[data-orig] {
+        color: #525252 !important;
+        -webkit-text-fill-color: #525252 !important;
+      }
+
+      /* ── Slate gradient tokens — light strips like the hero accent ───── */
+      .dark #tx-accent-strip.bg-gradient-to-r.from-slate-300 {
+        background-image: none !important;
+        background-color: #1f1f1f !important;
+      }
+      .dark .from-slate-300 { --tw-gradient-from: #141414 !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(20,20,20,0)) !important; }
+      .dark .to-slate-200   { --tw-gradient-to:   #1f1f1f !important; }
+      .dark .from-slate-200 { --tw-gradient-from: #1f1f1f !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(31,31,31,0)) !important; }
+      .dark .to-slate-100   { --tw-gradient-to:   #141414 !important; }
+      .dark .from-slate-100 { --tw-gradient-from: #141414 !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(20,20,20,0)) !important; }
+
+      /* Loose shadow tints occasionally generated by JS */
+      .dark [class*="shadow-slate"]   { --tw-shadow-color: rgba(0,0,0,0.4) !important; }
+      /* Emerald-tinted shadows (added by JS to active/matched elements) → neutral white halo */
+      .dark [class*="shadow-emerald"] { --tw-shadow-color: rgba(255,255,255,0.10) !important; }
+
+      /* Status gradients on the allocation summary balance card — JS swaps these in.
+         Light mode shows vivid green/amber/rose; dark mode mutes them so they don't glow. */
+      /* "Matched" status balance card — neutral white-shine (no color) so user
+         reads the state as "polished/complete" rather than "green tinted". */
+      .dark .from-emerald-600 { --tw-gradient-from: rgba(255,255,255,0.12) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255,255,255,0)) !important; }
+      .dark .to-emerald-800   { --tw-gradient-to:   rgba(255,255,255,0.04) !important; }
+      .dark .border-emerald-800 { border-color: rgba(255,255,255,0.22) !important; }
+
+      .dark .from-amber-400  { --tw-gradient-from: #6b4a1a !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(107,74,26,0)) !important; }
+      .dark .to-orange-500   { --tw-gradient-to:   #5a3915 !important; }
+      .dark .border-amber-300 { border-color: #6b4a1a !important; }
+
+      .dark .from-rose-500   { --tw-gradient-from: #6b2a35 !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(107,42,53,0)) !important; }
+      .dark .to-red-700      { --tw-gradient-to:   #4a1f25 !important; }
+      .dark .border-rose-300 { border-color: #6b2a35 !important; }
+
+      /* Recovery panel "linked recovery" amounts in emerald — swap to cyan */
+      .dark .text-emerald-700 { color: #67e8f9 !important; }
+
+      /* ── Cyan-consistency fixes — anywhere Tailwind teal-/emerald- escaped earlier overrides ── */
+      .dark .border-teal-200, .dark .border-teal-300, .dark .border-teal-400, .dark .border-teal-500 { border-color: rgba(34,211,238,0.45) !important; }
+      /* Emerald borders on this page (active/matched/balanced row state) → neutral white edge */
+      .dark .border-emerald-200, .dark .border-emerald-300, .dark .border-emerald-400, .dark .border-emerald-500 { border-color: rgba(255,255,255,0.18) !important; }
+      .dark .hover\:border-teal-400:hover, .dark .hover\:border-teal-500:hover,
+      .dark .hover\:border-emerald-400:hover, .dark .hover\:border-emerald-500:hover { border-color: rgba(255,255,255,0.30) !important; }
+      .dark .group:hover .group-hover\:border-teal-400 { border-color: rgba(34,211,238,0.50) !important; }
+      .dark .peer:checked ~ .peer-checked\:border-teal-500 { border-color: rgba(34,211,238,0.85) !important; }
+      /* bg-teal-100 stays cyan (Income mode icon backdrop), bg-emerald-100 (matched-pill) goes white-shine */
+      .dark .bg-teal-100 { background-color: rgba(34,211,238,0.18) !important; }
+      .dark .bg-emerald-100 { background-color: rgba(255,255,255,0.10) !important; }
+      .dark .text-teal-700, .dark .text-teal-600, .dark .text-emerald-700, .dark .text-emerald-600 { color: #67e8f9 !important; }
+
+      /* ── Selected mode card: stronger glow + subtle inner highlight ─────── */
+      .dark .peer:checked ~ span[class*="peer-checked:border-primary"],
+      .dark .peer:checked ~ span[class*="peer-checked:border-amber"],
+      .dark .peer:checked ~ span[class*="peer-checked:border-teal"] {
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.07),
+          0 0 0 1px rgba(255,255,255,0.04),
+          0 6px 20px rgba(0,0,0,0.45),
+          0 0 28px rgba(96,122,251,0.10) !important;
+      }
+
+      /* ── Sticky-feeling save bar: subtle backdrop glow when it sits at bottom of a card ── */
+      .dark #save-simple-btn,
+      .dark #save-split-btn {
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.18),
+          0 4px 14px rgba(96,122,251,0.30),
+          0 0 24px rgba(96,122,251,0.18) !important;
+      }
+      .dark #save-simple-btn:hover,
+      .dark #save-split-btn:hover {
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.22),
+          0 6px 22px rgba(96,122,251,0.42),
+          0 0 32px rgba(96,122,251,0.28) !important;
+      }
+
+      /* ── Hero transaction card: subtle inner sheen + better depth ──────── */
+      .dark main > .mb-4.overflow-hidden.rounded-2xl {
+        background: linear-gradient(180deg, #1c1c1c 0%, #141414 65%) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.06),
+          0 1px 2px rgba(0,0,0,0.5),
+          0 12px 28px rgba(0,0,0,0.35) !important;
+      }
+
+      /* ── Allocation summary balance card: glassy depth on the gradient header ── */
+      .dark #summary-balance-card {
+        background-image: linear-gradient(160deg, #1c1c1c 0%, #141414 70%, #0f0f0f 100%) !important;
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.06),
+          0 8px 20px rgba(0,0,0,0.35) !important;
+      }
+
+      /* ── Pill buttons: tighter feel + crisper hover ──────────────────── */
+      .dark .pill-btn { box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important; transition: all 0.15s ease; }
+      .dark .pill-btn:hover { transform: translateY(-1px); }
+      .dark .pill-btn.pill-active {
+        box-shadow:
+          inset 0 1px 0 rgba(255,255,255,0.08),
+          0 0 0 2px rgba(96,122,251,0.45),
+          0 0 14px rgba(96,122,251,0.20) !important;
+      }
+      .dark [class*="shadow-amber"]   { --tw-shadow-color: rgba(245,158,11,0.15) !important; }
+      .dark [class*="shadow-sky"]     { --tw-shadow-color: rgba(14,165,233,0.15) !important; }
+      .dark [class*="shadow-violet"]  { --tw-shadow-color: rgba(139,92,246,0.15) !important; }
+      .dark [class*="shadow-primary"] { --tw-shadow-color: rgba(96,122,251,0.15) !important; }
+
+      /* Opacity variants used by JS-injected rows that the base rules above miss */
+      .dark .bg-slate-50\/40, .dark .bg-slate-50\/70 { background-color: #0f0f0f !important; }
+      .dark .bg-slate-100\/80                        { background-color: #1f1f1f !important; }
+      .dark .bg-amber-50\/50, .dark .bg-amber-50\/70 { background-color: rgba(245,158,11,0.10) !important; }
+      /* All emerald-50 opacity variants → neutral white-shine for "filled/matched" states */
+      .dark .bg-emerald-50\/40,
+      .dark .bg-emerald-50\/70,
+      .dark .bg-emerald-50\/80 {
+        background-color: rgba(255,255,255,0.04) !important;
+        background-image: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.10) !important;
+      }
+      .dark .bg-rose-50\/80    { background-color: rgba(244,63,94,0.10)  !important; }
+      .dark .bg-sky-50\/80     { background-color: rgba(14,165,233,0.10) !important; }
+      .dark .bg-amber-50\/80   { background-color: rgba(245,158,11,0.10) !important; }
+
+      /* JS injects elements with bare bg-white / bg-slate-100 etc. that the
+         page-level !important rules already cover. But "selected option" cards
+         use bg-slate-900 — keep them dark-but-distinct. */
+      .dark [class*="bg-slate-900"] { background-color: #3a3a3a !important; }
+      .dark .border-slate-900       { border-color: #3a3a3a !important; }
+
+      /* Translucent white pills inside primary/active surfaces stay visible */
+      .dark .bg-white\/15 { background-color: rgba(255,255,255,0.10) !important; }
+      .dark .bg-white\/70 { background-color: rgba(96,122,251,0.20) !important; }
+
+      /* Native checkbox controls — tailwind/forms plugin leaves them white */
+      .dark input[type="checkbox"] {
+        background-color: #141414 !important;
+        border-color: #3a3a3a !important;
+      }
+      .dark input[type="checkbox"]:checked {
+        background-color: #607AFB !important;
+        border-color: #607AFB !important;
+      }
+      .dark input[type="radio"] {
+        background-color: #141414 !important;
+        border-color: #3a3a3a !important;
+      }
+      .dark input[type="radio"]:checked {
+        background-color: #607AFB !important;
+        border-color: #607AFB !important;
+      }
+
+      /* Split rows: JS sets inline `background:#ffffff` (and faded tints).
+         CSS !important on background-color beats inline shorthand. */
+      .dark #split-rows > div > div { background-color: #141414 !important; }
+      .dark #split-rows > div > div + div { background-color: #0f0f0f !important; }
+    </style>
+  </head>
+  <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+
+    <!-- Top bar -->
+    <header class="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm px-4 sm:px-6" style="height:56px">
+
+      <!-- Left: back + breadcrumb + transaction context badge -->
+      <div class="flex items-center gap-2.5 min-w-0">
+        <a href="/reports/"
+          class="flex items-center justify-center h-8 w-8 rounded-lg text-slate-400 hover:text-primary hover:bg-slate-100 transition-colors flex-shrink-0"
+          title="Back to Reports">
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        </a>
+        <div class="hidden sm:flex items-center gap-1.5 text-xs">
+          <a href="/reports/" class="text-slate-400 hover:text-primary transition-colors font-medium">Reports</a>
+          <span class="text-slate-300">/</span>
+          <span class="font-bold text-slate-700">Classify</span>
+        </div>
+        <!-- Transaction context — updated by JS below -->
+        <div id="header-tx-badge" class="hidden md:flex items-center gap-2 rounded-lg bg-slate-100 px-2.5 py-1 max-w-[240px] overflow-hidden">
+          <span id="header-tx-vendor" class="text-[11px] font-bold text-slate-700 truncate"></span>
+          <span class="text-slate-300 text-xs flex-shrink-0">·</span>
+          <span id="header-tx-amount" class="text-[11px] font-extrabold flex-shrink-0"></span>
+        </div>
+      </div>
+
+      <!-- Right: Scan Bill button + dark mode toggle (injected by app-init.js into #header-right) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="header-scan-bill-btn" onclick="openReceiptPanel()"
+          title="Upload a bill photo — extracted items auto-fill split rows"
+          class="flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-bold text-amber-700 hover:bg-amber-100 transition-colors active:scale-95">
+          <span class="material-symbols-outlined text-[15px]">receipt_long</span>
+          <span class="hidden sm:inline">Scan Bill</span>
+        </button>
+        <div id="header-right" style="display:flex;align-items:center;gap:6px;flex-shrink:0"></div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 py-4 sm:px-6">
+
+      <!-- ── TRANSACTION HERO CARD ──────────────────────────────────────── -->
+      <div id="tx-hero-card" class="mb-4 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
+        <!-- Accent strip — JS can swap the class to color it -->
+        <div id="tx-accent-strip" class="h-1 w-full bg-gradient-to-r from-slate-300 to-slate-200"></div>
+        <div class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h2 id="tx-vendor" class="text-xl font-extrabold tracking-tight text-slate-950">Loading…</h2>
+              <span id="tx-source" class="hidden rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary"></span>
+            </div>
+            <p id="tx-meta" class="mt-0.5 text-xs text-slate-400"></p>
+            <p id="tx-counterparty-count" class="hidden mt-1 text-xs font-semibold text-primary"></p>
+            <p id="tx-merchant-history" class="hidden mt-0.5 text-[11px] text-slate-400"></p>
+            <p id="tx-narration" class="hidden mt-2 rounded-lg bg-slate-50 px-3 py-1.5 text-xs text-slate-500 ring-1 ring-slate-100"></p>
+            <div id="tx-tags" class="hidden mt-2 flex flex-wrap gap-1.5"></div>
+            <p id="tx-amount-context" class="hidden mt-1.5 text-xs font-semibold"></p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span id="tx-amount" class="rounded-xl px-4 py-2.5 text-lg font-black tracking-tight shadow-sm"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MODE SELECTOR ─────────────────────────────────────────────── -->
+      <div class="mb-4">
+        <div class="grid gap-2 sm:grid-cols-3">
+
+          <label class="cursor-pointer group">
+            <input class="peer sr-only" type="radio" name="classification_mode" value="simple" checked />
+            <span class="flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 shadow-sm transition-all duration-150 group-hover:border-primary/40 group-hover:shadow-md peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:shadow-md">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition group-hover:bg-primary/15 peer-checked:bg-primary/20">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">label</span>
+              </span>
+              <span class="min-w-0">
+                <span class="flex items-center gap-1.5">
+                  <span class="text-sm font-bold text-slate-800">Simple</span>
+                  <span id="mode-chip-simple" class="hidden rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-black text-primary">✓</span>
+                </span>
+                <span class="block text-[11px] text-slate-400">Tag with one category</span>
+              </span>
+            </span>
+          </label>
+
+          <label class="cursor-pointer group">
+            <input class="peer sr-only" type="radio" name="classification_mode" value="item" />
+            <span class="flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 shadow-sm transition-all duration-150 group-hover:border-amber-300 group-hover:shadow-md peer-checked:border-amber-400 peer-checked:bg-amber-50 peer-checked:shadow-md">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 transition group-hover:bg-amber-100">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">receipt_long</span>
+              </span>
+              <span class="min-w-0">
+                <span class="flex items-center gap-1.5">
+                  <span class="text-sm font-bold text-slate-800">Split by item</span>
+                  <span id="mode-chip-item" class="hidden rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-black text-primary">✓</span>
+                </span>
+                <span class="block text-[11px] text-slate-400">Groceries, mixed bills</span>
+              </span>
+            </span>
+          </label>
+
+          <label class="cursor-pointer group">
+            <input class="peer sr-only" type="radio" name="classification_mode" value="person" />
+            <span class="flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white px-4 py-3 shadow-sm transition-all duration-150 group-hover:border-teal-400 group-hover:shadow-md peer-checked:border-teal-500 peer-checked:bg-teal-50 peer-checked:shadow-md">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-100 text-teal-700 transition group-hover:bg-teal-100">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">group</span>
+              </span>
+              <span class="min-w-0">
+                <span class="flex items-center gap-1.5">
+                  <span class="text-sm font-bold text-slate-800">Split by person</span>
+                  <span id="mode-chip-person" class="hidden rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-black text-primary">✓</span>
+                </span>
+                <span class="block text-[11px] text-slate-400">Shared bills, paybacks</span>
+              </span>
+            </span>
+          </label>
+
+        </div>
+        <p id="mode-warning" class="mt-2 hidden rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800"></p>
+        <p id="mode-lock-note" class="mt-2 hidden rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600"></p>
+      </div>
+
+      <!-- ── MAIN LAYOUT ────────────────────────────────────────────────── -->
+      <section id="classification-layout" class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div class="space-y-4">
+
+          <!-- ── SIMPLE MODE ──────────────────────────────────────────── -->
+          <section id="simple-mode-panel" class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
+
+            <!-- Status strip -->
+            <div id="simple-auto-review-strip" class="flex items-center justify-between gap-3 border-b border-slate-100 bg-slate-50 px-4 py-2 transition-colors">
+              <p id="simple-auto-review-copy" class="text-[11px] text-slate-500">Fill in the details below to classify.</p>
+              <span id="simple-auto-review-pill" class="shrink-0 rounded-full bg-slate-200 px-2.5 py-0.5 text-[10px] font-bold text-slate-600 transition-all">Pending</span>
+            </div>
+
+            <div id="simple-editor" class="p-4 space-y-3">
+
+              <!-- Vendor + Category row -->
+              <div id="simple-main-details-card" class="grid gap-3 sm:grid-cols-2">
+
+                <!-- Vendor -->
+                <div>
+                  <div class="mb-1.5 flex items-center justify-between">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Display name</label>
+                    <label class="flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-0.5 hover:bg-slate-50">
+                      <input id="simple-apply-similar" type="checkbox" class="h-3 w-3 rounded border-slate-300 text-primary focus:ring-primary" />
+                      <span class="text-[10px] text-slate-400">Apply to similar</span>
+                      <span id="simple-apply-similar-count" class="hidden rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold text-primary ring-1 ring-primary/20"></span>
+                    </label>
+                  </div>
+                  <input id="simple-vendor" type="text"
+                    class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-sm font-semibold text-slate-900 dark:text-white transition focus:border-primary focus:bg-white dark:focus:bg-slate-700 focus:ring-primary dark:placeholder-slate-500"
+                    placeholder="e.g. Swiggy, Friend A, Salary" />
+                  <p id="simple-vendor-learned" class="hidden mt-1 text-[10px] text-slate-400 pl-0.5"></p>
+                  <p id="apply-similar-preview" class="hidden mt-1.5 rounded-lg border border-primary/20 bg-primary/5 px-3 py-1.5 text-xs text-primary"></p>
+                  <p id="simple-identity-hint" class="hidden mt-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-800"></p>
+                </div>
+
+                <!-- Category -->
+                <div id="simple-spend-category-card">
+                  <!-- Category suggestion moved above the dropdown for visibility -->
+                  <div id="simple-suggestion" class="hidden mb-2"></div>
+                  <div class="mb-1.5 flex items-center justify-between">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Category</label>
+                    <span class="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-bold text-rose-500 ring-1 ring-rose-100">Required</span>
+                  </div>
+                  <div class="relative mb-1.5">
+                    <input id="simple-category-search" type="text" autocomplete="off" placeholder="Search category…  ( press / )"
+                      class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-white transition focus:border-primary focus:ring-primary" />
+                    <div id="simple-category-search-results" class="hidden absolute left-0 right-0 z-30 mt-1 max-h-64 overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-600 dark:bg-slate-800"></div>
+                  </div>
+                  <select id="simple-category"
+                    class="styled-select w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 pr-8 text-sm font-medium text-slate-800 dark:text-white transition focus:border-primary focus:bg-white dark:focus:bg-slate-700 focus:ring-primary"></select>
+                  <div id="simple-subcategory-chain" class="mt-1.5 space-y-1.5"></div>
+                </div>
+
+              </div>
+
+              <!-- Context section -->
+              <div id="simple-context-card" class="rounded-xl border border-slate-100 bg-slate-50/80">
+                <button id="simple-context-toggle" type="button"
+                  class="flex w-full items-center justify-between px-3.5 py-2.5 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors">
+                  <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[14px]">tune</span>
+                    Details
+                  </span>
+                  <span class="material-symbols-outlined text-[14px] transition-transform" id="simple-context-chevron">expand_less</span>
+                </button>
+
+                <div id="simple-context-panel" class="grid gap-x-4 gap-y-3 px-3.5 pb-3.5 sm:grid-cols-2">
+
+                  <!-- Counterparty -->
+                  <div>
+                    <p class="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Who is it?</p>
+                    <div class="flex flex-wrap gap-1" id="pills-counterparty">
+                      <button type="button" data-val="" data-group="simple-counterparty-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-400 hover:border-slate-300">—</button>
+                      <button type="button" data-val="merchant" data-group="simple-counterparty-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">🏪 Merchant</button>
+                      <button type="button" data-val="friend" data-group="simple-counterparty-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">👤 Friend</button>
+                      <button type="button" data-val="family" data-group="simple-counterparty-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">👨‍👩‍👧 Family</button>
+                      <button type="button" data-val="employer" data-group="simple-counterparty-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">🏢 Employer</button>
+                      <button type="button" data-val="bank" data-group="simple-counterparty-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">🏦 Bank</button>
+                      <button type="button" data-val="government" data-group="simple-counterparty-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">🏛️ Govt</button>
+                    </div>
+                    <select id="simple-counterparty-type" class="hidden">
+                      <option value="">Not set</option>
+                      <option value="merchant">Merchant</option>
+                      <option value="friend">Friend</option>
+                      <option value="family">Family</option>
+                      <option value="employer">Employer</option>
+                      <option value="bank">Bank</option>
+                      <option value="government">Government</option>
+                      <option value="unknown">Unknown</option>
+                    </select>
+                  </div>
+
+                  <!-- Flow type -->
+                  <div>
+                    <p class="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Flow type</p>
+                    <div class="flex flex-wrap gap-1" id="pills-flow">
+                      <button type="button" data-val="" data-group="simple-primary-flow-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-400">—</button>
+                      <button type="button" data-val="expense" data-group="simple-primary-flow-type" data-dir="debit"
+                        class="pill-btn rounded-md border border-rose-200 bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-600 hover:border-rose-400">↑ Expense</button>
+                      <button type="button" data-val="income" data-group="simple-primary-flow-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-teal-200 bg-teal-50 px-2 py-1 text-[11px] font-semibold text-teal-700 hover:border-teal-400">↓ Income</button>
+                      <button type="button" data-val="cashback" data-group="simple-primary-flow-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700 hover:border-emerald-400">🎁 Cashback</button>
+                      <button type="button" data-val="refund" data-group="simple-primary-flow-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-sky-200 bg-sky-50 px-2 py-1 text-[11px] font-semibold text-sky-700 hover:border-sky-400">↩ Refund</button>
+                      <button type="button" data-val="transfer" data-group="simple-primary-flow-type"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">↔ Transfer</button>
+                      <button type="button" data-val="investment_buy" data-group="simple-primary-flow-type" data-dir="debit"
+                        class="pill-btn rounded-md border border-violet-200 bg-violet-50 px-2 py-1 text-[11px] font-semibold text-violet-700 hover:border-violet-400">📈 Invest</button>
+                      <button type="button" data-val="investment_sell" data-group="simple-primary-flow-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-violet-200 bg-violet-50 px-2 py-1 text-[11px] font-semibold text-violet-700 hover:border-violet-400">📉 Sell</button>
+                      <button type="button" data-val="loan_given" data-group="simple-primary-flow-type" data-dir="debit"
+                        class="pill-btn rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-700 hover:border-amber-400">💸 Loan out</button>
+                      <button type="button" data-val="loan_taken" data-group="simple-primary-flow-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-700 hover:border-amber-400">💸 Loan in</button>
+                      <button type="button" data-val="repayment_in" data-group="simple-primary-flow-type" data-dir="credit"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">↙ Repaid in</button>
+                      <button type="button" data-val="repayment_out" data-group="simple-primary-flow-type" data-dir="debit"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">↗ Repaid out</button>
+                      <button type="button" data-val="fee" data-group="simple-primary-flow-type" data-dir="debit"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">Fee</button>
+                    </div>
+                    <select id="simple-primary-flow-type" class="hidden">
+                      <option value="">Not set</option>
+                      <option value="expense">Expense</option>
+                      <option value="income">Income</option>
+                      <option value="cashback">Cashback</option>
+                      <option value="refund">Refund</option>
+                      <option value="transfer">Transfer</option>
+                      <option value="investment_buy">Investment buy</option>
+                      <option value="investment_sell">Investment sell</option>
+                      <option value="loan_given">Loan given</option>
+                      <option value="loan_taken">Loan taken</option>
+                      <option value="repayment_in">Repayment in</option>
+                      <option value="repayment_out">Repayment out</option>
+                      <option value="fee">Fee</option>
+                    </select>
+                  </div>
+
+                  <!-- Who benefited -->
+                  <div>
+                    <p class="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Who benefited?</p>
+                    <div class="flex flex-wrap gap-1" id="pills-ownership">
+                      <button type="button" data-val="" data-group="simple-consumption-ownership"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-400">—</button>
+                      <button type="button" data-val="self" data-group="simple-consumption-ownership"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">Self</button>
+                      <button type="button" data-val="family_household" data-group="simple-consumption-ownership"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">Family</button>
+                      <button type="button" data-val="shared" data-group="simple-consumption-ownership"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">Shared</button>
+                      <button type="button" data-val="business" data-group="simple-consumption-ownership"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-primary/50 hover:bg-primary/5">Business</button>
+                    </div>
+                    <select id="simple-consumption-ownership" class="hidden">
+                      <option value="">Not set</option>
+                      <option value="self">Self</option>
+                      <option value="family_household">Family / Household</option>
+                      <option value="shared">Shared</option>
+                      <option value="business">Business</option>
+                      <option value="other">Other</option>
+                      <option value="not_consumption">Not consumption</option>
+                    </select>
+                  </div>
+
+                  <!-- Settlement -->
+                  <div>
+                    <p class="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Settlement?</p>
+                    <div class="flex flex-wrap gap-1" id="pills-settlement">
+                      <button type="button" data-val="" data-group="simple-settlement-state"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-400">—</button>
+                      <button type="button" data-val="none" data-group="simple-settlement-state"
+                        class="pill-btn rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 hover:border-slate-400">None</button>
+                      <button type="button" data-val="i_owe" data-group="simple-settlement-state" data-dir="credit"
+                        class="pill-btn rounded-md border border-rose-200 bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-600 hover:border-rose-400">I owe</button>
+                      <button type="button" data-val="owed_to_me" data-group="simple-settlement-state" data-dir="debit"
+                        class="pill-btn rounded-md border border-teal-200 bg-teal-50 px-2 py-1 text-[11px] font-semibold text-teal-700 hover:border-teal-400">Owed to me</button>
+                      <button type="button" data-val="partial" data-group="simple-settlement-state"
+                        class="pill-btn rounded-md border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-700 hover:border-amber-400">Partial</button>
+                      <button type="button" data-val="settled" data-group="simple-settlement-state"
+                        class="pill-btn rounded-md border border-violet-200 bg-violet-50 px-2 py-1 text-[11px] font-semibold text-violet-700 hover:border-violet-400">✓ Settled</button>
+                    </div>
+                    <select id="simple-settlement-state" class="hidden">
+                      <option value="">Not set</option>
+                      <option value="none">None</option>
+                      <option value="owed_to_me">Owed to me</option>
+                      <option value="i_owe">I owe</option>
+                      <option value="partial">Partial</option>
+                      <option value="settled">Settled</option>
+                    </select>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Self transfer — always visible toggle -->
+              <section id="simple-self-transfer-panel" class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <label class="flex cursor-pointer items-center justify-between gap-3">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[16px] text-slate-500">swap_horiz</span>
+                    <span class="text-xs font-semibold text-slate-700">This is a transfer between my own accounts</span>
+                    <span id="simple-self-transfer-badge" class="hidden rounded-full bg-sky-100 px-2 py-0.5 text-[9px] font-bold text-sky-700">Auto-detected</span>
+                  </div>
+                  <input type="checkbox" id="simple-self-transfer-toggle"
+                    class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary" />
+                </label>
+                <div id="simple-self-transfer-link-row" class="hidden mt-2.5 space-y-1.5">
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Link the matching transaction (optional)</p>
+                  <select id="simple-self-transfer-transaction" class="styled-select w-full rounded-lg border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white text-sm"></select>
+                  <p id="simple-self-transfer-note" class="text-[11px] text-slate-400"></p>
+                </div>
+              </section>
+
+              <!-- Hidden fields -->
+              <div class="hidden">
+                <select id="simple-review-status">
+                  <option value="confirmed">Done</option>
+                  <option value="needs_review">Needs Review</option>
+                  <option value="unknown">Unknown</option>
+                  <option value="no_action_needed">No Action Needed</option>
+                  <option value="unreviewed">Unreviewed</option>
+                </select>
+                <input id="simple-no-tag-required" type="checkbox" />
+              </div>
+            </div>
+
+            <!-- Save bar -->
+            <div class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/60 px-4 py-3">
+              <p id="simple-status" class="text-[11px] text-slate-400"></p>
+              <div class="flex items-center gap-2">
+                <button id="save-simple-next-btn" type="button" title="Save and jump to the next transaction that needs review"
+                  class="hidden items-center gap-1.5 rounded-xl border border-primary/30 bg-primary/5 px-3.5 py-2.5 text-sm font-bold text-primary transition-all hover:bg-primary/10 active:scale-95">
+                  Save &amp; next
+                  <kbd>&#8629;</kbd>
+                </button>
+                <button id="save-simple-btn"
+                  class="group flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary/90 hover:shadow-md active:scale-95">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1">save</span>
+                  Save
+                  <kbd>S</kbd>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ── SPLIT MODE ──────────────────────────────────────────────── -->
+          <section id="split-mode-panel" class="hidden overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
+
+            <!-- Header -->
+            <div class="border-b border-slate-100 bg-slate-50 px-4 py-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span id="split-mode-icon" class="material-symbols-outlined text-[18px] text-amber-500" style="font-variation-settings:'FILL' 1">receipt_long</span>
+                  <h3 id="split-panel-title" class="text-sm font-extrabold text-slate-900">Split this transaction</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="flex items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-semibold text-slate-500">
+                    <span class="h-2 w-2 rounded-full" style="background:#607AFB"></span>Keep
+                    <span class="ml-1.5 h-2 w-2 rounded-full bg-amber-400"></span>Refund
+                    <span class="ml-1.5 h-2 w-2 rounded-full bg-violet-400"></span>Family
+                    <span class="ml-1.5 h-2 w-2 rounded-full bg-sky-400"></span>Other
+                  </div>
+                  <!-- Scan Bill moved to the page header so it's reachable from any mode.
+                       Empty div keeps the flex layout balanced. -->
+                </div>
+              </div>
+              <p class="mt-0.5 text-[11px] text-slate-400">All row amounts must add up to the transaction total exactly.</p>
+            </div>
+
+            <div id="split-editor" class="p-4 space-y-3">
+
+              <!-- Vendor label -->
+              <div>
+                <label class="mb-1 block text-[10px] font-bold uppercase tracking-widest text-slate-400">Vendor label</label>
+                <input id="split-vendor" type="text"
+                  class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 px-3 py-2.5 text-sm font-semibold text-slate-900 dark:text-white focus:border-primary focus:bg-white dark:focus:bg-slate-700 focus:ring-primary dark:placeholder-slate-500"
+                  placeholder="e.g. Swiggy, Big Bazaar" />
+                <input id="split-notes" type="text" class="hidden w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm dark:text-white" placeholder="Notes" />
+              </div>
+
+              <!-- Person: My share panel -->
+              <div id="person-self-panel" class="hidden rounded-2xl border-2 border-primary/20 dark:border-primary/30 bg-primary/3 dark:bg-primary/5">
+                <!-- Amount hero — the critical first action -->
+                <div class="flex flex-col items-center justify-center gap-1 py-5 px-4">
+                  <p class="text-[10px] font-black uppercase tracking-widest text-primary/60 mb-1">My Share of this expense</p>
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl font-black text-primary/40 select-none">₹</span>
+                    <input id="person-self-amount" type="number" min="0" step="0.01"
+                      class="w-36 text-center text-2xl font-black rounded-xl border-2 border-primary/30 dark:border-primary/40 bg-white dark:bg-slate-900 text-primary dark:text-primary px-3 py-2 focus:border-primary focus:ring-primary focus:outline-none"
+                      placeholder="0.00" />
+                  </div>
+                  <p id="person-self-status" class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500 text-center"></p>
+                </div>
+                <!-- Category — secondary, below the amount -->
+                <div class="border-t border-primary/10 dark:border-primary/20 px-4 py-3 space-y-1.5 bg-white/60 dark:bg-slate-900/40 rounded-b-2xl">
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Category <span class="font-normal normal-case text-slate-300 dark:text-slate-600">— optional</span></p>
+                  <div class="relative">
+                    <input id="person-self-category-search" type="text" autocomplete="off" placeholder="Search category…"
+                      class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm dark:text-white focus:border-primary focus:ring-primary" />
+                    <div id="person-self-category-search-results" class="hidden absolute left-0 right-0 z-30 mt-1 max-h-56 overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-600 dark:bg-slate-800"></div>
+                  </div>
+                  <select id="person-self-category" class="styled-select w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 pr-7 text-sm dark:text-white"></select>
+                  <div id="person-self-subcategory-chain" class="space-y-1.5"></div>
+                </div>
+              </div>
+
+              <!-- Row container -->
+              <div>
+                <p id="split-rows-help" class="mb-2 text-[11px] text-slate-400">Each row is one item — mark Keep or Refund, then assign to Self / Family / Other.</p>
+                <div id="split-rows-lock-note" class="hidden mb-2 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-2 text-[11px] text-slate-400">
+                  Set your share above to unlock rows.
+                </div>
+
+                <!-- Table wrapper -->
+                <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+                  <!-- Column headers — JS hides this in person mode -->
+                  <div id="split-rows-header"
+                    class="border-b border-slate-100 bg-slate-50 px-3 py-2"
+                    style="display:grid; grid-template-columns:28px 105px 90px 86px 1fr 1fr 32px; gap:8px; min-width:560px; align-items:center">
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">#</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Amount (₹)</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Type</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">For</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Category</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Subcategory</span>
+                    <span></span>
+                  </div>
+                  <!-- Rows injected by JS -->
+                  <div id="split-rows" class="divide-y divide-slate-100"></div>
+                  <!-- Single add-row button inside the table, at the bottom -->
+                  <button id="add-split-row" type="button"
+                    class="flex w-full items-center justify-center gap-1.5 border-t border-dashed border-slate-200 py-2.5 text-[11px] font-semibold text-slate-400 transition hover:bg-slate-50 hover:text-primary active:scale-95">
+                    <span class="material-symbols-outlined text-[14px]">add</span> Add row
+                  </button>
+                </div>
+              </div>
+
+              <!-- Recovery linking -->
+              <div class="rounded-xl border border-slate-200 bg-white">
+                <!-- Header -->
+                <div class="flex items-center gap-2 border-b border-slate-100 bg-slate-50 px-4 py-2.5 rounded-t-xl">
+                  <span class="material-symbols-outlined text-[15px] text-slate-400" style="font-variation-settings:'FILL' 1">link</span>
+                  <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Link recovery</p>
+                  <span class="ml-auto text-[10px] text-slate-400">Got a refund or payback? Link it to a row.</span>
+                </div>
+                <div id="recovery-link-panel" class="p-3 space-y-2">
+                  <!-- Row 1: Line item + Transaction -->
+                  <div class="grid gap-2 grid-cols-2">
+                    <div>
+                      <p class="mb-1 text-[9px] font-bold uppercase tracking-widest text-slate-400">Row to recover</p>
+                      <select id="recovery-line-item" class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 dark:text-white px-2 py-1.5 text-sm"></select>
+                    </div>
+                    <div>
+                      <p class="mb-1 text-[9px] font-bold uppercase tracking-widest text-slate-400">Incoming transaction</p>
+                      <select id="recovery-candidate" class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 dark:text-white px-2 py-1.5 text-sm"></select>
+                    </div>
+                  </div>
+                  <!-- Row 2: Amount + Type + Link button -->
+                  <div class="flex gap-2 items-end">
+                    <div class="w-28 shrink-0">
+                      <p class="mb-1 text-[9px] font-bold uppercase tracking-widest text-slate-400">Amount (₹)</p>
+                      <input id="recovery-amount" type="number" min="0" step="0.01"
+                        class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 dark:text-white px-2 py-1.5 text-sm" placeholder="0.00" />
+                    </div>
+                    <div class="flex-1">
+                      <p class="mb-1 text-[9px] font-bold uppercase tracking-widest text-slate-400">Recovery type</p>
+                      <select id="recovery-type" class="w-full rounded-lg border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 dark:text-white px-2 py-1.5 text-sm">
+                        <option value="Merchant Refund">Merchant Refund</option>
+                        <option value="Friend Paid Back">Friend Paid Back</option>
+                        <option value="Family Paid Back">Family Paid Back</option>
+                        <option value="Work Reimbursement">Work Reimbursement</option>
+                        <option value="Other Recovery">Other Recovery</option>
+                      </select>
+                    </div>
+                    <button id="link-recovery-btn" type="button"
+                      class="shrink-0 rounded-lg bg-slate-900 px-4 py-1.5 text-[11px] font-bold text-white transition hover:bg-slate-700 active:scale-95">
+                      Link
+                    </button>
+                  </div>
+                  <p id="recovery-status" class="text-[11px] text-slate-400"></p>
+                  <div id="linked-recoveries" class="flex flex-wrap gap-1.5"></div>
+                </div>
+              </div>
+
+              <!-- Save bar -->
+              <div class="flex items-center justify-between gap-3 border-t border-slate-100 pt-3">
+                <p id="split-status" class="text-[11px] text-slate-400"></p>
+                <button id="save-split-btn"
+                  class="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-primary/90 hover:shadow-md active:scale-95">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1">save</span>
+                  Save split
+                  <kbd>S</kbd>
+                </button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- ── SIDEBAR ────────────────────────────────────────────────── -->
+        <aside id="classification-sidebar" class="space-y-3 lg:sticky lg:top-[56px]">
+
+          <!-- Allocation summary -->
+          <div id="allocation-summary-panel" class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/80">
+            <div id="summary-balance-card" class="bg-gradient-to-br from-slate-900 to-slate-800 px-4 py-4 text-white">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="text-[9px] font-bold uppercase tracking-widest text-white/40">Allocation</p>
+                  <h3 id="summary-balance-label" class="mt-1 text-lg font-extrabold leading-tight">Ready</h3>
+                  <p id="summary-balance-hint" class="mt-0.5 text-[11px] text-white/50">—</p>
+                </div>
+                <span id="summary-balance-icon" class="material-symbols-outlined shrink-0 rounded-xl bg-white/10 p-2 text-[18px]" style="font-variation-settings:'FILL' 1">task_alt</span>
+              </div>
+            </div>
+            <div class="p-3 space-y-1.5">
+              <div class="flex items-center justify-between mb-0.5">
+                <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Breakdown</p>
+                <span id="summary-total" class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600"></span>
+              </div>
+
+              <div class="flex items-center justify-between rounded-lg bg-primary/8 px-3 py-2.5 ring-1 ring-primary/20" style="background:rgba(96,122,251,0.08)">
+                <div>
+                  <p id="summary-self-label" class="text-[9px] font-bold uppercase tracking-widest text-primary">Your share</p>
+                  <p id="summary-self-hint" class="mt-0.5 text-[10px] text-primary/60">Your final cost.</p>
+                </div>
+                <p id="summary-self" class="text-sm font-extrabold text-primary">₹0</p>
+              </div>
+
+              <div class="flex items-center justify-between rounded-lg bg-sky-50 px-3 py-2.5 ring-1 ring-sky-100">
+                <div>
+                  <p id="summary-other-label" class="text-[9px] font-bold uppercase tracking-widest text-sky-600">Others</p>
+                  <p id="summary-other-hint" class="mt-0.5 text-[10px] text-sky-500/80">Recoverable later.</p>
+                </div>
+                <p id="summary-other" class="text-sm font-extrabold text-sky-800">₹0</p>
+              </div>
+
+              <div id="summary-refund-card" class="hidden flex items-center justify-between rounded-lg bg-amber-50 px-3 py-2.5 ring-1 ring-amber-100">
+                <div>
+                  <p class="text-[9px] font-bold uppercase tracking-widest text-amber-600">Refunds</p>
+                  <p id="summary-refund-hint" class="mt-0.5 text-[10px] text-amber-500/80">Returned.</p>
+                </div>
+                <p id="summary-refund" class="text-sm font-extrabold text-amber-800">₹0</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-1.5 pt-0.5">
+                <div class="rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200">
+                  <p class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Allocated</p>
+                  <p id="summary-allocated" class="mt-0.5 text-sm font-extrabold text-slate-900">₹0</p>
+                </div>
+                <div id="summary-remaining-card" class="rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-slate-200">
+                  <p id="summary-remaining-label" class="text-[9px] font-bold uppercase tracking-widest text-slate-400">Remaining</p>
+                  <p id="summary-remaining" class="mt-0.5 text-sm font-extrabold text-slate-900">₹0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick guide -->
+          <div class="rounded-2xl bg-white p-3.5 shadow-sm ring-1 ring-slate-200/80">
+            <p class="mb-2.5 text-[9px] font-bold uppercase tracking-widest text-slate-400">Quick guide</p>
+            <div class="space-y-2 text-[11px] text-slate-500">
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-[13px] text-primary mt-0.5 shrink-0" style="font-variation-settings:'FILL' 1">label</span>
+                <span><strong class="text-slate-700">Simple</strong> — everyday spend, one tag</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-[13px] text-amber-500 mt-0.5 shrink-0" style="font-variation-settings:'FILL' 1">receipt_long</span>
+                <span><strong class="text-slate-700">Split by item</strong> — groceries, mixed basket</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-[13px] text-teal-600 mt-0.5 shrink-0" style="font-variation-settings:'FILL' 1">group</span>
+                <span><strong class="text-slate-700">Split by person</strong> — shared bills, paybacks</span>
+              </div>
+              <div class="flex items-start gap-2">
+                <span class="material-symbols-outlined text-[13px] text-slate-400 mt-0.5 shrink-0">link</span>
+                <span>Use <strong class="text-slate-700">Link recovery</strong> for refunds &amp; paybacks</span>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+      </section>
+    </main>
+
+    <script>window.TRANSACTION_ID = "{{ transaction_id }}";</script>
+    <script>
+    (function () {
+      /* ── Pill ↔ hidden select two-way sync ─────────────────────────── */
+
+      function activatePill(groupId, value) {
+        const btns = [...document.querySelectorAll(`.pill-btn[data-group="${groupId}"]`)];
+        let anyMatch = false;
+        btns.forEach(btn => {
+          const isMatch = btn.dataset.val === value;
+          btn.classList.remove("pill-active", "ring-2", "ring-primary", "ring-offset-1");
+          if (isMatch) { btn.classList.add("pill-active"); anyMatch = true; }
+          btn.setAttribute("role", "radio");
+          btn.setAttribute("aria-checked", isMatch ? "true" : "false");
+          btn.tabIndex = isMatch ? 0 : -1;
+        });
+        // Roving tabindex: keep one pill reachable by Tab even when nothing is set yet.
+        if (!anyMatch && btns[0]) btns[0].tabIndex = 0;
+      }
+
+      /* forward: pill click → select */
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".pill-btn");
+        if (!btn) return;
+        const groupId = btn.dataset.group;
+        const val = btn.dataset.val;
+        if (!groupId) return;
+        const sel = document.getElementById(groupId);
+        if (sel) { sel.value = val; sel.dispatchEvent(new Event("change")); }
+        activatePill(groupId, val);
+      });
+
+      /* reverse: when JS sets select.value (on load / after edits) → update pills.
+         Driven by an explicit window._syncAllPills() call from the page JS (which
+         re-runs after every value change) instead of a forever-running 250ms poll. */
+      const GROUPS = [
+        "simple-counterparty-type",
+        "simple-primary-flow-type",
+        "simple-consumption-ownership",
+        "simple-settlement-state",
+      ];
+      function syncAllPills() {
+        GROUPS.forEach(function (id) {
+          const sel = document.getElementById(id);
+          if (sel) activatePill(id, sel.value);
+        });
+      }
+      window._syncAllPills = syncAllPills;
+
+      /* a11y: each pill row is a radiogroup; arrow keys move focus + select within it. */
+      document.querySelectorAll("[id^='pills-']").forEach(function (group) {
+        group.setAttribute("role", "radiogroup");
+        group.addEventListener("keydown", function (e) {
+          if (!["ArrowRight", "ArrowLeft", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+          e.preventDefault();
+          const btns = [...group.querySelectorAll(".pill-btn")];
+          if (!btns.length) return;
+          let i = btns.indexOf(document.activeElement);
+          if (i < 0) i = Math.max(0, btns.findIndex(b => b.classList.contains("pill-active")));
+          const dir = (e.key === "ArrowRight" || e.key === "ArrowDown") ? 1 : -1;
+          const next = btns[(i + dir + btns.length) % btns.length];
+          if (next) { next.focus(); next.click(); }
+        });
+      });
+      syncAllPills();
+
+      /* ── Context toggle ──────────────────────────────────────────────── */
+      const ctxToggle = document.getElementById("simple-context-toggle");
+      const ctxPanel  = document.getElementById("simple-context-panel");
+      const ctxChevron = document.getElementById("simple-context-chevron");
+      if (ctxToggle && ctxPanel) {
+        ctxToggle.addEventListener("click", function () {
+          const open = !ctxPanel.classList.contains("hidden");
+          ctxPanel.classList.toggle("hidden", open);
+          if (ctxChevron) ctxChevron.style.transform = open ? "rotate(180deg)" : "";
+        });
+      }
+
+      /* ── Keyboard shortcut: S to save ───────────────────────────────── */
+      document.addEventListener("keydown", function (e) {
+        if ((e.key === "s" || e.key === "S") && !e.ctrlKey && !e.metaKey) {
+          const active = document.activeElement;
+          if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.tagName === "SELECT")) return;
+          const simplePanel = document.getElementById("simple-mode-panel");
+          const splitPanel  = document.getElementById("split-mode-panel");
+          if (simplePanel && !simplePanel.classList.contains("hidden")) {
+            document.getElementById("save-simple-btn")?.click();
+          } else if (splitPanel && !splitPanel.classList.contains("hidden")) {
+            document.getElementById("save-split-btn")?.click();
+          }
+        }
+      });
+
+      /* ── Colour transaction card accent by amount sign ───────────────── */
+      function colorAccent() {
+        const amountEl = document.getElementById("tx-amount");
+        const strip = document.getElementById("tx-accent-strip");
+        if (!amountEl || !strip) return;
+        const txt = amountEl.textContent || "";
+        if (txt.includes("-") || txt.includes("Dr")) {
+          strip.className = "h-1 w-full bg-gradient-to-r from-rose-400 to-rose-300";
+        } else if (txt && !txt.includes("Loading")) {
+          strip.className = "h-1 w-full bg-gradient-to-r from-primary to-indigo-400";
+        }
+      }
+      /* observe tx-amount changes */
+      const txAmt = document.getElementById("tx-amount");
+      if (txAmt) {
+        new MutationObserver(colorAccent).observe(txAmt, { childList: true, characterData: true, subtree: true });
+        colorAccent();
+      }
+    })();
+    </script>
+    <script src="/js/transaction_classification.js?v=20260530-personmode2"></script>
+  <script src="/js/toast.js"></script><script src="/js/app-init.js?v=20260526-shortcuts2"></script>
+  <script>
+    /* ── Sync transaction vendor + amount into header badge ─────────── */
+    (function () {
+      const badge  = document.getElementById("header-tx-badge");
+      const vBadge = document.getElementById("header-tx-vendor");
+      const aBadge = document.getElementById("header-tx-amount");
+      const vSrc   = document.getElementById("tx-vendor");
+      const aSrc   = document.getElementById("tx-amount");
+      if (!badge || !vSrc || !aSrc) return;
+
+      function sync() {
+        const vendor = (vSrc.textContent || "").trim();
+        const amount = (aSrc.textContent || "").trim();
+        if (vendor && vendor !== "Loading…") {
+          vBadge.textContent = vendor;
+          aBadge.textContent = amount;
+          aBadge.className   = aSrc.className.replace(/text-lg|font-black|tracking-tight|shadow-sm|rounded-xl|px-\S+|py-\S+/g, "").trim()
+                               + " text-[11px] font-extrabold flex-shrink-0";
+          badge.classList.remove("hidden");
+        }
+      }
+      new MutationObserver(sync).observe(vSrc, { childList: true, characterData: true, subtree: true });
+      new MutationObserver(sync).observe(aSrc, { childList: true, characterData: true, subtree: true });
+      sync();
+    })();
+  </script>
+
+  <!-- Receipt Upload: Side panel -->
+  <div id="receipt-upload-panel" class="fixed inset-y-0 right-0 z-50 hidden w-full max-w-lg flex-col bg-white shadow-2xl border-l border-slate-200">
+    <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900">Scan Receipt / Bill</h3>
+        <p class="mt-0.5 text-xs text-slate-500">Upload a bill photo — extracted items will be linked to this transaction</p>
+      </div>
+      <button onclick="closeReceiptPanel()" class="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5 space-y-4">
+      <div>
+        <p class="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">Step 1: Upload Bill Image</p>
+        <div id="receipt-drop-zone" class="relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center cursor-pointer hover:border-amber-400 transition-colors">
+          <input id="receipt-image-input" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+          <span class="material-symbols-outlined text-[36px] text-slate-400">photo_camera</span>
+          <p class="text-sm font-semibold text-slate-600">Click or drag a bill photo here</p>
+          <p class="text-xs text-slate-400">JPG, PNG supported</p>
+        </div>
+        <img id="receipt-thumbnail" class="hidden mt-3 max-h-40 rounded-lg border border-slate-200 object-contain w-full" alt="Bill preview" />
+        <button id="receipt-extract-btn" onclick="extractReceiptItems()" disabled class="mt-3 w-full rounded-xl bg-amber-500 px-4 py-2 text-sm font-bold text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-amber-600 transition-colors">
+          Extract Items
+        </button>
+        <p id="receipt-ocr-status" class="mt-2 text-xs text-slate-500 text-center hidden"></p>
+      </div>
+      <div>
+        <label class="text-xs font-semibold text-slate-700">Store Name <span class="font-normal text-slate-400">(optional — updates vendor label)</span></label>
+        <input id="receipt-store-name" type="text" placeholder="e.g. DMart, Big Bazaar" class="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-200 outline-none" />
+      </div>
+      <!-- Hidden fields — not needed when linking to existing transaction -->
+      <input id="receipt-date" type="hidden" />
+      <select id="receipt-payment-source" class="hidden"><option value="CASH">Cash</option></select>
+      <div id="receipt-items-section" class="hidden">
+        <div class="mb-2 flex items-center justify-between">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Step 2: Review Items</p>
+          <button onclick="addReceiptItemRow()" class="flex items-center gap-1 rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600 hover:bg-slate-200 transition-colors">
+            <span class="material-symbols-outlined text-[14px]">add</span> Add Item
+          </button>
+        </div>
+        <div class="grid grid-cols-[1fr_110px_90px_24px] gap-1 px-1 mb-1">
+          <span class="text-[10px] font-bold text-slate-400 uppercase">Item</span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase">Category</span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase text-right">Amount</span>
+          <span></span>
+        </div>
+        <div id="receipt-items-list" class="space-y-1.5 max-h-72 overflow-y-auto pr-0.5"></div>
+        <div class="mt-3 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 border border-slate-200">
+          <span class="text-sm font-bold text-slate-700">TOTAL</span>
+          <span id="receipt-total-display" class="text-base font-extrabold text-slate-900">₹0.00</span>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-slate-200 px-5 py-4 flex gap-3">
+      <button onclick="closeReceiptPanel()" class="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+        Cancel
+      </button>
+      <button id="receipt-confirm-btn" onclick="confirmReceipt()" disabled class="flex-1 rounded-xl bg-amber-500 py-2.5 text-sm font-bold text-white hover:bg-amber-600 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
+        Link to this Transaction
+      </button>
+    </div>
+  </div>
+
+  <script src="/js/receipt_upload.js"></script>
+  </body>
+</html>
+
+
