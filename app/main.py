@@ -18,7 +18,7 @@ from repositories.networth_repo import save_net_worth_snapshot
 from repositories.transaction_group_repo import ensure_group_tables
 from repositories.tag_rules_repo import ensure_tag_rules_tables
 from routers.tag_rules import tag_rules_router
-from core.auth import BasicAuthMiddleware
+from core.auth import AuthMiddleware
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -45,9 +45,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# Password-protect the entire app (API + static frontend). Enforced only when
-# APP_PASSWORD is set in the environment, so local dev stays frictionless.
-app.add_middleware(BasicAuthMiddleware)
+# Password-protect the entire app (API + static frontend) behind a session
+# login page at /login. Enforced only when APP_PASSWORD is set in the
+# environment, so local dev stays frictionless.
+app.add_middleware(AuthMiddleware)
 
 # Compress JSON/HTML responses — some pages ship 90KB+ payloads, which matters
 # when the user is far from the server.
